@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "246632688652",
+    "firebase_url": "https://generationpaysages-d635d-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "generationpaysages-d635d",
+    "storage_bucket": "generationpaysages-d635d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246632688652:android:e1a43499522cd530efd229",
+        "android_client_info": {
+          "package_name": "com.example.gestionnairedechantiers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC22hvzDKyGBfAiLuyf-u86FucXA8GEYwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246632688652:android:f8bb3890fd8f5374efd229",
+        "android_client_info": {
+          "package_name": "com.example.gestionnairerapportdechantier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC22hvzDKyGBfAiLuyf-u86FucXA8GEYwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

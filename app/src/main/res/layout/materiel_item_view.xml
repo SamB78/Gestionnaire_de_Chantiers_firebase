@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="item"
+            type="com.example.gestionnairedechantiers.entities.Materiel" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.materiel.GestionMaterielViewModel"/>
+
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:checkable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="3dp"
+        android:layout_margin="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.onClickEditMateriel(item)}">
+
+            <TextView
+                android:id="@+id/numChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/adresse"
+                app:layout_constraintStart_toEndOf="@+id/imageViewmateriel"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@{item.modele}"
+                tools:text="Mercedes Classe G" />
+
+
+            <TextView
+                android:id="@+id/adresse"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.numeroSerie}"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/codePostal"
+                app:layout_constraintStart_toStartOf="@+id/numChantier"
+                app:layout_constraintTop_toBottomOf="@+id/nom"
+                tools:text="06 51 84 33 15" />
+
+            <TextView
+                android:id="@+id/codePostal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/adresse"
+                app:layout_constraintTop_toBottomOf="@+id/adresse"
+                tools:text="Chef d'équipe"
+                android:text="@{item.type}"/>
+
+            <ImageView
+                android:id="@+id/imageViewmateriel"
+                imageUrlItemViewPersonnel="@{item.urlPictureMateriel}"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

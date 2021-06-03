@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}">
+
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:layout_editor_absoluteX="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayoutChamps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="64dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSecurite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="8dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textViewMateriel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="16dp"
+                                android:text="Matériel"
+                                android:textSize="30sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textViewRespectPropreteVehicule"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Propreté du véhicule"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewMateriel"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewMateriel" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_proprete_vehicule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRespectPropreteVehicule"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewRespectPropreteVehicule">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonPropreteVehicule1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.propreteVehicule}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonPropreteVehicule2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.propreteVehicule}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewEntretienMateriel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Entretien du matériel"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRespectPropreteVehicule"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_proprete_vehicule" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_entretien_materiel"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewEntretienMateriel"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewEntretienMateriel">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonEntretienMateriel1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.entretienMateriel}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonEntretienMateriel2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.entretienMateriel}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewCarnetDeBord"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Rendu carnet de bord"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewEntretienMateriel"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_entretien_materiel" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_rendu_carnet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewCarnetDeBord"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewCarnetDeBord">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduCarnet1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.renduCarnetDeBord}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduCarnet2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.renduCarnetDeBord}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewRenduBonDecharge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Rendu bon de décharge"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewCarnetDeBord"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_rendu_carnet" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_rendu_bon_decharge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonDecharge"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewRenduBonDecharge">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonDecharge1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.renduBonDecharge}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonDecharge2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.renduBonDecharge}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewRenduBonCarburant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Rendu bon de Carburant"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonDecharge"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_rendu_bon_decharge" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_rendu_bon_carburant"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonCarburant"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewRenduBonCarburant">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonCarburant1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.renduBonCarburant}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonCarburant2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.renduBonCarburant}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewRenduFeuillesInterimaire"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Rendu Feuille intérimaire"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonDecharge"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_rendu_bon_carburant" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_rendu_feuille_interimaire"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="8dp"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduFeuillesInterimaire"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewRenduFeuillesInterimaire">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduFeuillesInterimaire1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.feuillesInterimaires}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduFeuillesInterimaire2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.feuillesInterimaires}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                            <TextView
+                                android:id="@+id/textViewRenduBonDeCommande"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Rendu Bon de commande"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonDecharge"
+                                app:layout_constraintTop_toBottomOf="@+id/radio_group_rendu_feuille_interimaire" />
+
+                            <RadioGroup
+                                android:id="@+id/radio_group_rendu_bon_commande"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:onCheckedChanged="@{(_,i) -> viewModel.radioGroupsMateriel(i)}"
+                                android:orientation="horizontal"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="@+id/textViewRenduBonDeCommande"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewRenduBonDeCommande">
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonDeCommande1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="8dp"
+                                    android:layout_weight="1"
+                                    android:checked="@{viewModel.rapportChantier.observations.bonDeCommande}"
+                                    android:text="Conforme" />
+
+                                <RadioButton
+                                    android:id="@+id/radioButtonRenduBonDeCommande2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:checked="@{!viewModel.rapportChantier.observations.bonDeCommande}"
+                                    android:text="Non conforme" />
+                            </RadioGroup>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <Button
+                android:id="@+id/buttonSuivant"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:onClick="@{()-> viewModel.onClickButtonValidationAutresInformations()}"
+                android:text="Valider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.example.gestionnairedechantiers.entities.Chantier" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.chantiers.listeChantiers.ListeChantiersViewModel" />
+
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:checkable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="3dp"
+        android:layout_margin="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.onClickChantier(item)}"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/nomChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                tools:text="chantier St Martin"
+                android:text="@{item.nomChantier}"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/typeChantier"
+                app:layout_constraintTop_toBottomOf="@+id/typeChantier" />
+
+            <TextView
+                android:id="@+id/numeroChantier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text='@{"N°" + item.numeroChantier}'
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@+id/imageViewChantier"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="N°1234" />
+
+            <TextView
+                android:id="@+id/typeChantier"
+                typeChantier="@{item.typeChantier}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/numeroChantier"
+                app:layout_constraintTop_toBottomOf="@+id/numeroChantier"
+                tools:text="ENTRETIEN" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.adresseChantier.codePostal+' '+ item.adresseChantier.ville}"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+
+                app:layout_constraintStart_toStartOf="@+id/nomChantier"
+                app:layout_constraintTop_toBottomOf="@+id/nomChantier"
+                tools:text="7860 Jouars Pontchartrain" />
+
+            <ImageView
+                android:id="@+id/imageViewChantier"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/ic_business_black_24dp"
+                imageUrl="@{item.urlPictureChantier}"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

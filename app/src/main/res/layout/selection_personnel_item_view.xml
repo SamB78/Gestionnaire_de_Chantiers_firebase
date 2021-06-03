@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.example.gestionnairedechantiers.entities.Personnel" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
+
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:checkable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:clickedElement="@{item.checked}"
+        android:onClick="@{() -> viewModel.onSelectPersonnel(item)}"
+        app:cardCornerRadius="3dp"
+        android:layout_margin="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/prenom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/adresse"
+                app:layout_constraintStart_toEndOf="@+id/imageViewPersonnel"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@{item.prenom}"
+                tools:text="Sam" />
+
+            <TextView
+                android:id="@+id/nom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/adresse"
+                app:layout_constraintStart_toEndOf="@+id/prenom"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@{item.nom}"
+                tools:text="Bertrand" />
+
+            <TextView
+                android:id="@+id/adresse"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.numContact}"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/codePostal"
+                app:layout_constraintStart_toStartOf="@+id/prenom"
+                app:layout_constraintTop_toBottomOf="@+id/nom"
+                tools:text="06 51 84 33 15" />
+
+            <TextView
+                android:id="@+id/codePostal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/adresse"
+                app:layout_constraintTop_toBottomOf="@+id/adresse"
+                tools:text="Chef d'équipe"
+                personnelRole="@{item}"/>
+
+            <ImageView
+                android:id="@+id/imageViewPersonnel"
+                imageUrlItemViewPersonnel="@{item.urlPicturePersonnel}"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars"
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

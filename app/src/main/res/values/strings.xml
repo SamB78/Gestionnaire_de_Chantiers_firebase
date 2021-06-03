@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Gestionnaire Rapport De Chantier</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="champs_non_conformes">Champs non conformes: </string>
+    <string name="observations">Observations: %s</string>
+    <string name="gestion_materiel">Gestion Materiel</string>
+    <string name="gestion_personnel">Gestion Personnel</string>
+    <string name="chef_d_quipe">Chef d\'équipe</string>
+    <string name="int_rimaire">Intérimaire</string>
+    <string name="administrateur">Administrateur</string>
+
+    <string-array name="fonction">
+        <item>Personnel</item>
+        <item>Chef d équipe</item>
+
+
+    </string-array>
+</resources>

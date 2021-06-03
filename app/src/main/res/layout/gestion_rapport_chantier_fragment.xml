@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.example.gestionnairedechantiers.R" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/backgroundColor"
+                tools:context=".rapportChantier.gestionRapportChantier.GestionRapportChantierFragment"
+                android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}">
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTitre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textViewNomChantier"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@{viewModel.chantier.nomChantier}"
+                            android:textSize="24sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Chantier de la gare" />
+
+                        <TextView
+                            android:id="@+id/typeChantier"
+                            typeChantier="@{viewModel.rapportChantier.typeChantier}"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textViewNomChantier"
+                            tools:text="ENTRETIEN" />
+
+                        <TextView
+                            android:id="@+id/textViewDate"
+                            date='@{viewModel.rapportChantier.dateRapportChantier}'
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textAlignment="center"
+                            android:textSize="24sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/typeChantier"
+                            tools:text="Rapport du 12 Janvier 2020" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/cardTitre">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataPersonnel}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataPersonnel}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonGestionPersonnel()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionPersonnelTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Gestion du Personnel"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbPersonnesTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Quantité Personnel: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionPersonnelTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionPersonnelTextView" />
+
+                            <TextView
+                                android:id="@+id/nbPersonnesTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.listePersonnel.size())}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbPersonnesTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbPersonnesTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbPersonnesTextView"
+                                tools:text="15" />
+
+                            <TextView
+                                android:id="@+id/textView13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Heures travaillées: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textNbPersonnesTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/textNbPersonnesTextView" />
+
+                            <TextView
+                                android:id="@+id/textView14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.totauxRC.totalMO)}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView13"
+                                app:layout_constraintStart_toEndOf="@+id/textView13"
+                                app:layout_constraintTop_toTopOf="@+id/textView13"
+                                tools:text="25" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonGestionPersonnel()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionMateriel"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataMateriel}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataMateriel}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonGestionMateriel()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionMaterielTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Gestion du Matériel Société"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbMaterielTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Quantité Matériel Société: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionMaterielTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionMaterielTextView" />
+
+                            <TextView
+                                android:id="@+id/nbMaterielTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.totauxRC.totalQuantiteMaterielSociete)}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbMaterielTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbMaterielTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbMaterielTextView"
+                                tools:text="15" />
+
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonGestionMateriel()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionMaterielLocation"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataMaterielLocation}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataMaterielLocation}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonGestionMaterielLocation()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionMaterielLocationTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Matériel de Location"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbMaterielLocationTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Quantité Matériel location: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionMaterielLocationTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionMaterielLocationTextView" />
+
+                            <TextView
+                                android:id="@+id/nbMaterielLocationTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.totauxRC.totalQuantiteMaterielLocation)}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbMaterielLocationTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbMaterielLocationTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbMaterielLocationTextView"
+                                tools:text="15" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonGestionMaterielLocation()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionMateriaux"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataMateriaux}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataMateriaux}"
+                        setCardVisibility="@{viewModel.rapportChantier.typeChantier}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonGestionMateriaux()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionMateriauxTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Gestion des Matériaux"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbMateriauxTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Catégories de Matériaux: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionMateriauxTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionMateriauxTextView" />
+
+                            <TextView
+                                android:id="@+id/nbMateriauxTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.listeMateriaux.size())}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbMateriauxTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbMateriauxTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbMateriauxTextView"
+                                tools:text="15" />
+
+                            <TextView
+                                android:id="@+id/textViewTotalHeuresMateriauxUtilise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Quantité totale:  "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textNbMateriauxTextView"
+
+
+                                app:layout_constraintTop_toBottomOf="@+id/textNbMateriauxTextView" />
+
+                            <TextView
+                                android:id="@+id/totalHeuresMateriauxUtilise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.totauxRC.totalMateriaux)}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textViewTotalHeuresMateriauxUtilise"
+                                app:layout_constraintStart_toEndOf="@+id/textViewTotalHeuresMateriauxUtilise"
+                                app:layout_constraintTop_toTopOf="@+id/textViewTotalHeuresMateriauxUtilise"
+                                tools:text="25" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonGestionMateriaux()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionSousTraitance"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataSousTraitance}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataSousTraitance}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonGestionSousTraitance()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionSousTraitanceTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Sous-Traitance"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbSousTraitanceTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nombre de sous-traitants "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionSousTraitanceTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionSousTraitanceTextView" />
+
+                            <TextView
+                                android:id="@+id/nbSousTraitanceTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.totauxRC.totalSousTraitance)}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbSousTraitanceTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbSousTraitanceTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbSousTraitanceTextView"
+                                tools:text="15" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonGestionSousTraitance()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionQuestionnaire"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataConformiteChantier}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataConformiteChantier}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:onClick="@{()-> viewModel.onClickButtonAutresInformations()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionAutresInformationsTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Conformité du chantier "
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbAutresInformationsTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Champs conformes: "
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/gestionAutresInformationsTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionAutresInformationsTextView" />
+
+                            <TextView
+                                android:id="@+id/nbAutresInformationsTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.observations.sendNumberOfTrueChamps())}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textNbAutresInformationsTextView"
+                                app:layout_constraintStart_toEndOf="@+id/textNbAutresInformationsTextView"
+                                app:layout_constraintTop_toTopOf="@+id/textNbAutresInformationsTextView"
+                                tools:text="15" />
+
+                            <TextView
+                                android:id="@+id/textViewTotalHeuresAutresInformationsUtilise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/champs_non_conformes"
+                                android:textSize="18sp"
+                                app:layout_constraintStart_toStartOf="@+id/textNbAutresInformationsTextView"
+
+
+                                app:layout_constraintTop_toBottomOf="@+id/textNbAutresInformationsTextView" />
+
+                            <TextView
+                                android:id="@+id/totalHeuresAutresInformationsUtilise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{Integer.toString(viewModel.rapportChantier.observations.sendNumberOfFalseChamps())}"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/textViewTotalHeuresAutresInformationsUtilise"
+                                app:layout_constraintStart_toEndOf="@+id/textViewTotalHeuresAutresInformationsUtilise"
+                                app:layout_constraintTop_toTopOf="@+id/textViewTotalHeuresAutresInformationsUtilise"
+                                tools:text="25" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonAutresInformations()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardGestionObservations"
+                        dataEdited="@{viewModel.dataChangedWithoutSave.dataObservations}"
+                        dataSaved="@{viewModel.rapportChantier.dataSaved.dataObservations}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:onClick="@{()-> viewModel.onClickButtonObservations()}">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp">
+
+                            <TextView
+                                android:id="@+id/gestionObservationsTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Observations "
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textNbObservationsTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:text="@{@string/observations(viewModel.rapportChantier.commentaire)}"
+                                android:textSize="18sp"
+                                android:textStyle="italic"
+                                app:layout_constraintStart_toStartOf="@+id/gestionObservationsTextView"
+                                app:layout_constraintTop_toBottomOf="@+id/gestionObservationsTextView"
+                                tools:text="Observations: " />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{()-> viewModel.onClickButtonObservations()}"
+                                android:text="Editer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include
+                android:id="@+id/loadingState"
+                layout="@layout/loading_state"
+                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

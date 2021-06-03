@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.example.gestionnairedechantiers.entities.Materiel" />
+
+        <variable
+            name="viewModel"
+            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:checkable="true"
+        android:clickable="false"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> viewModel.onClickMateriel(item)}"
+        app:cardCornerRadius="3dp"
+        app:clickedElement="@{item.checked}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/numChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{item.marque}"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/adresse"
+                app:layout_constraintStart_toEndOf="@+id/imageViewPersonnel"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Renault" />
+
+            <TextView
+                android:id="@+id/nom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@{item.modele}"
+                android:textSize="24sp"
+                app:layout_constraintStart_toEndOf="@+id/numChantier"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Clio" />
+
+
+            <TextView
+                android:id="@+id/codePostal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.type}"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/numChantier"
+                app:layout_constraintTop_toBottomOf="@+id/nom"
+                tools:text="Voiture" />
+
+            <ImageView
+                android:id="@+id/imageViewPersonnel"
+                imageUrlItemViewPersonnel="@{item.urlPictureMateriel}"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

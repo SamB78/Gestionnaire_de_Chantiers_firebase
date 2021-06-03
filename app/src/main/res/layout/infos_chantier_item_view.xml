@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="chantier"
+            type="com.example.gestionnairedechantiers.entities.Chantier" />
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:checkable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="3dp"
+        android:layout_margin="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/numChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text='@{ "N°" + chantier.numeroChantier}'
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageViewPersonnel"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="N° Chantier: 19130" />
+
+            <TextView
+                android:id="@+id/nomChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@{chantier.nomChantier}"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/numChantier"
+                app:layout_constraintTop_toBottomOf="@+id/typeChantier"
+                tools:text="PACO SIGMA 12. REAU PARC A5. tx Neufs &amp; Divers" />
+
+
+            <TextView
+                android:id="@+id/typeChantier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                typeChantier="@{chantier.typeChantier}"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/numChantier"
+                app:layout_constraintTop_toBottomOf="@+id/numChantier"
+                tools:text="ENTRETIEN" />
+
+            <ImageView
+                android:id="@+id/imageViewPersonnel"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_business_black_24dp"
+
+                tools:srcCompat="@drawable/ic_business_black_24dp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>
