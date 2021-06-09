@@ -27,7 +27,6 @@ class AuthFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.i("test")
         val binding = FragmentAuthBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.executePendingBindings()

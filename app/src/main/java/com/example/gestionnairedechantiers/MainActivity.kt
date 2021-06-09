@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -14,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.gestionnairedechantiers.auth.AuthActivity
 import com.example.gestionnairedechantiers.databinding.ActivityMainBinding
 import com.example.gestionnairedechantiers.databinding.LogoHeaderBinding
+import com.example.gestionnairedechantiers.utils.Status
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -51,7 +51,17 @@ class MainActivity : AppCompatActivity() {
         );
 
         Timber.plant(Timber.DebugTree())
-        setupNavigation()
+
+        // first find the nav controller
+
+
+
+        viewModel.state.observe(this, {
+            if(it.status == Status.SUCCESS){
+                setupNavGraph()
+                setupNavigation()
+            }
+        })
         profileLogout()
 
     }
@@ -62,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             if(it){
                 val intent = Intent(applicationContext, AuthActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.putExtra("error", viewModel.state.value!!.message)
                 startActivity(intent)
                 finish()
             }
@@ -73,8 +84,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation(){
 
-        // first find the nav controller
         val navController = findNavController(R.id.navHostFragment)
+
         setSupportActionBar(binding.toolbar)
         // then setup the action bar, tell it about the DrawerLayout
         setupActionBarWithNavController(navController, binding.drawerLayout)
@@ -103,9 +114,16 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-
-
-
         }
+    }
+
+    private fun setupNavGraph(){
+
+        //Setup the navGraph for this activity
+        val navController = findNavController(R.id.navHostFragment)
+        val inflater = navController.navInflater
+        val graph = inflater.inflate(R.navigation.navigation)
+        navController.graph = graph
+
     }
 }

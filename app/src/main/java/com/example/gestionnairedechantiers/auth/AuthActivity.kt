@@ -21,8 +21,11 @@ class AuthActivity : AppCompatActivity() {
     private var googleSignInClient: GoogleSignInClient? = null
     private val viewModel: AuthViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val errorMessage = intent.getStringExtra("error")
+        Timber.i("errorMessage: $errorMessage")
         Timber.e("test")
         val binding: ActivityAuthBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_auth)
@@ -44,6 +47,10 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
         })
+
+        errorMessage?.let {
+            viewModel.setErrorMessage(it)
+        }
 
     }
 

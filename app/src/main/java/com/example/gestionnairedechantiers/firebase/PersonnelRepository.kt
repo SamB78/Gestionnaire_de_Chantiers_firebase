@@ -9,7 +9,9 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 class PersonnelRepository {
-    private val db = FirebaseFirestore.getInstance().collection("personnel")
+    private val personnelRef = FirebaseFirestore.getInstance().collection("personnel")
+
+    private val userRef = FirebaseFirestore.getInstance().collection("users")
 
     private val storage = Firebase.storage
     val storageRef = storage.reference
@@ -19,54 +21,35 @@ class PersonnelRepository {
 
     suspend fun insertPersonnel(personnel: Personnel) {
 
+        val batch = FirebaseFirestore.getInstance().batch()
+
         try {
             personnel.urlPicturePersonnel.let {
                 personnel.urlPicturePersonnel = imagesStorage.insertImage(it, PERSONNEL_FOLDER)
+
             }
 
-            db.add(personnel).await()
+            val result = personnelRef.add(personnel).await()
+
+            val dataUser = hashMapOf(
+                "mail" to personnel.mail,
+                "userData" to result.id
+            )
+            userRef.document(personnel.mail).set(dataUser).await()
+
         } catch (e: Exception) {
-            Timber.e("Error insert Personnel Firebase")
+            Timber.e("Error insert Personnel Firebase: $e")
+            throw java.lang.Exception("Erreur integration image: $e")
 //            FirebaseCrashlytics.getInstance().log("Error getting user details")
 //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
 //            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
-//    private suspend fun insertImage(personnel: Personnel): String? {
-//        var url: String? = null
-//        if (!personnel.urlPicturePersonnel.isNullOrEmpty()) {
-//            val uri2 = (personnel.urlPicturePersonnel)
-//            val string = uri2!!.substring(uri2.lastIndexOf('/') + 1)
-//            val personnelStorageRef = storageRef.child("personnel_pictures/${string}")
-//
-//            personnelStorageRef.putFile(Uri.fromFile(File(personnel.urlPicturePersonnel!!)))
-//                .continueWithTask { task ->
-//                    if (!task.isSuccessful) {
-//                        task.exception?.let {
-//                            Timber.i("exception = $it")
-//                            throw it
-//
-//                        }
-//                    }
-//                    personnelStorageRef.downloadUrl
-//                }.addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        val downloadUri = task.result
-//
-//                        url = downloadUri.toString()
-//                    } else {
-//                        Timber.i("error ${task.exception}")
-//                    }
-//                }.await()
-//        }
-//        return url
-//    }
-
     suspend fun getAllPersonnel(): List<Personnel> {
 
         val list = mutableListOf<Personnel>()
-        val result = db.get()
+        val result = personnelRef.get()
             .await()
         Timber.i("Result:")
         for (personnel in result) {
@@ -82,7 +65,7 @@ class PersonnelRepository {
                 personnel.urlPicturePersonnel = imagesStorage.insertImage(it, PERSONNEL_FOLDER)
             }
 
-            db.document(personnel.documentId!!)
+            personnelRef.document(personnel.documentId!!)
                 .set(personnel)
                 .await()
             Timber.i("Personnel Updated with success")
@@ -92,7 +75,7 @@ class PersonnelRepository {
     }
 
     suspend fun getPersonnelById(id: String): Personnel? {
-        return db.document(id).get().await()
+        return personnelRef.document(id).get().await()
             .toObject(Personnel::class.java)
     }
 }

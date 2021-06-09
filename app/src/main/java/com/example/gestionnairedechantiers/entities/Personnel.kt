@@ -1,6 +1,7 @@
 package com.example.gestionnairedechantiers.entities
 
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Exclude
 
 data class Personnel(
@@ -9,7 +10,7 @@ data class Personnel(
     var nom: String = "",
     var prenom: String = "",
     var numContact: String = "",
-    var mailContact: String = "",
+    var mail: String = "",
     var administrateur: Boolean = false,
     var chefEquipe: Boolean = false,
     var interimaire: Boolean = false,
@@ -19,4 +20,6 @@ data class Personnel(
     @Exclude @set:Exclude @get:Exclude
     var nbHeuresTravaillees: Int = 0
 ) {
+
+
 }

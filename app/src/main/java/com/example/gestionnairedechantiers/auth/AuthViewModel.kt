@@ -10,18 +10,22 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class AuthViewModel : ViewModel() {
 
     private val authRepository = AuthRepository()
     private var _isConnected = MutableLiveData<Boolean>(false)
-    val isConnected: LiveData<Boolean>
+    private val isConnected: LiveData<Boolean>
         get() = _isConnected
-    fun checkUserLogin(): LiveData<Boolean> {
-        checkIfUserIsConnected()
-        return isConnected
-    }
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
+//    fun checkUserLogin(): LiveData<Boolean> {
+//        checkIfUserIsConnected()
+//        return isConnected
+//    }
 
     enum class Navigation {
         AUTHENTIFICATION,
@@ -55,7 +59,7 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun onButtonClicked(){
+    fun onButtonClicked() {
         _navigation.value = Navigation.EN_ATTENTE
     }
 
@@ -64,10 +68,15 @@ class AuthViewModel : ViewModel() {
         navigateIfUserIsConnected()
     }
 
-    private fun navigateIfUserIsConnected(){
-        if(isConnected.value!!){
+    private fun navigateIfUserIsConnected() {
+        if (isConnected.value!!) {
             _navigation.value = Navigation.PASSAGE_CHOIX_CHANTIER
         }
+    }
+
+    fun setErrorMessage(string: String) {
+        _errorMessage.value = string
+        Timber.i(" ${_errorMessage.value}")
     }
 
 

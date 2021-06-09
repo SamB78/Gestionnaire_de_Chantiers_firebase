@@ -2,6 +2,7 @@ package com.example.gestionnairedechantiers.firebase
 
 import com.example.gestionnairedechantiers.entities.Personnel
 import com.example.gestionnairedechantiers.entities.User
+import com.example.gestionnairedechantiers.entities.User.Companion.toUser
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,6 +15,8 @@ class AuthRepository {
     private val rootRef = FirebaseFirestore.getInstance()
     private val dbPersonnel = FirebaseFirestore.getInstance().collection("personnel")
     private val dbUsers = FirebaseFirestore.getInstance().collection("users")
+    private val personnelRepository = PersonnelRepository()
+
 
     suspend fun authWithGoogle(authCredential: AuthCredential): Boolean {
         return try {
@@ -25,47 +28,53 @@ class AuthRepository {
         }
     }
 
-    suspend fun getDataUser(): User? {
+    suspend fun getDataUser(): User {
 
         val firebaseUser = firebaseAuth.currentUser
 
-
-
         if (firebaseUser != null) {
-
 
             val mail = firebaseUser.email
             var personnel: Personnel? = null
+            var user: User? = null
 
-            val documents = dbPersonnel.whereEqualTo("mailContact", mail).get().await()
-            return if (documents != null) {
-                for (document in documents) {
-                    personnel = document.toObject(Personnel::class.java)
-                    Timber.i("$personnel")
+            if (!mail.isNullOrEmpty()) {
+                val userResult = dbUsers.document(mail).get().await()
+                if(userResult.exists()){
+                    user = userResult.toUser(personnelRepository)
+                }else{
+                    throw Exception("Accès refusé: vous n'avez pas la permission de vous connecter")
                 }
-
-                val user = User(
-                    uid = firebaseUser.uid,
-                    email = firebaseUser.email!!,
-                    userData = personnel
-                )
-
-                val dataUser = hashMapOf(
-                    "uid" to user.uid,
-                    "email" to user.email,
-                    "userData" to personnel!!.documentId
-                )
-
-                dbUsers.document(user.uid).set(dataUser).await()
-
-                user
+                Timber.i("user = $user")
             } else {
-                Timber.e("Personnel not found in database")
-                null
+                throw Exception("Erreur de connexion Google")
             }
+
+//            if (user != null) {
+//
+//                val documents = dbPersonnel.whereEqualTo("mailContact", mail).get().await()
+//                if (documents != null) {
+//                    for (document in documents) {
+//                        personnel = document.toObject(Personnel::class.java)
+//                        Timber.i("$personnel")
+//                    }
+//
+//                    user.userData = personnel
+//
+//
+//                    return user
+//                } else {
+//                    throw java.lang.Exception("Erreur dans la base de données, contactez l'administrateur")
+//                }
+//            } else {
+//                Timber.e("Personnel not found in database")
+//                throw Exception("Vous n'êtes pas enregistré dans la base de données")
+//            }
+            return user
         } else {
-            Timber.e("User not connected")
-            return null
+            throw Exception("User not connected")
         }
     }
+
+
 }
