@@ -1,7 +1,7 @@
 package com.example.gestionnairedechantiers.firebase
 
 import com.example.gestionnairedechantiers.entities.Materiel
-import com.example.gestionnairedechantiers.entities.Personnel
+import com.example.gestionnairedechantiers.firebase.ImagesStorage.Companion.MATERIEL_FOLDER
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -9,9 +9,15 @@ import timber.log.Timber
 class MaterielRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("materiel")
+    private val imagesStorage = ImagesStorage()
 
     suspend fun insertMateriel(materiel: Materiel) {
         try {
+
+            materiel.urlPictureMateriel.let {
+                materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
+            }
+
             db.add(materiel).await()
             Timber.i("Materiel envoyé Firebase")
         } catch (e: Exception) {
@@ -37,6 +43,10 @@ class MaterielRepository {
 
     suspend fun updateMateriel(materiel: Materiel) {
         try {
+
+            materiel.urlPictureMateriel.let {
+                materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
+            }
             db.document(materiel.documentId!!)
                 .set(materiel)
                 .await()

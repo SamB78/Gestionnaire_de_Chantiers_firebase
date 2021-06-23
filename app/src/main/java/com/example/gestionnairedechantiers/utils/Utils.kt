@@ -24,6 +24,13 @@ enum class Status {
     LOADING
 }
 
+enum class TypeEntity {
+    MATERIEL,
+    PERSONNEL,
+    CHANTIER,
+
+}
+
 data class Resource2<out T>(val data: T? = null, val message: String? = null) {
 
     companion object {

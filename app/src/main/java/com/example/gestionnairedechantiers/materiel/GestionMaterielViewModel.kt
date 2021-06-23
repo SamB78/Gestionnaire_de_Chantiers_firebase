@@ -24,6 +24,8 @@ class GestionMaterielViewModel : ViewModel() {
         EN_ATTENTE
     }
 
+    val typeData = "materiel"
+
     private var _navigationMateriel = MutableLiveData<NavigationMenu>()
     val navigation: LiveData<NavigationMenu>
         get() = this._navigationMateriel
@@ -49,7 +51,7 @@ class GestionMaterielViewModel : ViewModel() {
     val listeMateriel: LiveData<List<Materiel>>
         get() = this._listeMateriel
 
-    var materiel = MutableLiveData<Materiel>()
+    var materiel = MutableLiveData<Materiel?>()
     var imageMateriel = MutableLiveData<String>()
 
 
@@ -74,11 +76,18 @@ class GestionMaterielViewModel : ViewModel() {
         _navigationMateriel.value =
             NavigationMenu.EDIT_MATERIEL
         this.materiel.value = materiel.copy()
+
+        if(this.materiel.value!!.urlPictureMateriel.isNullOrEmpty()){
+            imageMateriel.value = null
+        }else{
+            imageMateriel.value = this.materiel.value!!.urlPictureMateriel
+        }
     }
 
     fun onClickButtonCreationOrModificationEnded() {
 
 
+        materiel.value?.urlPictureMateriel = imageMateriel.value
         if (materiel.value?.documentId == null) sendNewDataToDB()
         else updateDataInDB()
 
@@ -104,7 +113,6 @@ class GestionMaterielViewModel : ViewModel() {
     }
 
     fun ajoutPathImage(imagePath: String) {
-        materiel.value?.urlPictureMateriel = imagePath
         imageMateriel.value = imagePath
     }
 

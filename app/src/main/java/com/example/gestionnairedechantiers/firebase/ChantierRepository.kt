@@ -5,12 +5,15 @@ import com.example.gestionnairedechantiers.entities.Chantier.Companion.toChantie
 import com.example.gestionnairedechantiers.entities.Personnel
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import com.example.gestionnairedechantiers.firebase.ImagesStorage.Companion.CHANTIER_FOLDER
 import timber.log.Timber
 
 class ChantierRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("chantiers")
     private val personnelRepository = PersonnelRepository()
+
+    private val imagesStorage = ImagesStorage()
 
     suspend fun insertChantier(chantier: Chantier) {
         try {
@@ -37,6 +40,10 @@ class ChantierRepository {
                 listEquipe.add(personnel.documentId!!)
             }
 
+            chantier.urlPictureChantier.let {
+                chantier.urlPictureChantier = imagesStorage.insertImage(it, CHANTIER_FOLDER)
+            }
+
             val data = hashMapOf(
                 "adresseChantier" to chantier.adresseChantier,
                 "chefChantier" to chantier.chefChantier.documentId,
@@ -49,6 +56,8 @@ class ChantierRepository {
                 "listEquipe" to listEquipe
             )
             Timber.i("date: $data")
+
+
 
             db.document(chantier.numeroChantier!!)
                 .set(data)

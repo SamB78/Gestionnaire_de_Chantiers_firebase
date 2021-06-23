@@ -12,6 +12,10 @@
         <variable
             name="viewModel"
             type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+
+        <variable
+            name="typeEntity"
+            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -68,7 +72,8 @@
 
             <ImageView
                 android:id="@+id/imageViewPersonnel"
-                imageUrlItemViewPersonnel="@{item.urlPicturePersonnel}"
+                imageUrl2="@{item.urlPicturePersonnel}"
+                typeEntity="@{typeEntity.PERSONNEL}"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"

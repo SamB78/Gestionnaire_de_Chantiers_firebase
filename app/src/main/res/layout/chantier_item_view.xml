@@ -13,6 +13,10 @@
             name="viewModel"
             type="com.example.gestionnairedechantiers.chantiers.listeChantiers.ListeChantiersViewModel" />
 
+        <variable
+            name="typeEntity"
+            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+
 
     </data>
 
@@ -90,7 +94,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@drawable/ic_business_black_24dp"
-                imageUrl="@{item.urlPictureChantier}"/>
+                imageUrl2="@{item.urlPictureChantier}"
+                typeEntity="@{typeEntity.CHANTIER}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

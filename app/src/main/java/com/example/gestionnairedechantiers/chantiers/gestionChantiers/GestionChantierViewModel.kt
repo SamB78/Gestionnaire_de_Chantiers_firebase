@@ -46,7 +46,7 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     var chantier = MutableLiveData(Chantier())
 
     //Liste Personnel
-    var listePersonnel = MutableLiveData<List<Personnel>>(mutableListOf())
+    var listePersonnel = MutableLiveData<List<Personnel>?>(mutableListOf())
 
     //Liste Chefs chantiers:
     var listeChefsChantier = MutableLiveData<List<Personnel>>(mutableListOf())
@@ -94,6 +94,12 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
             }
             listeChefsChantier.value!!.find { it.documentId == chantier.value!!.chefChantier.documentId }?.isChecked =
                 true
+
+            if(chantier.value!!.urlPictureChantier.isNullOrEmpty()){
+                imageChantier.value = null
+            }else{
+                imageChantier.value = chantier.value!!.urlPictureChantier
+            }
         }
     }
 
@@ -186,6 +192,7 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
 
     private fun sendDataToDB() {
         Timber.i("sendDataToDB")
+        chantier.value!!.urlPictureChantier = imageChantier.value
         viewModelScope.launch {
             chantierRepository.setChantier(chantier.value!!)
             _navigation.value = GestionNavigation.ENREGISTREMENT_CHANTIER

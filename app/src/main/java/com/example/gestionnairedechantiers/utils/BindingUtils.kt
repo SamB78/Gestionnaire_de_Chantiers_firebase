@@ -21,9 +21,7 @@ import com.example.gestionnairedechantiers.entities.Personnel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -49,23 +47,30 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
         )
 //                .error(R.drawable.ic_broken_image))
         .into(imgView)
-    Timber.i("TEST PASSAGE GLIDE")
 }
 
-@BindingAdapter("imageUrl2")
-fun bindImage2(imgView: ImageView, imgUrl: String?) {
-    imgView.visibility = View.INVISIBLE
-    imgUrl?.let {
-        imgView.visibility = View.VISIBLE
+@BindingAdapter(value=["imageUrl2", "typeEntity"], requireAll = false)
+fun bindImage2(imgView: ImageView, imgUrl: String?, typeEntity: TypeEntity?) {
+
+    Timber.i("typeEntity: $typeEntity")
+
+    val placeholder: Int = when(typeEntity) {
+        TypeEntity.MATERIEL -> R.drawable.ic_baseline_handyman_24
+        TypeEntity.PERSONNEL -> R.drawable.ic_person_black_24dp
+        TypeEntity.CHANTIER -> R.drawable.ic_business_black_24dp
+        else -> {
+            Timber.e("Error typeEntity")
+            R.drawable.ic_person_black_24dp
+        }
+    }
+
         Glide.with(imgView.context)
             .load(imgUrl)
             .apply(
                 RequestOptions()
-                    .placeholder(R.drawable.ic_person_black_24dp)
+                    .placeholder(placeholder)
             )
             .into(imgView)
-        Timber.i("TEST PASSAGE GLIDE")
-    }
 }
 
 @BindingAdapter("imageUrlItemViewPersonnel")
@@ -79,7 +84,6 @@ fun bindImageItemViewPersonnel(imgView: ImageView, imgUrl: String?) {
                 .placeholder(R.drawable.ic_person_black_24dp)
         )
         .into(imgView)
-    Timber.i("TEST PASSAGE GLIDE")
 }
 
 
@@ -96,13 +100,23 @@ fun activateButtonDelete(imgButton: ImageButton, imgUrl: String?) {
 @BindingAdapter("isButtonAddPictureVisible")
 fun activateButtonAddPicture(imgButton: Button, imgUrl: String?) {
 
-    imgButton.visibility = View.VISIBLE
-
-    imgUrl?.let {
+    if(imgUrl.isNullOrEmpty()){
+        imgButton.visibility = View.VISIBLE
+    }else{
         imgButton.visibility = View.GONE
     }
 }
 
+
+@BindingAdapter("isPictureVisible")
+fun showPicture(view: ConstraintLayout, imgUrl: String?) {
+
+    if(imgUrl.isNullOrEmpty()){
+        view.visibility = View.GONE
+    }else{
+        view.visibility = View.VISIBLE
+    }
+}
 
 @BindingAdapter("personnelRole")
 fun setTextDependingPersonnelRole(textView: TextView, personnel: Personnel) {

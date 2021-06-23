@@ -9,6 +9,10 @@
             name="item"
             type="com.example.gestionnairedechantiers.entities.Chantier" />
 
+        <variable
+            name="typeEntity"
+            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+
 
     </data>
 
@@ -78,7 +82,8 @@
 
             <ImageView
                 android:id="@+id/imageViewPersonnel"
-                imageUrlItemViewPersonnel="@{item.chefChantier.urlPicturePersonnel}"
+                imageUrl2="@{item.urlPictureChantier}"
+                typeEntity="@{typeEntity.CHANTIER}"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"

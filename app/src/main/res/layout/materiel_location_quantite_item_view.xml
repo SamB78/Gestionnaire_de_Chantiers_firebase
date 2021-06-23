@@ -15,6 +15,7 @@
             name="viewModel"
             type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
 
+
     </data>
 
     <com.google.android.material.card.MaterialCardView

@@ -23,6 +23,8 @@ class GestionPersonnelViewModel : ViewModel() {
         EDIT_PERSONNEL
     }
 
+    val typeData = "personnel"
+
     private var _navigationPersonnel = MutableLiveData<NavigationMenu>()
     val navigationPersonnel: LiveData<NavigationMenu>
         get() = this._navigationPersonnel
@@ -38,8 +40,8 @@ class GestionPersonnelViewModel : ViewModel() {
     val listePersonnel: LiveData<List<Personnel>>
         get() = this._listePersonnel
 
-    var personnel = MutableLiveData<Personnel>(Personnel())
-    var imagePersonnel = MutableLiveData<String>()
+    var personnel = MutableLiveData<Personnel?>(Personnel())
+    var imagePersonnel = MutableLiveData<String?>(null)
 
     init {
         getAllPersonnel()
@@ -61,6 +63,13 @@ class GestionPersonnelViewModel : ViewModel() {
         _navigationPersonnel.value =
             NavigationMenu.EDIT_PERSONNEL
         this.personnel.value = personnel.copy()
+
+        if(this.personnel.value!!.urlPicturePersonnel.isNullOrEmpty()){
+            imagePersonnel.value = null
+        }else{
+            imagePersonnel.value = this.personnel.value!!.urlPicturePersonnel
+        }
+
     }
 
     fun onCheckedSwitchAdministrateurChanged(check: Boolean) {
@@ -78,6 +87,7 @@ class GestionPersonnelViewModel : ViewModel() {
     fun onClickButtonCreationOrModificationEnded() {
 
         Timber.i("personnel ready to save in DB = ${personnel.value?.prenom}")
+        personnel.value?.urlPicturePersonnel = imagePersonnel.value
         if (personnel.value?.documentId == null) sendNewDataToDB()
         else updateDataInDB()
 
@@ -103,12 +113,11 @@ class GestionPersonnelViewModel : ViewModel() {
     }
 
     fun ajoutPathImage(imagePath: String) {
-        personnel.value?.urlPicturePersonnel = imagePath
         imagePersonnel.value = imagePath
     }
 
     fun onClickDeletePicture(){
-        personnel.value?.urlPicturePersonnel = ""
+        personnel.value?.urlPicturePersonnel = null
         imagePersonnel.value = ""
     }
 

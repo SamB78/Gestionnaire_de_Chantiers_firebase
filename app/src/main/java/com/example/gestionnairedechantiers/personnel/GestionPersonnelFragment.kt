@@ -60,7 +60,8 @@ class GestionPersonnelFragment : Fragment() {
                     selectImage()
                     viewModel.onBoutonClicked()
                 }
-                GestionPersonnelViewModel.NavigationMenu.EN_ATTENTE ->{}
+                GestionPersonnelViewModel.NavigationMenu.EN_ATTENTE -> {
+                }
                 else -> Timber.e("ERROR NAVIGATION GESTIONPERSONNELFRAGMENT $navigation")
 
             }

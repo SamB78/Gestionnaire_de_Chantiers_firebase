@@ -26,8 +26,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 class GestionMaterielFragment : Fragment() {
