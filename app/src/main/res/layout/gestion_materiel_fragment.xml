@@ -7,10 +7,10 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.materiel.GestionMaterielViewModel" />
+            type="com.techphone78.gestionnairedechantiers.materiel.GestionMaterielViewModel" />
         <variable
             name="typeEntity"
-            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+            type="com.techphone78.gestionnairedechantiers.utils.TypeEntity" />
 
     </data>
 

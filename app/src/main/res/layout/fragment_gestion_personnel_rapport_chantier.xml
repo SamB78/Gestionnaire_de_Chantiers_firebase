@@ -7,11 +7,11 @@
 
         <import type="android.view.View" />
 
-        <import type="com.example.gestionnairedechantiers.R" />
+        <import type="com.techphone78.gestionnairedechantiers.R" />
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

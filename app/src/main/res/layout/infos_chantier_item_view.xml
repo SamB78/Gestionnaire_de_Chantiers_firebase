@@ -7,7 +7,7 @@
 
         <variable
             name="chantier"
-            type="com.example.gestionnairedechantiers.entities.Chantier" />
+            type="com.techphone78.gestionnairedechantiers.entities.Chantier" />
 
     </data>
 

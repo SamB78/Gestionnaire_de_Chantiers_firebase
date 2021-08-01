@@ -9,11 +9,11 @@
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.personnel.GestionPersonnelViewModel" />
+            type="com.techphone78.gestionnairedechantiers.personnel.GestionPersonnelViewModel" />
 
         <variable
             name="typeEntity"
-            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+            type="com.techphone78.gestionnairedechantiers.utils.TypeEntity" />
 
     </data>
 

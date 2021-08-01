@@ -9,11 +9,11 @@
 
         <variable
             name="item"
-            type="com.example.gestionnairedechantiers.entities.MaterielLocation" />
+            type="com.techphone78.gestionnairedechantiers.entities.MaterielLocation" />
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
 
 
     </data>

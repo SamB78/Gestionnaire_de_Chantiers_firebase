@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "246632688652-789t29fc9f9u5ko59tps1gdfjkh9kg4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gestionnairedechantiers",
+            "certificate_hash": "52fcf06f4fe9506f8c23737f6a4ea064a46d2e97"
+          }
+        },
+        {
+          "client_id": "246632688652-85rpkluoigfb4qjbpc6ubqlga6p7e19e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gestionnairedechantiers",
+            "certificate_hash": "3d2c5e9ca6bfc5e638a057ecb25b17cef3eb7722"
+          }
+        },
+        {
           "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -40,6 +56,35 @@
         "mobilesdk_app_id": "1:246632688652:android:f8bb3890fd8f5374efd229",
         "android_client_info": {
           "package_name": "com.example.gestionnairerapportdechantier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC22hvzDKyGBfAiLuyf-u86FucXA8GEYwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246632688652-kp2lv4ls41vr0ioi31u2suac7ff0sp5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246632688652:android:b86360e60d30fc91efd229",
+        "android_client_info": {
+          "package_name": "com.techphone78.gestionnairedechantiers"
         }
       },
       "oauth_client": [

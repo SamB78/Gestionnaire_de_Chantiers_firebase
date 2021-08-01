@@ -7,11 +7,11 @@
 
         <variable
             name="item"
-            type="com.example.gestionnairedechantiers.entities.Chantier" />
+            type="com.techphone78.gestionnairedechantiers.entities.Chantier" />
 
         <variable
             name="typeEntity"
-            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+            type="com.techphone78.gestionnairedechantiers.utils.TypeEntity" />
 
 
     </data>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listeChantiersFragment"
-        android:name="com.example.gestionnairedechantiers.chantiers.listeChantiers.ListeChantiersFragment"
+        android:name="com.techphone78.gestionnairedechantiers.chantiers.listeChantiers.ListeChantiersFragment"
         android:label="Liste des chantiers"
         tools:layout="@layout/liste_chantiers_fragment">
         <action
@@ -25,7 +25,7 @@
         app:startDestination="@id/listePersonnelFragment">
         <fragment
             android:id="@+id/listePersonnelFragment"
-            android:name="com.example.gestionnairedechantiers.personnel.ListePersonnelFragment"
+            android:name="com.techphone78.gestionnairedechantiers.personnel.ListePersonnelFragment"
             android:label="Liste Personnel"
             tools:layout="@layout/liste_personnel_fragment">
             <action
@@ -34,7 +34,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionPersonnelFragment"
-            android:name="com.example.gestionnairedechantiers.personnel.GestionPersonnelFragment"
+            android:name="com.techphone78.gestionnairedechantiers.personnel.GestionPersonnelFragment"
             android:label="Gestion Personnel"
             tools:layout="@layout/gestion_personnel_fragment">
             <action
@@ -56,7 +56,7 @@
         app:startDestination="@id/listeMaterielFragment">
         <fragment
             android:id="@+id/gestionMaterielFragment"
-            android:name="com.example.gestionnairedechantiers.materiel.GestionMaterielFragment"
+            android:name="com.techphone78.gestionnairedechantiers.materiel.GestionMaterielFragment"
             android:label="Gestion Materiel"
             tools:layout="@layout/gestion_materiel_fragment">
             <action
@@ -70,7 +70,7 @@
             app:popUpToInclusive="true" />
         <fragment
             android:id="@+id/listeMaterielFragment"
-            android:name="com.example.gestionnairedechantiers.materiel.ListeMaterielFragment"
+            android:name="com.techphone78.gestionnairedechantiers.materiel.ListeMaterielFragment"
             android:label="Liste materiel"
             tools:layout="@layout/liste_materiel_fragment">
             <action
@@ -87,7 +87,7 @@
         app:startDestination="@id/gestionChantier1Fragment">
         <fragment
             android:id="@+id/gestionChantier1Fragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier1Fragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier1Fragment"
             android:label="Gestion chantier"
             tools:layout="@layout/fragment_gestion_chantier1">
             <action
@@ -104,7 +104,7 @@
             app:popUpToInclusive="true" />
         <fragment
             android:id="@+id/gestionChantier2Fragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier2Fragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier2Fragment"
             android:label="Gestion chantier"
             tools:layout="@layout/fragment_gestion_chantier2">
             <action
@@ -113,7 +113,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionChantier3Fragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier3Fragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier3Fragment"
             android:label="Gestion chantier"
             tools:layout="@layout/fragment_gestion_chantier3">
             <action
@@ -122,7 +122,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionChantier4Fragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier4Fragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantier4Fragment"
             android:label="Gestion chantier"
             tools:layout="@layout/fragment_gestion_chantier4">
             <action
@@ -131,7 +131,7 @@
         </fragment>
         <fragment
             android:id="@+id/resumeGestionChantierFragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.gestionChantiers.ResumeGestionChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.ResumeGestionChantierFragment"
             android:label="Résumé gestion chantier"
             tools:layout="@layout/fragment_resume_gestion_chantier">
             <action
@@ -153,7 +153,7 @@
         app:startDestination="@id/affichageChantierFragment">
         <fragment
             android:id="@+id/affichageChantierFragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.affichageChantier.AffichageChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.affichageChantier.AffichageChantierFragment"
             android:label="Votre chantier"
             tools:layout="@layout/affichage_chantier_fragment">
             <argument
@@ -162,12 +162,12 @@
         </fragment>
         <fragment
             android:id="@+id/detailChantierFragment"
-            android:name="com.example.gestionnairedechantiers.chantiers.affichageChantier.DetailChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.chantiers.affichageChantier.DetailChantierFragment"
             android:label="Détails chantier"
             tools:layout="@layout/fragment_detail_chantier" />
         <fragment
             android:id="@+id/listeRapportsChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.listeRapportsChantier.ListeRapportsChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.listeRapportsChantier.ListeRapportsChantierFragment"
             android:label="Rapports de chantier"
             tools:layout="@layout/fragment_liste_rapports_chantier" />
         <action
@@ -194,7 +194,7 @@
         app:startDestination="@id/gestionRapportChantierFragment">
         <fragment
             android:id="@+id/gestionRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierFragment"
             android:label="Rapport de chantier"
             tools:layout="@layout/gestion_rapport_chantier_fragment">
             <argument
@@ -236,7 +236,7 @@
             app:popUpToInclusive="true" />
         <fragment
             android:id="@+id/gestionPersonnelRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionPersonnel.GestionPersonnelRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionPersonnel.GestionPersonnelRapportChantierFragment"
             android:label="Gestion du personnel"
             tools:layout="@layout/fragment_gestion_personnel_rapport_chantier">
             <action
@@ -249,7 +249,7 @@
         </fragment>
         <fragment
             android:id="@+id/ajoutPersonnelFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionPersonnel.AjoutPersonnelFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionPersonnel.AjoutPersonnelFragment"
             android:label="Ajouter du personnel"
             tools:layout="@layout/fragment_ajout_personnel">
             <action
@@ -259,7 +259,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionMaterielRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriel.GestionMaterielRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriel.GestionMaterielRapportChantierFragment"
             android:label="Gestion du materiel"
             tools:layout="@layout/fragment_gestion_materiel_rapport_chantier">
             <action
@@ -272,7 +272,7 @@
         </fragment>
         <fragment
             android:id="@+id/ajoutMaterielFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriel.AjoutMaterielFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriel.AjoutMaterielFragment"
             android:label="Ajouter du materiel"
             tools:layout="@layout/fragment_ajout_materiel">
             <action
@@ -282,7 +282,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionMaterielLocationRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMaterielLocation.GestionMaterielLocationRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMaterielLocation.GestionMaterielLocationRapportChantierFragment"
             android:label="Gestion materiel location"
             tools:layout="@layout/fragment_gestion_materiel_location_rapport_chantier" >
             <action
@@ -292,7 +292,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionMateriauxRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriaux.GestionMateriauxRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionMateriaux.GestionMateriauxRapportChantierFragment"
             android:label="Gestion materiaux"
             tools:layout="@layout/fragment_gestion_materiaux_rapport_chantier" >
             <action
@@ -302,7 +302,7 @@
         </fragment>
         <fragment
             android:id="@+id/gestionSousTraitanceRapportChantierFragment"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionSousTraitance.GestionSousTraitanceRapportChantierFragment"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionSousTraitance.GestionSousTraitanceRapportChantierFragment"
             android:label="Gestion Sous-Traitance"
             tools:layout="@layout/fragment_gestion_sous_traitance_rapport_chantier" >
             <action
@@ -313,7 +313,7 @@
         <action android:id="@+id/action_global_gestionRapportChantierFragment" app:destination="@id/gestionRapportChantierFragment"/>
         <fragment
             android:id="@+id/gestionObservationsRapportChantier"
-            android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.observations.GestionObservationsRapportChantier"
+            android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.observations.GestionObservationsRapportChantier"
             android:label="Observations"
             tools:layout="@layout/fragment_gestion_observations_rapport_chantier" >
             <action
@@ -325,7 +325,7 @@
             app:startDestination="@id/autresInformationsFragment">
             <fragment
                 android:id="@+id/autresInformationsFragment"
-                android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.autresInformations.AutresInformationsFragment"
+                android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.autresInformations.AutresInformationsFragment"
                 android:label="Autres informations"
                 tools:layout="@layout/fragment_autres_informations">
                 <action
@@ -338,7 +338,7 @@
             </fragment>
             <fragment
                 android:id="@+id/autresInformations2Fragment"
-                android:name="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.autresInformations.AutresInformations2Fragment"
+                android:name="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.autresInformations.AutresInformations2Fragment"
                 android:label="Autres informations"
                 tools:layout="@layout/fragment_autres_informations2"/>
             <action
@@ -349,7 +349,7 @@
     </navigation>
     <fragment
         android:id="@+id/affichageDetailsRapportChantierFragment"
-        android:name="com.example.gestionnairedechantiers.rapportChantier.affichageRapportHebdo.AffichageDetailsRapportChantierFragment"
+        android:name="com.techphone78.gestionnairedechantiers.rapportChantier.affichageRapportHebdo.AffichageDetailsRapportChantierFragment"
         android:label="Details Rapport de chantier"
         tools:layout="@layout/fragment_affichage_details_rapport_chantier" >
         <action
@@ -370,7 +370,7 @@
     </fragment>
     <fragment
         android:id="@+id/authFragment"
-        android:name="com.example.gestionnairedechantiers.auth.AuthFragment"
+        android:name="com.techphone78.gestionnairedechantiers.auth.AuthFragment"
         android:label="Authentification"
         tools:layout="@layout/fragment_auth" >
         <action

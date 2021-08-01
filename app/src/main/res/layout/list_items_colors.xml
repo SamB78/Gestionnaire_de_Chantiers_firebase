@@ -3,7 +3,7 @@
     <data>
         <variable
             name="item"
-            type="com.example.gestionnairedechantiers.entities.Couleur" />
+            type="com.techphone78.gestionnairedechantiers.entities.Couleur" />
 
     </data>
 

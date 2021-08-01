@@ -7,15 +7,15 @@
 
         <variable
             name="item"
-            type="com.example.gestionnairedechantiers.entities.Materiel" />
+            type="com.techphone78.gestionnairedechantiers.entities.Materiel" />
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel" />
 
         <variable
             name="typeEntity"
-            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+            type="com.techphone78.gestionnairedechantiers.utils.TypeEntity" />
 
     </data>
 

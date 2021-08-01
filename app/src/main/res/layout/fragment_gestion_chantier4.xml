@@ -6,11 +6,11 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
 
         <variable
             name="typeEntity"
-            type="com.example.gestionnairedechantiers.utils.TypeEntity" />
+            type="com.techphone78.gestionnairedechantiers.utils.TypeEntity" />
 
     </data>
 

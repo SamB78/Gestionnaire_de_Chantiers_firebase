@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.auth.AuthViewModel" />
+            type="com.techphone78.gestionnairedechantiers.auth.AuthViewModel" />
 
     </data>
 

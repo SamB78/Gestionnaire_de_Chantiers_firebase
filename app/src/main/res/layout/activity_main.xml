@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.MainActivityViewModel" />
+            type="com.techphone78.gestionnairedechantiers.MainActivityViewModel" />
 
     </data>
 

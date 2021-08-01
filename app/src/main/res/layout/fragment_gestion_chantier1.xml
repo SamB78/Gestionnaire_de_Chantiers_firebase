@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
 
     </data>
 

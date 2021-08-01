@@ -15,7 +15,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.gestionnairedechantiers"
+        applicationId "com.techphone78.gestionnairedechantiers"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1

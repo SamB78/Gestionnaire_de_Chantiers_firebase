@@ -7,11 +7,11 @@
 
         <variable
             name="item"
-            type="com.example.gestionnairedechantiers.entities.RapportChantier" />
+            type="com.techphone78.gestionnairedechantiers.entities.RapportChantier" />
 
         <variable
             name="viewModel"
-            type="com.example.gestionnairedechantiers.chantiers.affichageChantier.AffichageChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.chantiers.affichageChantier.AffichageChantierViewModel" />
 
     </data>
 
