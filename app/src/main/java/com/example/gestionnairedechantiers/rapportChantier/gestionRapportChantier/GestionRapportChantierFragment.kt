@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.example.gestionnairedechantiers.MainActivity
 import com.example.gestionnairedechantiers.R
 import com.example.gestionnairedechantiers.databinding.GestionRapportChantierFragmentBinding
+import com.example.gestionnairedechantiers.utils.hideKeyboard
 import timber.log.Timber
 
 class GestionRapportChantierFragment : Fragment() {
@@ -85,6 +87,7 @@ class GestionRapportChantierFragment : Fragment() {
     }
 
     override fun onResume() {
+        hideKeyboard(activity as MainActivity)
         viewModel.onResumeGestionChantier()
         super.onResume()
     }

@@ -10,15 +10,31 @@ class MaterielRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("materiel")
     private val imagesStorage = ImagesStorage()
+    private val colorsRepository = CouleurRepository()
 
     suspend fun insertMateriel(materiel: Materiel) {
         try {
 
-            materiel.urlPictureMateriel.let {
+            materiel.urlPictureMateriel?.let {
                 materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
             }
 
-            db.add(materiel).await()
+
+            val data = hashMapOf(
+                "marque" to materiel.marque,
+                "modele" to materiel.modele,
+                "numeroSerie" to materiel.numeroSerie,
+                "type" to materiel.type,
+                "enService" to materiel.enService,
+                "materielEntretien" to materiel.materielEntretien,
+                "materielChantier" to materiel.materielChantier,
+                "miseEnCirculation" to materiel.miseEnCirculation,
+                "urlPictureMateriel" to materiel.urlPictureMateriel,
+                "materielUnique" to materiel.materielUnique,
+                "couleur" to materiel.couleur?.colorName
+            )
+
+            db.add(data).await()
             Timber.i("Materiel envoyé Firebase")
         } catch (e: Exception) {
             Timber.e("Error insert Materiel Firebase")
@@ -31,12 +47,15 @@ class MaterielRepository {
     suspend fun getAllMateriel(): List<Materiel> {
 
         val list = mutableListOf<Materiel>()
+        val colors = colorsRepository.getAllColors()
         val result = db.get()
             .await()
-        Timber.i("Result:")
         for (materiel in result) {
-            Timber.i("$materiel")
-            list.add(materiel.toObject(Materiel::class.java))
+            val idCouleur = materiel.get("couleur") as String?
+            val couleur = colors.find { it.colorName == idCouleur }
+            val materielConvertToObject = materiel.toObject(Materiel::class.java)
+            materielConvertToObject.couleur = couleur
+            list.add(materielConvertToObject)
         }
         return list
     }
@@ -44,11 +63,26 @@ class MaterielRepository {
     suspend fun updateMateriel(materiel: Materiel) {
         try {
 
-            materiel.urlPictureMateriel.let {
+            materiel.urlPictureMateriel?.let {
                 materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
             }
+
+            val data = hashMapOf(
+                "marque" to materiel.marque,
+                "modele" to materiel.modele,
+                "numeroSerie" to materiel.numeroSerie,
+                "type" to materiel.type,
+                "enService" to materiel.enService,
+                "materielEntretien" to materiel.materielEntretien,
+                "materielChantier" to materiel.materielChantier,
+                "miseEnCirculation" to materiel.miseEnCirculation,
+                "urlPictureMateriel" to materiel.urlPictureMateriel,
+                "materielUnique" to materiel.materielUnique,
+                "couleur" to materiel.couleur?.colorName
+            )
+
             db.document(materiel.documentId!!)
-                .set(materiel)
+                .set(data)
                 .await()
             Timber.i("Materiel Updated with success")
         } catch (e: Exception) {
@@ -57,8 +91,18 @@ class MaterielRepository {
     }
 
     suspend fun getMaterielById(id: String): Materiel? {
-        return db.document(id).get().await()
-            .toObject(Materiel::class.java)
+        val result = db.document(id).get().await()
+        if (result != null) {
+            val materiel = result.toObject(Materiel::class.java)
+
+            val idCouleur = result.get("couleur") as String?
+            idCouleur?.let {
+                materiel?.couleur = colorsRepository.getCouleurById(idCouleur)
+            }
+            return materiel
+        }
+        return null
+
     }
 
 

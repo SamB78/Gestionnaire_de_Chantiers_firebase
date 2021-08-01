@@ -44,7 +44,6 @@
                 android:layout_marginStart="8dp"
                 android:text="@{item.marque}"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/adresse"
                 app:layout_constraintStart_toEndOf="@+id/imageViewPersonnel"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Renault" />
@@ -56,6 +55,7 @@
                 android:layout_marginStart="4dp"
                 android:text="@{item.modele}"
                 android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@+id/view2"
                 app:layout_constraintStart_toEndOf="@+id/numChantier"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Clio" />
@@ -81,6 +81,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
+
+            <View
+                android:id="@+id/view2"
+                backgroundColor="@{item.couleur.colorCode}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/codePostal"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

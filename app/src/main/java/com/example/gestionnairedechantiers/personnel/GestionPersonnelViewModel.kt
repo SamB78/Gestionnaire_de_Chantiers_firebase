@@ -40,6 +40,14 @@ class GestionPersonnelViewModel : ViewModel() {
     val listePersonnel: LiveData<List<Personnel>>
         get() = this._listePersonnel
 
+    private val _listePersonnelFiltered = MutableLiveData<List<Personnel>>(emptyList())
+    val listePersonnelFiltered: LiveData<List<Personnel>>
+        get() = this._listePersonnelFiltered
+
+    var searchFilter = MutableLiveData("")
+    var enServiceFilter = MutableLiveData(true)
+    var archiveFilter = MutableLiveData(false)
+
     var personnel = MutableLiveData<Personnel?>(Personnel())
     var imagePersonnel = MutableLiveData<String?>(null)
 
@@ -50,6 +58,7 @@ class GestionPersonnelViewModel : ViewModel() {
     private fun getAllPersonnel(){
         viewModelScope.launch {
             _listePersonnel.value = personnelRepository.getAllPersonnel()
+            _listePersonnelFiltered.value = listePersonnel.value
         }
     }
 
@@ -70,6 +79,10 @@ class GestionPersonnelViewModel : ViewModel() {
             imagePersonnel.value = this.personnel.value!!.urlPicturePersonnel
         }
 
+    }
+
+    fun onChckedSwitchEnserviceChanged(check: Boolean) {
+        personnel.value?.enService = check
     }
 
     fun onCheckedSwitchAdministrateurChanged(check: Boolean) {
@@ -127,6 +140,38 @@ class GestionPersonnelViewModel : ViewModel() {
 
     fun onBoutonClicked() {
         _navigationPersonnel.value = NavigationMenu.EN_ATTENTE
+    }
+
+    fun updateSearchFilter(text: String?){
+        searchFilter.value = text
+        filterListPersonnel()
+    }
+
+    fun filterListPersonnel(){
+        _listePersonnelFiltered.value = emptyList()
+        val listeOriginalePersonnel: MutableList<Personnel> = mutableListOf()
+        val mutableList = mutableListOf<Personnel>()
+
+        if(enServiceFilter.value!! && archiveFilter.value!!){
+            listeOriginalePersonnel.addAll(listePersonnel.value!!)
+        }else if(enServiceFilter.value!! && !archiveFilter.value!!){
+            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { it.enService})
+        }else if(!enServiceFilter.value!! && archiveFilter.value!!){
+            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { !it.enService })
+        }
+
+        if (!searchFilter.value.isNullOrEmpty()) {
+            listeOriginalePersonnel.filter {
+                it.nom.contains(searchFilter.value!!, true)
+                        ||
+                        it.prenom.contains(searchFilter.value!!, true)
+            }.forEach {
+                mutableList.add(it)
+            }
+        } else {
+            mutableList.addAll(listeOriginalePersonnel)
+        }
+        _listePersonnelFiltered.value = mutableList
     }
 
     // onCleared()

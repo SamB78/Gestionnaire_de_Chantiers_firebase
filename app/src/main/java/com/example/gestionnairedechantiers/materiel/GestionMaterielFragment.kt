@@ -44,6 +44,7 @@ class GestionMaterielFragment : Fragment() {
         binding.viewModel = viewModel
         binding.executePendingBindings()
         binding.lifecycleOwner = this
+        viewModel.selectedColorObserver.observe(viewLifecycleOwner, {})
 
         // Create the date picker builder and set the title
         val builder = MaterialDatePicker.Builder.datePicker()

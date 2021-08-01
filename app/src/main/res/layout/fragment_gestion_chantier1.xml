@@ -125,6 +125,27 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/selectionColor"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                    android:layout_width="280dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:hint="Couleur équipe"
+                    app:layout_constraintEnd_toEndOf="@+id/editTextNomChantier"
+                    app:layout_constraintStart_toStartOf="@+id/editTextNomChantier"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextNomChantier">
+
+                    <AutoCompleteTextView
+                        colorsAdapter="@{viewModel.listCouleurs}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.selectedColor}"
+                        android:inputType="none"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/editTextRue"
@@ -133,9 +154,9 @@
                     android:layout_marginTop="24dp"
                     android:ems="10"
                     android:hint="Rue"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextNomChantier"
-                    app:layout_constraintStart_toStartOf="@+id/editTextNomChantier"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextNomChantier">
+                    app:layout_constraintEnd_toEndOf="@+id/selectionColor"
+                    app:layout_constraintStart_toStartOf="@+id/selectionColor"
+                    app:layout_constraintTop_toBottomOf="@+id/selectionColor">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"

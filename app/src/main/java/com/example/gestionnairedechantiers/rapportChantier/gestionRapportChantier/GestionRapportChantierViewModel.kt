@@ -128,7 +128,8 @@ class GestionRapportChantierViewModel(
                     _isLoading.value = true
                     _chantier.value = chantierRepository.getChantierById(idChantier)
 
-                    idRapportChantier = rapportChantierRepository.getRapportChantierIdByDate(Date.from(date))
+                    idRapportChantier =
+                        rapportChantierRepository.getRapportChantierIdByDate(Date.from(date))
 
                     if (idRapportChantier != null) {
                         Timber.i("idRapportChantier = $idRapportChantier")
@@ -271,6 +272,8 @@ class GestionRapportChantierViewModel(
     /////////////////////// AJOUT PERSONNEL ////////////////////////////////////////
 
     var listePersonnelAjoutable = MutableLiveData<MutableList<Personnel>>(mutableListOf())
+    var listePersonnelAjoutableFiltered = MutableLiveData<MutableList<Personnel>>(mutableListOf())
+    var searchFilterPersonnel = MutableLiveData<String?>("")
 
     private fun initializeDataPersonnelAjoutable() {
 
@@ -287,15 +290,45 @@ class GestionRapportChantierViewModel(
                     }
                 listePersonnelAjoutable.value!!.add(personnel)
             }
-            listePersonnelAjoutable.value = listePersonnelAjoutable.value
+            listePersonnelAjoutableFiltered.value = listePersonnelAjoutable.value
+
             _isLoading.value = false
         }
+
+    }
+
+    fun updateSearchFilterPersonnel(text: String?) {
+        text?.let{
+            searchFilterPersonnel.value = it
+        }
+        filterListPersonnel()
+    }
+
+    private fun filterListPersonnel() {
+        listePersonnelAjoutableFiltered.value = mutableListOf()
+        val listeOriginalePersonnel: MutableList<Personnel> = mutableListOf()
+        val mutableList = mutableListOf<Personnel>()
+
+        listeOriginalePersonnel.addAll(listePersonnelAjoutable.value!!)
+
+        if (!searchFilterPersonnel.value.isNullOrEmpty()) {
+            listeOriginalePersonnel.filter {
+                it.nom.contains(searchFilterPersonnel.value!!, true)
+                        ||
+                        it.prenom.contains(searchFilterPersonnel.value!!, true)
+            }.forEach {
+                mutableList.add(it)
+            }
+        } else {
+            mutableList.addAll(listeOriginalePersonnel)
+        }
+        listePersonnelAjoutableFiltered.value = mutableList
     }
 
     fun onClickValidationAjoutPersonnel() {
         val completeList = mutableListOf<Personnel>()
         completeList.addAll(rapportChantier.value!!.listePersonnel)
-        listePersonnelAjoutable.value!!.filter { it.isChecked }.forEach {
+        listePersonnelAjoutableFiltered.value!!.filter { it.isChecked }.forEach {
             it.isChecked = false
             completeList.add(it)
         }
@@ -304,13 +337,14 @@ class GestionRapportChantierViewModel(
     }
 
     fun onClickPersonnel(personnel: Personnel) {
-        listePersonnelAjoutable.value!!.find { it.documentId == personnel.documentId }?.isChecked =
+        listePersonnelAjoutableFiltered.value!!.find { it.documentId == personnel.documentId }?.isChecked =
             !personnel.isChecked
-        listePersonnelAjoutable.value = listePersonnelAjoutable.value
+        listePersonnelAjoutableFiltered.value = listePersonnelAjoutableFiltered.value
     }
 
 
     /////////////////////// GESTION MATERIEL ////////////////////////////////////////
+
 
     fun onClickButtonGestionMateriel() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIEL
@@ -380,6 +414,9 @@ class GestionRapportChantierViewModel(
     /////////////////////// AJOUT MATERIEL ////////////////////////////////////////
 
     var listeMaterielAjoutable = MutableLiveData<MutableList<Materiel>>(mutableListOf())
+    var listeMaterielAjoutableFiltered = MutableLiveData<MutableList<Materiel>>(mutableListOf())
+    var searchFilterMateriel = MutableLiveData("")
+    var filterByChantierColor = MutableLiveData(true)
 
     private fun initializeDataMaterielAjoutable() {
 
@@ -396,17 +433,61 @@ class GestionRapportChantierViewModel(
                     }
                 listeMaterielAjoutable.value!!.add(materiel)
             }
-            listeMaterielAjoutable.value = listeMaterielAjoutable.value
-            Timber.i("liste Materiel = ${listeMaterielAjoutable.value}")
+            listeMaterielAjoutableFiltered.value = listeMaterielAjoutable.value
+            filterListMateriel()
 
             _isLoading.value = false
         }
     }
 
+    fun updateSearchFilterMateriel(text: String?) {
+        text?.let {
+            searchFilterMateriel.value = it
+        }
+        filterListMateriel()
+    }
+
+    fun updateSearchFilterMateriel() {
+        filterListMateriel()
+    }
+
+    fun onCheckedSwitchFilterByColor(check: Boolean) {
+        filterByChantierColor.value = check
+    }
+
+    private fun filterListMateriel() {
+        listeMaterielAjoutableFiltered.value = mutableListOf()
+        val listeOriginaleMateriel: MutableList<Materiel> = mutableListOf()
+        val mutableList = mutableListOf<Materiel>()
+
+        if (filterByChantierColor.value!!) {
+            listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!.filter { it.couleur == chantier.value!!.couleur })
+        } else {
+            listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!)
+        }
+
+
+
+        if (!searchFilterMateriel.value.isNullOrEmpty()) {
+            listeOriginaleMateriel.filter {
+                it.marque.contains(searchFilterMateriel.value!!, true)
+                        ||
+                        it.modele.contains(searchFilterMateriel.value!!, true)
+                        ||
+                        it.numeroSerie.contains(searchFilterMateriel.value!!, true)
+            }.forEach {
+                mutableList.add(it)
+            }
+        } else {
+            mutableList.addAll(listeOriginaleMateriel)
+        }
+        listeMaterielAjoutableFiltered.value = mutableList
+    }
+
     fun onClickValidationAjoutMateriel() {
         val completeList = mutableListOf<Materiel>()
         completeList.addAll(rapportChantier.value!!.listeMateriel)
-        listeMaterielAjoutable.value!!.filter { it.isChecked }.forEach {
+        listeMaterielAjoutableFiltered.value!!.filter { it.isChecked }.forEach {
             it.isChecked = false
             completeList.add(it)
         }
@@ -415,9 +496,9 @@ class GestionRapportChantierViewModel(
     }
 
     fun onClickMateriel(materiel: Materiel) {
-        listeMaterielAjoutable.value!!.find { it.documentId == materiel.documentId }?.isChecked =
+        listeMaterielAjoutableFiltered.value!!.find { it.documentId == materiel.documentId }?.isChecked =
             !materiel.isChecked
-        listeMaterielAjoutable.value = listeMaterielAjoutable.value
+        listeMaterielAjoutableFiltered.value = listeMaterielAjoutableFiltered.value
     }
 
     /////////////////////// GESTION MATERIEL LOCATION /////////////////////////////////////

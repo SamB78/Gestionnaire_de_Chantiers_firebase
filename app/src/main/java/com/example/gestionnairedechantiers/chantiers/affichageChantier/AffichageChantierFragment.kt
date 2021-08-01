@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.example.gestionnairedechantiers.GestionChantierNavGraphDirections
+import com.example.gestionnairedechantiers.MainActivity
 import com.example.gestionnairedechantiers.R
 import com.example.gestionnairedechantiers.databinding.AffichageChantierFragmentBinding
 import com.example.gestionnairedechantiers.rapportChantier.listeRapportsChantier.ListeRapportsChantierFragment
+import com.example.gestionnairedechantiers.utils.hideKeyboard
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -120,6 +122,7 @@ class AffichageChantierFragment : Fragment() {
 
     override fun onResume() {
         viewModel.onResumeLoadData()
+        hideKeyboard(activity as MainActivity)
         super.onResume()
     }
 

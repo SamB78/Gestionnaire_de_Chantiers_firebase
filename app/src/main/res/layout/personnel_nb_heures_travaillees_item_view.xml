@@ -43,7 +43,6 @@
                 android:layout_marginStart="8dp"
                 android:text="@{item.prenom}"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/adresse"
                 app:layout_constraintStart_toEndOf="@+id/imageViewPersonnel"
                 app:layout_constraintTop_toTopOf="@+id/imageViewPersonnel"
                 tools:text="Sam" />

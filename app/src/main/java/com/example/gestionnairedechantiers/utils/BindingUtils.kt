@@ -1,6 +1,7 @@
 package com.example.gestionnairedechantiers.utils
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gestionnairedechantiers.R
+import com.example.gestionnairedechantiers.entities.Couleur
 import com.example.gestionnairedechantiers.entities.Personnel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
@@ -49,12 +51,12 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
         .into(imgView)
 }
 
-@BindingAdapter(value=["imageUrl2", "typeEntity"], requireAll = false)
+@BindingAdapter(value = ["imageUrl2", "typeEntity"], requireAll = false)
 fun bindImage2(imgView: ImageView, imgUrl: String?, typeEntity: TypeEntity?) {
 
     Timber.i("typeEntity: $typeEntity")
 
-    val placeholder: Int = when(typeEntity) {
+    val placeholder: Int = when (typeEntity) {
         TypeEntity.MATERIEL -> R.drawable.ic_baseline_handyman_24
         TypeEntity.PERSONNEL -> R.drawable.ic_person_black_24dp
         TypeEntity.CHANTIER -> R.drawable.ic_business_black_24dp
@@ -64,13 +66,13 @@ fun bindImage2(imgView: ImageView, imgUrl: String?, typeEntity: TypeEntity?) {
         }
     }
 
-        Glide.with(imgView.context)
-            .load(imgUrl)
-            .apply(
-                RequestOptions()
-                    .placeholder(placeholder)
-            )
-            .into(imgView)
+    Glide.with(imgView.context)
+        .load(imgUrl)
+        .apply(
+            RequestOptions()
+                .placeholder(placeholder)
+        )
+        .into(imgView)
 }
 
 @BindingAdapter("imageUrlItemViewPersonnel")
@@ -100,9 +102,9 @@ fun activateButtonDelete(imgButton: ImageButton, imgUrl: String?) {
 @BindingAdapter("isButtonAddPictureVisible")
 fun activateButtonAddPicture(imgButton: Button, imgUrl: String?) {
 
-    if(imgUrl.isNullOrEmpty()){
+    if (imgUrl.isNullOrEmpty()) {
         imgButton.visibility = View.VISIBLE
-    }else{
+    } else {
         imgButton.visibility = View.GONE
     }
 }
@@ -111,9 +113,9 @@ fun activateButtonAddPicture(imgButton: Button, imgUrl: String?) {
 @BindingAdapter("isPictureVisible")
 fun showPicture(view: ConstraintLayout, imgUrl: String?) {
 
-    if(imgUrl.isNullOrEmpty()){
+    if (imgUrl.isNullOrEmpty()) {
         view.visibility = View.GONE
-    }else{
+    } else {
         view.visibility = View.VISIBLE
     }
 }
@@ -298,7 +300,7 @@ fun convertDateToTexView(textView: TextView, date: Instant?) {
 //    val sdf = DateTimeFormatter.ofPattern(FormatStyle.SHORT, Locale.FRANCE)
     val sdf = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
         .withLocale(Locale.FRANCE)
-        .withZone( ZoneId.systemDefault())
+        .withZone(ZoneId.systemDefault())
 
     textView.text = date?.let { sdf.format(date) }
 }
@@ -337,21 +339,41 @@ fun dpToPx(dp: Int): Int {
 }
 
 @BindingAdapter("setGridLayout")
-fun setGridLayout(recyclerView: RecyclerView, value: Int){
+fun setGridLayout(recyclerView: RecyclerView, value: Int) {
     val manager = GridLayoutManager(recyclerView.context, value, GridLayoutManager.VERTICAL, false)
     recyclerView.layoutManager = manager
 }
 
 
 @BindingAdapter("typeChantier")
-fun setTextTypeChantier(textView: TextView, value: Int){
-    if(value == 1) textView.text = "CHANTIER"
+fun setTextTypeChantier(textView: TextView, value: Int) {
+    if (value == 1) textView.text = "CHANTIER"
     else textView.text = "ENTRETIEN"
 }
 
 
 @BindingAdapter("adapter")
-fun setAdapter(autoCompleteTextView: AutoCompleteTextView, items: List<String>){
+fun setAdapter(autoCompleteTextView: AutoCompleteTextView, items: List<String>) {
     val adapter = ArrayAdapter(autoCompleteTextView.context, R.layout.list_item, items)
     autoCompleteTextView.setAdapter(adapter)
+}
+
+@BindingAdapter("colorsAdapter")
+fun setCouleursAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?) {
+    colors?.let {
+        val items = mutableListOf<String>()
+        for (couleur in it) {
+            items.add(couleur.colorName!!)
+        }
+        val adapter = ArrayAdapter(autoCompleteTextView.context, R.layout.list_items_colors, items)
+        autoCompleteTextView.setAdapter(adapter)
+    }
+}
+
+
+@BindingAdapter("backgroundColor")
+fun setBackGroundColor(view: View, color: String?) {
+    color?.let {
+        view.setBackgroundColor(Color.parseColor(color))
+    }
 }

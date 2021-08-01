@@ -23,7 +23,9 @@ data class Chantier(
     var chefChantier: Personnel = Personnel(),
     var typeChantier: Int = 1, // 1 = Chantier 2 = Entretien
     @Exclude @set:Exclude @get:Exclude
-    var listEquipe: List<Personnel> = emptyList()
+    var listEquipe: List<Personnel> = emptyList(),
+    @Exclude @set:Exclude @get:Exclude
+    var couleur: Couleur? = null
 
 ){
     companion object {

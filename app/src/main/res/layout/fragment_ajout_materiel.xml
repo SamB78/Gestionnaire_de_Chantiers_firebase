@@ -18,15 +18,51 @@
         android:layout_height="match_parent"
         tools:context=".rapportChantier.gestionRapportChantier.gestionMateriel.ajoutMateriel.GestionRapportChantierAjoutMaterielFragment">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/searchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="#55F5F5F5"
+                android:elevation="1dp"
+                app:iconifiedByDefault="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryHint="Recherche" />
+
+            <CheckBox
+                android:id="@+id/checkBox14"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="@={viewModel.filterByChantierColor}"
+                android:onClick="@{() -> viewModel.updateSearchFilterMateriel()}"
+                android:text="Afficher uniquement le materiel de l'équipe"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:items="@{viewModel.listeMaterielAjoutable}"
+            app:items="@{viewModel.listeMaterielAjoutableFiltered}"
             app:layoutId="@{R.layout.materiel_ajout_item_view}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/buttonValidation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchLayout"
             app:vm="@{viewModel}" />
 
         <Button

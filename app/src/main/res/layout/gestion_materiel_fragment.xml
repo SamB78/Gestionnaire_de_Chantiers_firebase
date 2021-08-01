@@ -116,6 +116,27 @@
                         />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/selectionColor"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                    android:layout_width="280dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:hint="Couleur équipe"
+                    app:layout_constraintEnd_toEndOf="@+id/editTextMiseEnCirculation"
+                    app:layout_constraintStart_toStartOf="@+id/editTextMiseEnCirculation"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextMiseEnCirculation">
+
+                    <AutoCompleteTextView
+                        colorsAdapter="@{viewModel.listCouleurs}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.selectedColor}"
+                        android:inputType="none"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switchEnService"
                     android:layout_width="0dp"
@@ -126,9 +147,9 @@
                     android:checked="@={viewModel.materiel.enService}"
                     android:text="Materiel en service"
                     android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextMiseEnCirculation"
-                    app:layout_constraintStart_toStartOf="@+id/editTextMiseEnCirculation"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextMiseEnCirculation" />
+                    app:layout_constraintEnd_toEndOf="@+id/selectionColor"
+                    app:layout_constraintStart_toStartOf="@+id/selectionColor"
+                    app:layout_constraintTop_toBottomOf="@+id/selectionColor" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switchMaterielUnique"

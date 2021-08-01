@@ -11,12 +11,12 @@ import java.io.File
 class ImagesStorage {
 
     private val storage = Firebase.storage
-    val storageRef = storage.reference
+    private val storageRef = storage.reference
 
 
-    suspend fun insertImage(pathFile: String?, folder: String): String? {
+    suspend fun insertImage(pathFile: String, folder: String): String? {
         var url: String? = null
-        if (!pathFile.isNullOrEmpty()) {
+        if (!pathFile.startsWith("https")) {
             val uri2 = (pathFile)
             val string = uri2.substring(uri2.lastIndexOf('/') + 1)
             val personnelStorageRef = storageRef.child("${folder}/${string}")
@@ -38,6 +38,9 @@ class ImagesStorage {
                         Timber.i("error ${task.exception}")
                     }
                 }.await()
+        }
+        else {
+            url = pathFile
         }
         return url
     }

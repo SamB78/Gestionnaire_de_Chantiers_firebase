@@ -3,8 +3,10 @@ package com.example.gestionnairedechantiers.chantiers.gestionChantiers
 import androidx.lifecycle.*
 import com.example.gestionnairedechantiers.R
 import com.example.gestionnairedechantiers.entities.Chantier
+import com.example.gestionnairedechantiers.entities.Couleur
 import com.example.gestionnairedechantiers.entities.Personnel
 import com.example.gestionnairedechantiers.firebase.ChantierRepository
+import com.example.gestionnairedechantiers.firebase.CouleurRepository
 import com.example.gestionnairedechantiers.firebase.PersonnelRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,7 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     //Repos
     private val chantierRepository = ChantierRepository()
     private val personnelRepository = PersonnelRepository()
+    private val couleurRepository = CouleurRepository()
 
 
     //Coroutines
@@ -59,15 +62,32 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     //Image Chantier
     var imageChantier = MutableLiveData<String>()
 
+    //Couleurs
+    private var _listCouleurs = MutableLiveData<List<Couleur>>()
+    val listCouleurs: LiveData<List<Couleur>>
+        get() = _listCouleurs
+
+    var selectedColor = MutableLiveData("")
+    val selectedColorObserver = Transformations.map(selectedColor) {
+        searchColor(it)
+    }
+
+    private fun searchColor(color: String?) {
+        listCouleurs.value?.find { it.colorName == color }?.let {
+            chantier.value!!.couleur = it
+        }
+    }
+
     val defaultCheckedButton: LiveData<Int> = Transformations.map(chantier) { chantier ->
         if (chantier.typeChantier == 1) R.id.radio_button_chantier
         else R.id.radio_button_entretien
     }
 
     init {
+        Timber.i("test")
         viewModelScope.launch {
-            Timber.i("Id = $id")
             getAllPersonnel()
+            _listCouleurs.value = couleurRepository.getAllColors()
             if (id != null) loadChantierFromDatabase()
         }
 
@@ -95,10 +115,11 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
             listeChefsChantier.value!!.find { it.documentId == chantier.value!!.chefChantier.documentId }?.isChecked =
                 true
 
-            if(chantier.value!!.urlPictureChantier.isNullOrEmpty()){
+            if (chantier.value!!.urlPictureChantier.isNullOrEmpty()) {
                 imageChantier.value = null
-            }else{
+            } else {
                 imageChantier.value = chantier.value!!.urlPictureChantier
+                selectedColor.value = chantier.value!!.couleur?.colorName
             }
         }
     }

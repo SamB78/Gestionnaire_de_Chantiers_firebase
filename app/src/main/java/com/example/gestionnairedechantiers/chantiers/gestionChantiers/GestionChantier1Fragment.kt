@@ -71,6 +71,8 @@ class GestionChantier1Fragment : Fragment() {
         //ViewModel
         binding.lifecycleOwner = this
 
+        viewModel.selectedColorObserver.observe(viewLifecycleOwner, {})
+
 
         //Navigation
         viewModel.navigation.observe(viewLifecycleOwner, Observer { navigation ->

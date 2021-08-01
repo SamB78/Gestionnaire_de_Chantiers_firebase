@@ -23,6 +23,7 @@ class AuthActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.plant(Timber.DebugTree())
         super.onCreate(savedInstanceState)
         val errorMessage = intent.getStringExtra("error")
         Timber.i("errorMessage: $errorMessage")

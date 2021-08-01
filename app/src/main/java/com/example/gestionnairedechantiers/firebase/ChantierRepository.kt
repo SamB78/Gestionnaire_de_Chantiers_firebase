@@ -12,6 +12,8 @@ class ChantierRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("chantiers")
     private val personnelRepository = PersonnelRepository()
+    private val colorsRepository = CouleurRepository()
+
 
     private val imagesStorage = ImagesStorage()
 
@@ -40,7 +42,7 @@ class ChantierRepository {
                 listEquipe.add(personnel.documentId!!)
             }
 
-            chantier.urlPictureChantier.let {
+            chantier.urlPictureChantier?.let {
                 chantier.urlPictureChantier = imagesStorage.insertImage(it, CHANTIER_FOLDER)
             }
 
@@ -53,7 +55,8 @@ class ChantierRepository {
                 "numContactResponsableSite" to chantier.numContactResponsableSite,
                 "typeChantier" to chantier.typeChantier,
                 "urlPictureChantier" to chantier.urlPictureChantier,
-                "listEquipe" to listEquipe
+                "listEquipe" to listEquipe,
+                "couleur" to chantier.couleur?.colorName,
             )
             Timber.i("date: $data")
 
@@ -75,13 +78,18 @@ class ChantierRepository {
         val list = mutableListOf<Chantier>()
         val result = db.get()
             .await()
-        Timber.i("Result:")
+        val colors = colorsRepository.getAllColors()
         for (chantier in result) {
 //            val idChefChantier = chantier.get("chefChantier") as String
 //            val chefChantier = dbPersonnel.document(idChefChantier).get().await()
 //                .toObject(Personnel::class.java) ?: Personnel()
-            list.add(chantier.toChantierWithoutPersonnel())
-//            chantier2.chefChantier = chefChantier
+
+            val idCouleur = chantier.get("couleur") as String?
+            val couleur = colors.find { it.colorName == idCouleur }
+            val chantierConvertedToObject = chantier.toChantierWithoutPersonnel()
+            chantierConvertedToObject.couleur = couleur
+            list.add(chantierConvertedToObject)
+
         }
 
         return list
@@ -102,11 +110,18 @@ class ChantierRepository {
                 }
 
                 val idChefChantier = result.get("chefChantier") as String
-                val chefChantier = personnelRepository.getPersonnelById(idChefChantier) ?: Personnel()
+                val idCouleur = result.get("couleur") as String?
+                val chefChantier =
+                    personnelRepository.getPersonnelById(idChefChantier) ?: Personnel()
+
 
                 val chantier = result.toChantierWithoutPersonnel()
                 chantier.listEquipe = listPersonnel
                 chantier.chefChantier = chefChantier
+                idCouleur?.let {
+                    chantier.couleur = colorsRepository.getCouleurById(idCouleur)
+                }
+
                 return chantier
             }
         } catch (e: java.lang.Exception) {

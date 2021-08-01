@@ -40,6 +40,7 @@ class AuthViewModel : ViewModel() {
 
     init {
         checkIfUserIsConnected()
+        Timber.i("test")
     }
 
     fun onClickAuth() {
@@ -53,6 +54,7 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun signInWithGoogle(googleAuthCredential: AuthCredential) {
+        Timber.i("signIn with google")
         viewModelScope.launch {
             _isConnected.value = authRepository.authWithGoogle(googleAuthCredential)
             navigateIfUserIsConnected()

@@ -24,7 +24,7 @@ class PersonnelRepository {
         val batch = FirebaseFirestore.getInstance().batch()
 
         try {
-            personnel.urlPicturePersonnel.let {
+            personnel.urlPicturePersonnel?.let {
                 personnel.urlPicturePersonnel = imagesStorage.insertImage(it, PERSONNEL_FOLDER)
 
             }
@@ -61,7 +61,7 @@ class PersonnelRepository {
     suspend fun updatePersonnel(personnel: Personnel) {
         try {
 
-            personnel.urlPicturePersonnel.let {
+            personnel.urlPicturePersonnel?.let {
                 personnel.urlPicturePersonnel = imagesStorage.insertImage(it, PERSONNEL_FOLDER)
             }
 

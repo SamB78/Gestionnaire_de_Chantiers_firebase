@@ -22,6 +22,8 @@ data class Materiel(
     @Exclude @set:Exclude @get:Exclude
     var isChecked: Boolean = false,
     @Exclude @set:Exclude @get:Exclude
-    var quantite: Int = 1
+    var quantite: Int = 1,
+    @Exclude @set:Exclude @get:Exclude
+    var couleur: Couleur? = null
 
 )

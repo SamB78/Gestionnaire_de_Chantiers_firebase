@@ -1,6 +1,5 @@
 package com.example.gestionnairedechantiers.utils
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
@@ -91,4 +90,15 @@ class BaseAdapter(val data: List<Any>, private val lid: Int, val vm: ViewModel) 
 //            }
 //        }
     }
+
+//    override fun getFilter(): Filter {
+//        return object : Filter() {
+//            override fun performFiltering(constraint: CharSequence?): FilterResults {
+//
+//            }
+//
+//            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+//            }
+//        }
+//    }
 }
