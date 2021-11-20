@@ -18,8 +18,8 @@ android {
         applicationId "com.techphone78.gestionnairedechantiers"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName "1.04"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -78,7 +78,7 @@ dependencies {
 // Testing
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
 
-    def nav_version = "2.3.4"
+    def nav_version = "2.3.5"
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -87,7 +87,7 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     implementation 'com.karumi:dexter:6.1.2'
 
@@ -125,11 +125,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Also declare the dependency for the Google Play services library and specify its version
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
 
     // Declare the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-storage-ktx'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
+
+    implementation "io.grpc:grpc-okhttp:1.32.2"
 }

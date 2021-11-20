@@ -15,21 +15,23 @@
 
     </data>
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_mainCl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/backgroundColor"
-                tools:context=".rapportChantier.gestionRapportChantier.GestionRapportChantierFragment"
-                android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}">
+                android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+                tools:context=".rapportChantier.gestionRapportChantier.GestionRapportChantierFragment">
 
 
                 <com.google.android.material.card.MaterialCardView
@@ -577,11 +579,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <include
-                android:id="@+id/loadingState"
-                layout="@layout/loading_state"
-                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+        </ScrollView>
+
+        <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

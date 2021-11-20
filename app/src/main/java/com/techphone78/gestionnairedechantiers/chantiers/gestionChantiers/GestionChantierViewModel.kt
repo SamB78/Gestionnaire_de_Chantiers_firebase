@@ -8,6 +8,8 @@ import com.techphone78.gestionnairedechantiers.entities.Personnel
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
 import com.techphone78.gestionnairedechantiers.firebase.CouleurRepository
 import com.techphone78.gestionnairedechantiers.firebase.PersonnelRepository
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,6 +36,8 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     private var _navigation = MutableLiveData<GestionNavigation>()
     val navigation: LiveData<GestionNavigation>
         get() = _navigation
+
+    var state = MutableLiveData(State(Status.LOADING))
 
     //Repos
     private val chantierRepository = ChantierRepository()
@@ -70,11 +74,14 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     var selectedColor = MutableLiveData("")
     val selectedColorObserver = Transformations.map(selectedColor) {
         searchColor(it)
+        Timber.i("selectedColor: $it")
     }
 
     private fun searchColor(color: String?) {
         listCouleurs.value?.find { it.colorName == color }?.let {
-            chantier.value!!.couleur = it
+            Timber.i("Couleur found: $it")
+            chantier.value!!.couleur = if (it.colorName == "Pas de couleur") null
+            else it
         }
     }
 
@@ -84,13 +91,18 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     }
 
     init {
-        Timber.i("test")
         viewModelScope.launch {
-            getAllPersonnel()
-            _listCouleurs.value = couleurRepository.getAllColors()
-            if (id != null) loadChantierFromDatabase()
+            state.value = State.loading()
+            try {
+                getAllPersonnel()
+                _listCouleurs.value = couleurRepository.getAllColors()
+                Timber.i("listCouleurs: ${listCouleurs.value}")
+                if (id != null) loadChantierFromDatabase()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
         }
-
     }
 
     private suspend fun getAllPersonnel() {
@@ -107,7 +119,6 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     private fun loadChantierFromDatabase() {
         viewModelScope.launch {
             chantier.value = chantierRepository.getChantierById(id!!)
-            Timber.i("Chantier = ${chantier.value}")
             for (personnel in chantier.value!!.listEquipe) {
                 listePersonnel.value?.find { it.documentId == personnel.documentId }?.isChecked =
                     true
@@ -119,8 +130,8 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
                 imageChantier.value = null
             } else {
                 imageChantier.value = chantier.value!!.urlPictureChantier
-                selectedColor.value = chantier.value!!.couleur?.colorName
             }
+            selectedColor.value = chantier.value!!.couleur?.colorName
         }
     }
 
@@ -206,13 +217,11 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     }
 
     fun onClickSaveData() {
-        Timber.i("Data ready to save: ${chantier.value}")
         sendDataToDB()
 
     }
 
     private fun sendDataToDB() {
-        Timber.i("sendDataToDB")
         chantier.value!!.urlPictureChantier = imageChantier.value
         viewModelScope.launch {
             chantierRepository.setChantier(chantier.value!!)

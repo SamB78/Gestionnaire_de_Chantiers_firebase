@@ -22,10 +22,10 @@ data class User(
                         userData = userData
                     )
                 }else {
-                    throw Exception("Erreur base de données, consultez l'administrateur: UserId n'existe pas")
+                    throw Exception("Erreur base de données, consultez l'administrateur: aucun UserId fourni")
                 }
             } else {
-                throw Exception("Erreur base de données, consultez l'administrateur: userData n'existe pas")
+                throw Exception("Erreur: votre compte n'est pas enregistré dans la base de données, consultez l'administrateur ")
             }
         }
     }

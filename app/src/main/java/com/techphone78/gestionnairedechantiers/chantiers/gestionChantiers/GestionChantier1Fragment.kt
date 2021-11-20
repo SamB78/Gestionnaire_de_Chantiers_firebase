@@ -9,9 +9,9 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
-import com.techphone78.gestionnairedechantiers.databinding.FragmentGestionChantier1Binding
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.techphone78.gestionnairedechantiers.databinding.FragmentGestionChantier1Binding
 import timber.log.Timber
 
 
@@ -59,16 +59,15 @@ class GestionChantier1Fragment : Fragment() {
     ): View? {
 
         val binding = FragmentGestionChantier1Binding.inflate(inflater, container, false)
-        binding.executePendingBindings()
+//        binding.executePendingBindings()
 
 
         //ViewModelFactory
 
         val idChantier = GestionChantier1FragmentArgs.fromBundle(requireArguments()).id
         viewModelFactory = GestionChantierViewModelFactory(idChantier)
-
         binding.viewModel = viewModel
-        //ViewModel
+        binding.executePendingBindings()
         binding.lifecycleOwner = this
 
         viewModel.selectedColorObserver.observe(viewLifecycleOwner, {})
@@ -80,11 +79,13 @@ class GestionChantier1Fragment : Fragment() {
             when (navigation) {
                 GestionChantierViewModel.GestionNavigation.PASSAGE_ETAPE2 -> {
                     viewModel.onBoutonClicked()
-                    val action = GestionChantier1FragmentDirections.actionGestionChantier1FragmentToGestionChantier2Fragment()
+                    val action =
+                        GestionChantier1FragmentDirections.actionGestionChantier1FragmentToGestionChantier2Fragment()
                     findNavController().navigate(action)
                 }
                 GestionChantierViewModel.GestionNavigation.ANNULATION -> {
-                    val action = GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
+                    val action =
+                        GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }

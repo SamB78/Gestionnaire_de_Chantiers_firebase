@@ -31,6 +31,12 @@ enum class TypeEntity {
 
 }
 
+object Flipper {
+    const val LOADING = 0
+    const val CONTENT = 1
+    const val ERROR = 2
+}
+
 data class Resource2<out T>(val data: T? = null, val message: String? = null) {
 
     companion object {
@@ -63,10 +69,15 @@ data class State(val status: Status, val message: String? = null) {
             return State(Status.ERROR, msg)
         }
 
-        fun loading(): State {
-            return State(Status.LOADING)
+        fun loading(msg: String = ""): State {
+            return State(Status.LOADING, msg)
         }
 
+    }
+
+    enum class TypeView {
+        LIST,
+        MANAGEMENT
     }
 
 }

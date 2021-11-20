@@ -3,6 +3,7 @@ package com.techphone78.gestionnairedechantiers
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -15,6 +16,7 @@ import com.techphone78.gestionnairedechantiers.databinding.ActivityMainBinding
 import com.techphone78.gestionnairedechantiers.databinding.LogoHeaderBinding
 import com.techphone78.gestionnairedechantiers.utils.Status
 import com.google.android.material.navigation.NavigationView
+import com.techphone78.gestionnairedechantiers.entities.Personnel
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -39,16 +41,16 @@ class MainActivity : AppCompatActivity() {
 
 
         System.setProperty(
-                "org.apache.poi.javax.xml.stream.XMLInputFactory",
-                "com.fasterxml.aalto.stax.InputFactoryImpl"
+            "org.apache.poi.javax.xml.stream.XMLInputFactory",
+            "com.fasterxml.aalto.stax.InputFactoryImpl"
         );
         System.setProperty(
-                "org.apache.poi.javax.xml.stream.XMLOutputFactory",
-                "com.fasterxml.aalto.stax.OutputFactoryImpl"
+            "org.apache.poi.javax.xml.stream.XMLOutputFactory",
+            "com.fasterxml.aalto.stax.OutputFactoryImpl"
         );
         System.setProperty(
-                "org.apache.poi.javax.xml.stream.XMLEventFactory",
-                "com.fasterxml.aalto.stax.EventFactoryImpl"
+            "org.apache.poi.javax.xml.stream.XMLEventFactory",
+            "com.fasterxml.aalto.stax.EventFactoryImpl"
         );
 
         Timber.plant(Timber.DebugTree())
@@ -56,11 +58,12 @@ class MainActivity : AppCompatActivity() {
         // first find the nav controller
 
 
-
         viewModel.state.observe(this, {
-            if(it.status == Status.SUCCESS){
+            if (it.status == Status.SUCCESS) {
                 setupNavGraph()
-                setupNavigation()
+                setupNavigation(viewModel.user.value!!.userData!!)
+                binding.linearLayout.visibility = View.VISIBLE
+                binding.loadingState.visibility = View.INVISIBLE
             }
         })
         profileLogout()
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     private fun profileLogout() {
         viewModel.logoutObseve.observe(this, {
             Timber.i("logout")
-            if(it){
+            if (it) {
                 val intent = Intent(applicationContext, AuthActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 intent.putExtra("error", viewModel.state.value!!.message)
@@ -83,7 +86,8 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp() =
         NavigationUI.navigateUp(findNavController(R.id.navHostFragment), binding.drawerLayout)
 
-    private fun setupNavigation(){
+    private fun setupNavigation(personnel: Personnel) {
+
 
         val navController = findNavController(R.id.navHostFragment)
 
@@ -94,31 +98,35 @@ class MainActivity : AppCompatActivity() {
         findViewById<NavigationView>(R.id.activity_main_nav_view)
             .setupWithNavController(navController)
 
-        activity_main_nav_view.setNavigationItemSelectedListener {
-            Timber.i("TEST")
-            when (it.itemId) {
-                R.id.itemPersonnel -> {
-                    Timber.i("itemPersonnel")
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    val action = GestionPersonnelNavGraphDirections.actionGlobalGestionPersonnelNavGraph()
-                    findNavController(R.id.navHostFragment).navigate(action)
-                    true
+        if (personnel.administrateur) {
+            activity_main_nav_view.inflateMenu(R.menu.activity_main_menu_drawer)
+            activity_main_nav_view.setNavigationItemSelectedListener {
+                Timber.i("TEST")
+                when (it.itemId) {
+                    R.id.itemPersonnel -> {
+                        Timber.i("itemPersonnel")
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
+                        val action =
+                            GestionPersonnelNavGraphDirections.actionGlobalGestionPersonnelNavGraph()
+                        findNavController(R.id.navHostFragment).navigate(action)
+                        true
+                    }
+                    R.id.itemMateriel -> {
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
+                        val action =
+                            GestionMaterielNavGraphDirections.actionGlobalGestionMaterielNavGraph()
+                        findNavController(R.id.navHostFragment).navigate(action)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
                 }
-                R.id.itemMateriel -> {
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    val action = GestionMaterielNavGraphDirections.actionGlobalGestionMaterielNavGraph()
-                    findNavController(R.id.navHostFragment).navigate(action)
-                    true
-                }
-                else -> {
-                    false
-                }
-
             }
         }
     }
 
-    private fun setupNavGraph(){
+    private fun setupNavGraph() {
 
         //Setup the navGraph for this activity
         val navController = findNavController(R.id.navHostFragment)

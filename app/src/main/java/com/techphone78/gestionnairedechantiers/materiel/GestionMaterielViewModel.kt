@@ -5,6 +5,9 @@ import com.techphone78.gestionnairedechantiers.entities.Couleur
 import com.techphone78.gestionnairedechantiers.entities.Materiel
 import com.techphone78.gestionnairedechantiers.firebase.CouleurRepository
 import com.techphone78.gestionnairedechantiers.firebase.MaterielRepository
+import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,7 +15,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 
-class GestionMaterielViewModel : ViewModel() {
+class GestionMaterielViewModel : ViewModel(), ParentViewModel {
     enum class NavigationMenu {
         EDIT_MATERIEL,
         CHOIX_DATE_IMMAT,
@@ -68,6 +71,8 @@ class GestionMaterielViewModel : ViewModel() {
     val listCouleurs: LiveData<List<Couleur>>
         get() = _listCouleurs
 
+    var state = MutableLiveData(State(Status.LOADING))
+
     var selectedColor = MutableLiveData("")
     val selectedColorObserver = Transformations.map(selectedColor) {
         searchColor(it)
@@ -75,23 +80,28 @@ class GestionMaterielViewModel : ViewModel() {
 
     private fun searchColor(color: String?) {
         listCouleurs.value?.find { it.colorName == color }?.let {
-            materiel.value!!.couleur = it
+            materiel.value!!.couleur = if (it.colorName == "Pas de couleur") null
+            else it
         }
     }
 
 
     init {
         getAllMateriel()
-
-
     }
 
     private fun getAllMateriel() {
         viewModelScope.launch {
-            _listeMateriel.value = materielRepository.getAllMateriel()
-            Timber.i("couleur: ${_listeMateriel.value}")
-            _listeMaterielFiltered.value = listeMateriel.value
-            _listCouleurs.value = couleurRepository.getAllColors()
+            state.value = State.loading()
+            try {
+                _listeMateriel.value = materielRepository.getAllMateriel()
+                Timber.i("couleur: ${_listeMateriel.value}")
+                filterListMateriel()
+                _listCouleurs.value = couleurRepository.getAllColors()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
         }
     }
 
@@ -111,7 +121,11 @@ class GestionMaterielViewModel : ViewModel() {
         } else {
             imageMateriel.value = this.materiel.value!!.urlPictureMateriel
         }
-        selectedColor.value = this.materiel.value!!.couleur?.colorName
+
+        selectedColor.value = when (this.materiel.value!!.couleur?.colorName) {
+            null -> "Pas de couleur"
+            else -> this.materiel.value!!.couleur?.colorName
+        }
     }
 
     fun onClickButtonCreationOrModificationEnded() {
@@ -126,15 +140,31 @@ class GestionMaterielViewModel : ViewModel() {
 
     private fun sendNewDataToDB() {
         uiScope.launch {
-            materielRepository.insertMateriel(materiel.value!!)
-            getAllMateriel()
+
+            state.value = State.loading()
+            try {
+                materielRepository.insertMateriel(materiel.value!!)
+                getAllMateriel()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
+
+
         }
     }
 
     private fun updateDataInDB() {
         uiScope.launch {
-            materielRepository.updateMateriel(materiel.value!!)
-            getAllMateriel()
+            state.value = State.loading()
+            try {
+                materielRepository.updateMateriel(materiel.value!!)
+                getAllMateriel()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
+
         }
     }
 
@@ -173,15 +203,15 @@ class GestionMaterielViewModel : ViewModel() {
     }
 
     fun updateSearchFilter() {
-        filterListPersonnel()
+        filterListMateriel()
     }
 
     fun updateSearchFilter(text: String?) {
         searchFilter.value = text
-        filterListPersonnel()
+        filterListMateriel()
     }
 
-    private fun filterListPersonnel() {
+    private fun filterListMateriel() {
         _listeMaterielFiltered.value = emptyList()
         val listeOriginaleMateriel: MutableList<Materiel> = mutableListOf()
         val mutableList = mutableListOf<Materiel>()
@@ -200,7 +230,9 @@ class GestionMaterielViewModel : ViewModel() {
                         ||
                         it.modele.contains(searchFilter.value!!, true)
                         ||
-                        it.numeroSerie.startsWith(searchFilter.value!!)
+                        it.numeroSerie.startsWith(searchFilter.value!!, true)
+                        ||
+                        it.type.startsWith(searchFilter.value!!, true)
             }.forEach {
                 mutableList.add(it)
             }
@@ -215,6 +247,10 @@ class GestionMaterielViewModel : ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
 
+    }
+
+    override fun onClickErrorScreenButton() {
+        TODO("Not yet implemented")
     }
 
 }

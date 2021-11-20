@@ -60,7 +60,7 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
                     customLayout.viewModel = viewModel
 
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Ajouter un matériel de location")
+                        .setTitle("Ajouter un sous traitant")
                         .setView(customLayout.root)
                         .setNegativeButton("Annuler") { dialog, which ->
                             dialog.dismiss()

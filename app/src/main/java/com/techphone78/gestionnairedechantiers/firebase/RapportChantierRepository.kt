@@ -133,8 +133,14 @@ class RapportChantierRepository(idChantier: String) {
         val listOfRC = mutableListOf<RapportChantier>()
 
         for (date in listDates) {
-            val result = db.whereEqualTo("dateRapportChantier", date).get().await()
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.HOUR_OF_DAY, 2)
+
+            val result = db.whereEqualTo("dateRapportChantier", calendar.time).get().await()
+            Timber.i("result: ${result.documents.size} for date : ${calendar.time}")
             for (document in result) {
+                Timber.i("document: ${document.data}")
                 listOfRC.add(
                     document.toRapportChantier(
                         personnelRepository,

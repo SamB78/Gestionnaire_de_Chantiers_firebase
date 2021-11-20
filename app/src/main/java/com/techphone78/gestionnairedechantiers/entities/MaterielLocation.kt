@@ -9,6 +9,7 @@ data class MaterielLocation(
     var fournisseur: String = "",
     var description: String ="",
     var numBonCommande: String = "",
+    var tarif: String ="",
     @Exclude @set:Exclude @get:Exclude
     var quantite: Int = 1
 )

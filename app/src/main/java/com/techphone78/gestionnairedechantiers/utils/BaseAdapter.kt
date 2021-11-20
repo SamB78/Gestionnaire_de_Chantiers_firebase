@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.techphone78.gestionnairedechantiers.BR
 import timber.log.Timber
 
-class BaseAdapter(val data: List<Any>, private val lid: Int, val vm: ViewModel) :
+class BaseAdapter(private val lid: Int, val vm: ViewModel) :
     RecyclerView.Adapter<BaseAdapter.ViewHolder>() {
+
+    var data: List<Any> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -45,6 +47,11 @@ class BaseAdapter(val data: List<Any>, private val lid: Int, val vm: ViewModel) 
         return position
     }
 
+    fun updateItems( items: List<Any>) {
+        data = items
+        notifyDataSetChanged()
+    }
+
 
     inner class ViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
         //inner class ViewHolder(val binding: V) : RecyclerView.ViewHolder(binding.root){
@@ -66,10 +73,8 @@ class BaseAdapter(val data: List<Any>, private val lid: Int, val vm: ViewModel) 
         fun bindAdapter(view: RecyclerView, list: List<Any>, vm: ViewModel, layoutId: Int) {
 //                val layoutManager = LinearLayoutManager(view.context)
 //                view.layoutManager = layoutManager
-            if (view.layoutManager == null) {
-                val layoutManager = LinearLayoutManager(view.context)
-                view.layoutManager = layoutManager
-            }
+            if (view.layoutManager == null) view.layoutManager = LinearLayoutManager(view.context)
+
 
             //view.adapter = ChoiceAdapter(vm!!.choices,vm,{x:RecoResult -> vm!!.selectItem(x)})
             //view.adapter = ChoiceAdapter(vm!!.choices,vm,{x:RecoResult -> vm!!.selectItem(x)})
@@ -78,9 +83,40 @@ class BaseAdapter(val data: List<Any>, private val lid: Int, val vm: ViewModel) 
 //                    R.layout.choice_item -> BaseAdapter<RecoResult,ChoiceItemBinding>(list as List<RecoResult>,layoutId)
 //                    else -> null
 //                }
-            view.adapter = BaseAdapter(list, layoutId, vm)
-            //view.adapter = BaseAdapter(list as List<RecoResult>,layoutId,vm)
+
+
+//            if(view.adapter != null && view.adapter is BaseAdapter){
+//                Timber.i("notifiy")
+//                view.adapter?.notifyDataSetChanged()
+//            }else {
+//                Timber.i("generate BaseAdapter")
+//                view.adapter = BaseAdapter(list, layoutId, vm)
+//            }
+
+
+            val adapter = getOrCreateAdapter(view, layoutId, vm)
+            Timber.i("list: $list")
+            adapter.updateItems(list)
+
         }
+
+        private fun getOrCreateAdapter(
+            recyclerView: RecyclerView,
+            layoutId: Int,
+            vm: ViewModel
+        ): BaseAdapter {
+            return if (recyclerView.adapter != null && recyclerView.adapter is BaseAdapter) {
+                recyclerView.adapter as BaseAdapter
+            } else {
+                val bindableRecyclerAdapter = BaseAdapter(layoutId, vm)
+                recyclerView.adapter = bindableRecyclerAdapter
+                bindableRecyclerAdapter
+            }
+        }
+
+
+        //view.adapter = BaseAdapter(list as List<RecoResult>,layoutId,vm)
+
 
 //        @BindingAdapter("toggleVisibilityOf")
 //        @JvmStatic

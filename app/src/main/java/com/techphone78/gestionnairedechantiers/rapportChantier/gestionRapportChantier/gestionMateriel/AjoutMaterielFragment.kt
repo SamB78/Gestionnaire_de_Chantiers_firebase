@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.FragmentAjoutMaterielBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel
+import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 import timber.log.Timber
 
 
@@ -28,12 +30,13 @@ class AjoutMaterielFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
+        viewModel.reinitSearchField()
 
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
 
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_AJOUT_MATERIEL -> {
-                   Timber.i("Passage retour après validation")
+                    Timber.i("Passage retour après validation")
                     val action = AjoutMaterielFragmentDirections.actionAjoutMaterielFragmentPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()

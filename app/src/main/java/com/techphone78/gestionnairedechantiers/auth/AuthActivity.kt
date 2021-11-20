@@ -40,7 +40,7 @@ class AuthActivity : AppCompatActivity() {
                     startActivityForResult(signInIntent, RC_SIGN_IN)
                     viewModel.onButtonClicked()
                 }
-                AuthViewModel.Navigation.PASSAGE_CHOIX_CHANTIER -> {
+                AuthViewModel.Navigation.PASSAGE_ECRAN_PRINCIPAL -> {
                     startActivity(Intent(applicationContext, MainActivity::class.java))
                     finish()
                     viewModel.onButtonClicked()

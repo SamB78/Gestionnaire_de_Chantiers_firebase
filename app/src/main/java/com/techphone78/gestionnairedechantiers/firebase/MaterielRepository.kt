@@ -60,6 +60,29 @@ class MaterielRepository {
         return list
     }
 
+    suspend fun getAllAddableMateriel(critereChantier: Int): List<Materiel> {
+        val typeChantier: String = if(critereChantier == 1) "materielChantier"
+        else "materielEntretien"
+
+        val list = mutableListOf<Materiel>()
+        val colors = colorsRepository.getAllColors()
+        val result = db
+            .whereEqualTo("enService", true)
+            .whereEqualTo(typeChantier, true)
+            .get()
+            .await()
+        for (materiel in result) {
+            val idCouleur = materiel.get("couleur") as String?
+            val couleur = colors.find { it.colorName == idCouleur }
+            val materielConvertToObject = materiel.toObject(Materiel::class.java)
+            materielConvertToObject.couleur = couleur
+            list.add(materielConvertToObject)
+        }
+        return list
+    }
+
+
+
     suspend fun updateMateriel(materiel: Materiel) {
         try {
 

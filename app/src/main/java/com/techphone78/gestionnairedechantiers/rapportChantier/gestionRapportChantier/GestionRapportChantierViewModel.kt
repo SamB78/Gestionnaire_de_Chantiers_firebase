@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.entities.*
 import com.techphone78.gestionnairedechantiers.firebase.*
+import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +17,7 @@ class GestionRapportChantierViewModel(
     var idRapportChantier: String? = null,
     val idChantier: String,
     val dateRapportChantier: Long = -1L
-) : ViewModel() {
+) : ViewModel(), ParentViewModel {
     enum class GestionNavigation {
         PASSAGE_GESTION_PERSONNEL,
         VALIDATION_GESTION_PERSONNEL,
@@ -124,6 +125,7 @@ class GestionRapportChantierViewModel(
             }
             dateRapportChantier != -1L -> {
                 val date = Instant.ofEpochMilli(dateRapportChantier)
+                Timber.i("Date: $date")
                 viewModelScope.launch {
                     _isLoading.value = true
                     _chantier.value = chantierRepository.getChantierById(idChantier)
@@ -280,7 +282,7 @@ class GestionRapportChantierViewModel(
         uiScope.launch {
             _isLoading.value = true
             val liste =
-                personnelRepository.getAllPersonnel() as MutableList<Personnel>
+                personnelRepository.getAllAddablePersonnel() as MutableList<Personnel>
             listePersonnelAjoutable.value = mutableListOf()
 
             liste.forEach lit@{ personnel ->
@@ -298,7 +300,7 @@ class GestionRapportChantierViewModel(
     }
 
     fun updateSearchFilterPersonnel(text: String?) {
-        text?.let{
+        text?.let {
             searchFilterPersonnel.value = it
         }
         filterListPersonnel()
@@ -423,7 +425,9 @@ class GestionRapportChantierViewModel(
         uiScope.launch {
             _isLoading.value = true
             val liste =
-                materielRepository.getAllMateriel() as MutableList<Materiel>
+                materielRepository.getAllAddableMateriel(
+                    chantier.value?.typeChantier ?: 1
+                ) as MutableList<Materiel>
             listeMaterielAjoutable.value = mutableListOf()
 
             liste.forEach lit@{ materiel ->
@@ -461,7 +465,7 @@ class GestionRapportChantierViewModel(
         val mutableList = mutableListOf<Materiel>()
 
         if (filterByChantierColor.value!!) {
-            listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!.filter { it.couleur == chantier.value!!.couleur })
+            listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!.filter { it.couleur == chantier.value!!.couleur || it.couleur == null })
         } else {
             listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!)
         }
@@ -481,7 +485,9 @@ class GestionRapportChantierViewModel(
         } else {
             mutableList.addAll(listeOriginaleMateriel)
         }
-        listeMaterielAjoutableFiltered.value = mutableList
+
+        listeMaterielAjoutableFiltered.value =
+            mutableList.sortedByDescending { it.couleur == chantier.value!!.couleur } as MutableList<Materiel>
     }
 
     fun onClickValidationAjoutMateriel() {
@@ -499,6 +505,10 @@ class GestionRapportChantierViewModel(
         listeMaterielAjoutableFiltered.value!!.find { it.documentId == materiel.documentId }?.isChecked =
             !materiel.isChecked
         listeMaterielAjoutableFiltered.value = listeMaterielAjoutableFiltered.value
+    }
+
+    fun reinitSearchField() {
+        searchFilterMateriel.value = ""
     }
 
     /////////////////////// GESTION MATERIEL LOCATION /////////////////////////////////////
@@ -981,6 +991,10 @@ class GestionRapportChantierViewModel(
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
+    }
+
+    override fun onClickErrorScreenButton() {
+        TODO("Not yet implemented")
     }
 
 }

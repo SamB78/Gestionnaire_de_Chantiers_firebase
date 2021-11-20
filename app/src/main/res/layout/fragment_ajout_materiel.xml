@@ -54,6 +54,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listMateriel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:items="@{viewModel.listeMaterielAjoutableFiltered}"

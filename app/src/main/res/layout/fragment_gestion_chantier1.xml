@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
@@ -58,10 +59,9 @@
                         <RadioGroup
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:onCheckedChanged="@{(_,i) -> viewModel.onRadioGroupClicked(i)}"
                             android:checkedButton="@{viewModel.defaultCheckedButton}"
-                            >
+                            android:onCheckedChanged="@{(_,i) -> viewModel.onRadioGroupClicked(i)}"
+                            android:orientation="horizontal">
 
 
                             <RadioButton
@@ -140,9 +140,8 @@
                         colorsAdapter="@{viewModel.listCouleurs}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.selectedColor}"
                         android:inputType="none"
-                        />
+                        android:text="@={viewModel.selectedColor}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -205,6 +204,27 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editAccessCode"
+                    android:layout_width="280dp"
+                    android:layout_height="56dp"
+
+                    android:layout_marginTop="24dp"
+                    android:ems="10"
+                    android:hint="Code accès site"
+
+                    app:layout_constraintEnd_toEndOf="@+id/editTextVille"
+                    app:layout_constraintStart_toStartOf="@+id/editTextCodePostal"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextVille">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:text="@={viewModel.chantier.accessCode}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/editTextResponsableSite"
                     android:layout_width="280dp"
                     android:layout_height="56dp"
@@ -213,9 +233,9 @@
                     android:ems="10"
                     android:hint="Identité responsable site"
 
-                    app:layout_constraintEnd_toEndOf="@+id/editTextVille"
-                    app:layout_constraintStart_toStartOf="@+id/editTextCodePostal"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextVille">
+                    app:layout_constraintEnd_toEndOf="@+id/editAccessCode"
+                    app:layout_constraintStart_toStartOf="@+id/editAccessCode"
+                    app:layout_constraintTop_toBottomOf="@+id/editAccessCode">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"

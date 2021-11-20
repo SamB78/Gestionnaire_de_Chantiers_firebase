@@ -16,8 +16,12 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionPersonnelFragmentBinding
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -38,18 +42,26 @@ class GestionPersonnelFragment : Fragment() {
     ): View {
         val binding = GestionPersonnelFragmentBinding.inflate(inflater)
         binding.viewModel = viewModel
+        binding.errorState.viewModel = viewModel
         binding.executePendingBindings()
         binding.lifecycleOwner = this
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
 
         viewModel.navigationPersonnel.observe(viewLifecycleOwner, { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
-                GestionPersonnelViewModel.NavigationMenu.ANNULATION -> {
-                    viewModel.onBoutonClicked()
-                    val action =
-                        GestionPersonnelFragmentDirections.actionGestionPersonnelFragmentPop()
-                    findNavController().navigate(action)
-                }
                 GestionPersonnelViewModel.NavigationMenu.ENREGISTREMENT_PERSONNEL -> {
                     viewModel.onBoutonClicked()
                     val action =
@@ -71,6 +83,12 @@ class GestionPersonnelFragment : Fragment() {
 
         return binding.root
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateTypeView(State.TypeView.LIST)
+    }
+
 
 
     private fun selectImage() {

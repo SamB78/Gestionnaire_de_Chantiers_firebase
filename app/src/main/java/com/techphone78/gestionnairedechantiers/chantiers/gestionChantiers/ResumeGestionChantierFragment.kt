@@ -27,7 +27,7 @@ class ResumeGestionChantierFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_favorite->{
+        R.id.action_favorite -> {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Annulation")
                 .setMessage("Souhaitez vous annuler la création du nouveau chantier ?")
@@ -41,12 +41,12 @@ class ResumeGestionChantierFragment : Fragment() {
                 }
                 .show()
             true
-        }else-> {
+        }
+        else -> {
             super.onOptionsItemSelected(item)
 
         }
     }
-
 
 
     override fun onCreateView(
@@ -65,20 +65,25 @@ class ResumeGestionChantierFragment : Fragment() {
 
 
 
-        viewModel.navigation.observe(viewLifecycleOwner,  { navigation ->
-            when (navigation){
-                GestionChantierViewModel.GestionNavigation.ENREGISTREMENT_CHANTIER->{
-                    val action = GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
+        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+            when (navigation) {
+                GestionChantierViewModel.GestionNavigation.ENREGISTREMENT_CHANTIER -> {
+                    val action =
+                        GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
-                GestionChantierViewModel.GestionNavigation.MODIFICATION->{
-                    val action = ResumeGestionChantierFragmentDirections.actionResumeGestionChantierFragmentToGestionChantier1Fragment(null)
+                GestionChantierViewModel.GestionNavigation.MODIFICATION -> {
+                    val action =
+                        ResumeGestionChantierFragmentDirections.actionResumeGestionChantierFragmentToGestionChantier1Fragment(
+                            null
+                        )
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
-                GestionChantierViewModel.GestionNavigation.ANNULATION->{
-                    val action = GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
+                GestionChantierViewModel.GestionNavigation.ANNULATION -> {
+                    val action =
+                        GestionChantierNavGraphDirections.actionGestionChantierNavGraphPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }

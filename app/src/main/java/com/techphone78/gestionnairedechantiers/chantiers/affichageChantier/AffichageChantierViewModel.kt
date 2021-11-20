@@ -7,15 +7,19 @@ import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.entities.RapportChantier
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
 import com.techphone78.gestionnairedechantiers.firebase.RapportChantierRepository
+import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Exception
 
 class AffichageChantierViewModel(
     val id: String
-) : ViewModel() {
+) : ViewModel(), ParentViewModel {
 
     enum class NavigationMenu {
         SELECTION_PAR_DATE,
@@ -36,6 +40,8 @@ class AffichageChantierViewModel(
     private var _navigation = MutableLiveData<NavigationMenu>()
     val navigation: LiveData<NavigationMenu>
         get() = this._navigation
+
+    var state = MutableLiveData(State(Status.LOADING))
 
     //Coroutines
     private val viewModelJob = Job()
@@ -74,9 +80,16 @@ class AffichageChantierViewModel(
 
     private fun initializeData(id: String) {
         uiScope.launch {
-           _chantier.value = chantierRepository.getChantierById(id)
-            Timber.i("Chantier initialisé  = ${chantier.value?.numeroChantier}")
-            _listeRapportsChantiers.value = rapportChantierRepository.getAllRapportsChantier()
+            state.value = State.loading()
+            try {
+                _chantier.value = chantierRepository.getChantierById(id)
+                Timber.i("Chantier initialisé  = ${chantier.value?.numeroChantier}")
+                _listeRapportsChantiers.value = rapportChantierRepository.getAllRapportsChantier()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
+
         }
     }
 
@@ -124,6 +137,10 @@ class AffichageChantierViewModel(
         _idRapportChantier.value = rapportChantier.documentId!!
         _navigation.value = NavigationMenu.SELECTION_PAR_ID
         needToActualizeData = true
+    }
+
+    override fun onClickErrorScreenButton() {
+        TODO("Not yet implemented")
     }
 
 

@@ -16,9 +16,7 @@ import timber.log.Timber
 class AuthViewModel : ViewModel() {
 
     private val authRepository = AuthRepository()
-    private var _isConnected = MutableLiveData<Boolean>(false)
-    private val isConnected: LiveData<Boolean>
-        get() = _isConnected
+    private var isConnected = MutableLiveData<Boolean>(false)
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
@@ -29,7 +27,7 @@ class AuthViewModel : ViewModel() {
 
     enum class Navigation {
         AUTHENTIFICATION,
-        PASSAGE_CHOIX_CHANTIER,
+        PASSAGE_ECRAN_PRINCIPAL,
         DECONNECTION,
         EN_ATTENTE
     }
@@ -56,7 +54,7 @@ class AuthViewModel : ViewModel() {
     private fun signInWithGoogle(googleAuthCredential: AuthCredential) {
         Timber.i("signIn with google")
         viewModelScope.launch {
-            _isConnected.value = authRepository.authWithGoogle(googleAuthCredential)
+            isConnected.value = authRepository.authWithGoogle(googleAuthCredential)
             navigateIfUserIsConnected()
         }
     }
@@ -66,13 +64,13 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun checkIfUserIsConnected() {
-        _isConnected.value = FirebaseAuth.getInstance().currentUser != null
+        isConnected.value = FirebaseAuth.getInstance().currentUser != null
         navigateIfUserIsConnected()
     }
 
     private fun navigateIfUserIsConnected() {
         if (isConnected.value!!) {
-            _navigation.value = Navigation.PASSAGE_CHOIX_CHANTIER
+            _navigation.value = Navigation.PASSAGE_ECRAN_PRINCIPAL
         }
     }
 

@@ -80,7 +80,7 @@ class AffichageDetailsRapportChantierViewModel(
         }
     }
 
-    private suspend  fun loadDataFromDates(dateBeginning: Long, dateEnd: Long) {
+    private suspend fun loadDataFromDates(dateBeginning: Long, dateEnd: Long) {
         var date1 = Instant.ofEpochMilli(dateBeginning).atZone(ZoneId.systemDefault()).toLocalDate()
         var date2 = Instant.ofEpochMilli(dateEnd).atZone(ZoneId.systemDefault()).toLocalDate()
         val listDates = mutableListOf<Date>()
@@ -742,7 +742,7 @@ class AffichageDetailsRapportChantierViewModel(
             "${selectedChantier.value!!.nomChantier} $firstDateOfSheet $lastDateOfSheet.xlsx"
 
         val extStorageDirectory: String =
-            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 .toString()
         val folder = File(
             extStorageDirectory,
@@ -753,8 +753,9 @@ class AffichageDetailsRapportChantierViewModel(
 
         Timber.i("errorExcel $extStorageDirectory ")
 
-        val file = File(extStorageDirectory, fileName)
+        val file = File(extStorageDirectory, fileName.replace(Regex("""[\\/:*?"<>&|]"""), "_"))
         try {
+            Timber.i("TEST%s", fileName.replace("&", "_"))
             file.createNewFile() // creating the file inside the folder
         } catch (e1: IOException) {
             e1.printStackTrace()

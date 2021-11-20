@@ -56,7 +56,7 @@ class ListeChantiersViewModel : ViewModel() {
         Timber.i("GetAllChantiers")
         viewModelScope.launch {
             _listeChantiers.value = chantierRepository.getAllChantiers()
-            _listeChantiersFiltered.value = listeChantiers.value
+            filterListChantiers()
         }
     }
 

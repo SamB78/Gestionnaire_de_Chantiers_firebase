@@ -4,22 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.MainActivityViewModel" />
+
+        <variable
+            name="state"
+            type="com.techphone78.gestionnairedechantiers.utils.State" />
+
+        <import type="android.view.View" />
 
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
-        android:layout_width="match_parent">
+        android:fitsSystemWindows="false">
 
         <LinearLayout
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -35,9 +44,12 @@
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                />
+                app:defaultNavHost="true" />
         </LinearLayout>
+
+        <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state" />
 
         <!-- 2 | NavigationView -->
         <com.google.android.material.navigation.NavigationView
@@ -46,8 +58,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:headerLayout="@layout/logo_header"
-            app:menu="@menu/activity_main_menu_drawer" />
+            app:headerLayout="@layout/logo_header" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

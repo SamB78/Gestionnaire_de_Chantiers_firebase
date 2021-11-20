@@ -39,7 +39,7 @@ class AuthFragment : Fragment() {
                     val signInIntent = googleSignInClient!!.signInIntent
                     startActivityForResult(signInIntent, RC_SIGN_IN)
                 }
-                AuthViewModel.Navigation.PASSAGE_CHOIX_CHANTIER->{
+                AuthViewModel.Navigation.PASSAGE_ECRAN_PRINCIPAL->{
                     val action = AuthFragmentDirections.actionAuthFragmentToListeChantiersFragment()
                     findNavController().navigate(action)
                     viewModel.onButtonClicked()

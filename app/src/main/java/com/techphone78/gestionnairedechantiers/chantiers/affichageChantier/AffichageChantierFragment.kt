@@ -5,7 +5,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.AffichageChantierFragmentBinding
@@ -13,6 +12,11 @@ import com.techphone78.gestionnairedechantiers.rapportChantier.listeRapportsChan
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.tabs.TabLayoutMediator
+import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.ProfileFragment
+import com.techphone78.gestionnairedechantiers.utils.Status
+import kotlinx.android.synthetic.main.error_state.view.*
 
 class AffichageChantierFragment : Fragment() {
 
@@ -20,7 +24,6 @@ class AffichageChantierFragment : Fragment() {
         DetailChantierFragment(),
         ListeRapportsChantierFragment()
     )
-
 
 
     private lateinit var viewModelFactory: AffichageChantierViewModelFactory
@@ -63,6 +66,7 @@ class AffichageChantierFragment : Fragment() {
 
         val binding = AffichageChantierFragmentBinding.inflate(inflater)
         binding.viewModel = viewModel
+        binding.errorState.viewModel = viewModel
         binding.executePendingBindings()
         binding.lifecycleOwner = this
 
@@ -87,6 +91,19 @@ class AffichageChantierFragment : Fragment() {
             }
         }.attach()
 
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
+
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
 
             when (navigation) {
@@ -106,9 +123,12 @@ class AffichageChantierFragment : Fragment() {
                     viewModel.onBoutonClicked()
 
                 }
-                AffichageChantierViewModel.NavigationMenu.EDIT ->{
+                AffichageChantierViewModel.NavigationMenu.EDIT -> {
 
-                    val action = GestionChantierNavGraphDirections.actionGlobalGestionChantierNavGraph(viewModel.chantier.value!!.numeroChantier!!)
+                    val action =
+                        GestionChantierNavGraphDirections.actionGlobalGestionChantierNavGraph(
+                            viewModel.chantier.value!!.numeroChantier!!
+                        )
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }

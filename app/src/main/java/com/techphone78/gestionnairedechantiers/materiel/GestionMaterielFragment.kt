@@ -20,7 +20,11 @@ import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionMaterielFragmentBinding
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -41,6 +45,7 @@ class GestionMaterielFragment : Fragment() {
     ): View {
         val binding = GestionMaterielFragmentBinding.inflate(inflater)
         binding.viewModel = viewModel
+        binding.errorState.viewModel = viewModel
         binding.executePendingBindings()
         binding.lifecycleOwner = this
         viewModel.selectedColorObserver.observe(viewLifecycleOwner, {})
@@ -51,10 +56,21 @@ class GestionMaterielFragment : Fragment() {
         val datePicker = builder.build()
         // set listener when date is selected
         datePicker.addOnPositiveButtonClickListener {
-
-
             viewModel.onDateSelected(Date(it))
         }
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
 
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
             hideKeyboard(activity as MainActivity)
@@ -79,7 +95,8 @@ class GestionMaterielFragment : Fragment() {
                     datePicker.show(activity?.supportFragmentManager!!, "MyTAG")
                     viewModel.onBoutonClicked()
                 }
-                GestionMaterielViewModel.NavigationMenu.EN_ATTENTE -> {}
+                GestionMaterielViewModel.NavigationMenu.EN_ATTENTE -> {
+                }
                 else -> Timber.e("ERROR NAVIGATION GESTIONMATERIELFRAGMENT $navigation")
 
             }

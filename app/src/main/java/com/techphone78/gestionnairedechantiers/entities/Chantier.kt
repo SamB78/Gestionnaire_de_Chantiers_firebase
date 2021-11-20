@@ -19,6 +19,7 @@ data class Chantier(
     var identiteResponsableSite: String = "",
     var numContactResponsableSite: String = "",
     var mailContactResponsableSite: String = "",
+    var accessCode: String? = null,
     @Exclude @set:Exclude @get:Exclude
     var chefChantier: Personnel = Personnel(),
     var typeChantier: Int = 1, // 1 = Chantier 2 = Entretien
@@ -27,7 +28,7 @@ data class Chantier(
     @Exclude @set:Exclude @get:Exclude
     var couleur: Couleur? = null
 
-){
+) {
     companion object {
         fun QueryDocumentSnapshot.toChantierWithoutPersonnel(): Chantier {
             try {
@@ -39,7 +40,8 @@ data class Chantier(
                     identiteResponsableSite = getString("identiteResponsableSite")!!,
                     numContactResponsableSite = getString("numContactResponsableSite")!!,
                     mailContactResponsableSite = getString("mailContactResponsableSite")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt()
+                    typeChantier = getLong("typeChantier")!!.toInt(),
+                    accessCode = getString("accessCode")
 
                 )
 
@@ -59,7 +61,8 @@ data class Chantier(
                     identiteResponsableSite = getString("identiteResponsableSite")!!,
                     numContactResponsableSite = getString("numContactResponsableSite")!!,
                     mailContactResponsableSite = getString("mailContactResponsableSite")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt()
+                    typeChantier = getLong("typeChantier")!!.toInt(),
+                    accessCode = getString("accessCode")
 
                 )
 

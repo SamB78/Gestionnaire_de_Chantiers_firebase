@@ -373,6 +373,7 @@ fun setCouleursAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<
 
 @BindingAdapter("backgroundColor")
 fun setBackGroundColor(view: View, color: String?) {
+    view.background = null
     color?.let {
         view.setBackgroundColor(Color.parseColor(color))
     }

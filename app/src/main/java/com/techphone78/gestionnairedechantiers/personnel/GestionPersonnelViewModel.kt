@@ -6,20 +6,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techphone78.gestionnairedechantiers.entities.Personnel
 import com.techphone78.gestionnairedechantiers.firebase.PersonnelRepository
+import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class GestionPersonnelViewModel : ViewModel() {
+class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
 
     enum class NavigationMenu {
-
         ENREGISTREMENT_PERSONNEL,
         EN_ATTENTE,
         AJOUT_PHOTO,
-        ANNULATION,
         EDIT_PERSONNEL
     }
 
@@ -51,31 +52,41 @@ class GestionPersonnelViewModel : ViewModel() {
     var personnel = MutableLiveData<Personnel?>(Personnel())
     var imagePersonnel = MutableLiveData<String?>(null)
 
+    var state = MutableLiveData(State(Status.LOADING))
+    private var typeView: State.TypeView? = null
+
     init {
         getAllPersonnel()
     }
 
-    private fun getAllPersonnel(){
+    private fun getAllPersonnel() {
         viewModelScope.launch {
-            _listePersonnel.value = personnelRepository.getAllPersonnel()
-            _listePersonnelFiltered.value = listePersonnel.value
+
+            state.value = State.loading()
+            try {
+                _listePersonnel.value = personnelRepository.getAllPersonnel()
+                filterListPersonnel()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
         }
     }
 
-    fun onClickBoutonAjoutPersonnel(){
+    fun onClickBoutonAjoutPersonnel() {
         _navigationPersonnel.value =
             NavigationMenu.EDIT_PERSONNEL
         this.personnel.value = Personnel()
     }
 
-    fun onClickEditPersonnel(personnel: Personnel){
+    fun onClickEditPersonnel(personnel: Personnel) {
         _navigationPersonnel.value =
             NavigationMenu.EDIT_PERSONNEL
         this.personnel.value = personnel.copy()
 
-        if(this.personnel.value!!.urlPicturePersonnel.isNullOrEmpty()){
+        if (this.personnel.value!!.urlPicturePersonnel.isNullOrEmpty()) {
             imagePersonnel.value = null
-        }else{
+        } else {
             imagePersonnel.value = this.personnel.value!!.urlPicturePersonnel
         }
 
@@ -109,19 +120,33 @@ class GestionPersonnelViewModel : ViewModel() {
 
     private fun sendNewDataToDB() {
         uiScope.launch {
-            personnelRepository.insertPersonnel(personnel.value!!)
-            getAllPersonnel()
+
+            state.value = State.loading()
+            try {
+                personnelRepository.insertPersonnel(personnel.value!!)
+                getAllPersonnel()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
         }
     }
 
     private fun updateDataInDB() {
         uiScope.launch {
-            personnelRepository.updatePersonnel(personnel.value!!)
-            getAllPersonnel()
+
+            state.value = State.loading()
+            try {
+                personnelRepository.updatePersonnel(personnel.value!!)
+                getAllPersonnel()
+                state.value = State.success()
+            } catch (e: Exception) {
+                state.value = State.error(e.toString())
+            }
         }
     }
 
-    fun onClickAjoutImage(){
+    fun onClickAjoutImage() {
         _navigationPersonnel.value = NavigationMenu.AJOUT_PHOTO
     }
 
@@ -129,34 +154,30 @@ class GestionPersonnelViewModel : ViewModel() {
         imagePersonnel.value = imagePath
     }
 
-    fun onClickDeletePicture(){
+    fun onClickDeletePicture() {
         personnel.value?.urlPicturePersonnel = null
         imagePersonnel.value = ""
-    }
-
-    fun onClickButtonAnnuler() {
-        _navigationPersonnel.value = NavigationMenu.ANNULATION
     }
 
     fun onBoutonClicked() {
         _navigationPersonnel.value = NavigationMenu.EN_ATTENTE
     }
 
-    fun updateSearchFilter(text: String?){
+    fun updateSearchFilter(text: String?) {
         searchFilter.value = text
         filterListPersonnel()
     }
 
-    fun filterListPersonnel(){
+    fun filterListPersonnel() {
         _listePersonnelFiltered.value = emptyList()
         val listeOriginalePersonnel: MutableList<Personnel> = mutableListOf()
         val mutableList = mutableListOf<Personnel>()
 
-        if(enServiceFilter.value!! && archiveFilter.value!!){
+        if (enServiceFilter.value!! && archiveFilter.value!!) {
             listeOriginalePersonnel.addAll(listePersonnel.value!!)
-        }else if(enServiceFilter.value!! && !archiveFilter.value!!){
-            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { it.enService})
-        }else if(!enServiceFilter.value!! && archiveFilter.value!!){
+        } else if (enServiceFilter.value!! && !archiveFilter.value!!) {
+            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { it.enService })
+        } else if (!enServiceFilter.value!! && archiveFilter.value!!) {
             listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { !it.enService })
         }
 
@@ -179,6 +200,18 @@ class GestionPersonnelViewModel : ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
 
+    }
+
+    fun updateTypeView(data: State.TypeView) {
+        typeView = data
+    }
+
+    override fun onClickErrorScreenButton() {
+        when(typeView){
+            State.TypeView.LIST -> TODO()
+            State.TypeView.MANAGEMENT -> TODO()
+            null -> TODO()
+        }
     }
 
 }

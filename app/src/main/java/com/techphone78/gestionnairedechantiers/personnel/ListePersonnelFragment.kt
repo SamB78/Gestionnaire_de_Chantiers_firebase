@@ -11,7 +11,11 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.ListePersonnelFragmentBinding
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
+import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
 
 class ListePersonnelFragment : Fragment() {
@@ -25,8 +29,23 @@ class ListePersonnelFragment : Fragment() {
 
         val binding = ListePersonnelFragmentBinding.inflate(inflater)
         binding.viewModel = viewModel
+        binding.errorState.viewModel = viewModel
         binding.executePendingBindings()
         binding.lifecycleOwner = this
+
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
 
         viewModel.navigationPersonnel.observe(viewLifecycleOwner, { navigation ->
             hideKeyboard(activity as MainActivity)
@@ -55,5 +74,10 @@ class ListePersonnelFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateTypeView(State.TypeView.LIST)
     }
 }

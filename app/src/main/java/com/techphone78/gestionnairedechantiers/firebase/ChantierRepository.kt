@@ -4,6 +4,7 @@ import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.entities.Chantier.Companion.toChantierWithoutPersonnel
 import com.techphone78.gestionnairedechantiers.entities.Personnel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 import com.techphone78.gestionnairedechantiers.firebase.ImagesStorage.Companion.CHANTIER_FOLDER
 import timber.log.Timber
@@ -16,6 +17,7 @@ class ChantierRepository {
 
 
     private val imagesStorage = ImagesStorage()
+    private val authRepository = AuthRepository()
 
     suspend fun insertChantier(chantier: Chantier) {
         try {
@@ -57,6 +59,7 @@ class ChantierRepository {
                 "urlPictureChantier" to chantier.urlPictureChantier,
                 "listEquipe" to listEquipe,
                 "couleur" to chantier.couleur?.colorName,
+                "accessCode" to chantier.accessCode
             )
             Timber.i("date: $data")
 
@@ -75,9 +78,13 @@ class ChantierRepository {
 
     suspend fun getAllChantiers(): List<Chantier> {
 
+        val user = authRepository.getDataUser()
         val list = mutableListOf<Chantier>()
-        val result = db.get()
-            .await()
+        val result: QuerySnapshot = if (user.userData!!.administrateur) {
+            db.get().await()
+        } else {
+            db.whereEqualTo("chefChantier", user.userData!!.documentId).get().await()
+        }
         val colors = colorsRepository.getAllColors()
         for (chantier in result) {
 //            val idChefChantier = chantier.get("chefChantier") as String
