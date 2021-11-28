@@ -3,6 +3,7 @@ package com.techphone78.gestionnairedechantiers.utils
 import android.app.Activity
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import com.techphone78.gestionnairedechantiers.entities.Personnel
 
 fun hideKeyboard(activity: Activity) {
     val inputMethodManager =
@@ -12,7 +13,8 @@ fun hideKeyboard(activity: Activity) {
     val currentFocusedView = activity.currentFocus
     currentFocusedView?.let {
         inputMethodManager.hideSoftInputFromWindow(
-            currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
+        )
     }
 
 
@@ -32,8 +34,9 @@ enum class TypeEntity {
 }
 
 object Flipper {
-    const val LOADING = 0
-    const val CONTENT = 1
+
+    const val CONTENT = 0
+    const val LOADING = 1
     const val ERROR = 2
 }
 
@@ -42,15 +45,15 @@ data class Resource2<out T>(val data: T? = null, val message: String? = null) {
     companion object {
 
         fun <T> success(data: T?): Resource2<T> {
-            return Resource2( data, null)
+            return Resource2(data, null)
         }
 
         fun <T> error(msg: String, data: T?): Resource2<T> {
-            return Resource2( data, msg)
+            return Resource2(data, msg)
         }
 
         fun <T> loading(data: T?): Resource2<T> {
-            return Resource2( data, null)
+            return Resource2(data, null)
         }
 
     }
@@ -74,10 +77,12 @@ data class State(val status: Status, val message: String? = null) {
         }
 
     }
-
-    enum class TypeView {
-        LIST,
-        MANAGEMENT
-    }
-
 }
+
+enum class TypeView {
+    LIST,
+    MANAGEMENT
+}
+
+data class FireStoreResponse<T>(val data: T, val fromCache: Boolean)
+

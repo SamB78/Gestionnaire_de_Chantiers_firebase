@@ -11,6 +11,8 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.FragmentAjoutPersonnelBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.Status
 
 
 class AjoutPersonnelFragment : Fragment() {
@@ -25,6 +27,7 @@ class AjoutPersonnelFragment : Fragment() {
         val binding =
             FragmentAjoutPersonnelBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
+        binding.errorState.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
@@ -40,6 +43,28 @@ class AjoutPersonnelFragment : Fragment() {
                 }
             }
         })
+
+
+
+        viewModel.addablePersonnelState.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
+
+        binding.warningMessage.setOnClickListener {
+            viewModel.initializeDataPersonnelAddable()
+        }
+
+
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {

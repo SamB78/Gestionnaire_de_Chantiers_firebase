@@ -108,24 +108,16 @@ class RapportChantierRepository(idChantier: String) {
     }
 
     suspend fun getRapportChantierById(id: String): RapportChantier {
-        try {
-            val result = db.document(id).get().await()
 
-            if (result != null) {
-
-                return result.toRapportChantier(
-                    personnelRepository,
-                    materielRepository,
-                    materielLocationRepository,
-                    materiauxRepository,
-                    sousTraitanceRepository,
-                    tacheEntretienRepository
-                ) ?: RapportChantier()
-            }
-        } catch (e: java.lang.Exception) {
-            Timber.e("Error get RapportChantier by id $id Firebase: $e")
-        }
-        return RapportChantier()
+        val result = db.document(id).get().await()
+        return result.toRapportChantier(
+            personnelRepository,
+            materielRepository,
+            materielLocationRepository,
+            materiauxRepository,
+            sousTraitanceRepository,
+            tacheEntretienRepository
+        )
     }
 
     suspend fun getListRapportsChantierByListOfDates(listDates: List<Date>): List<RapportChantier> {
@@ -167,7 +159,7 @@ class RapportChantierRepository(idChantier: String) {
         }
     }
 
-    fun updateListePersonnelRC(rapportChantier: RapportChantier): Boolean {
+    suspend fun updateListePersonnelRC(rapportChantier: RapportChantier) {
         val listPersonnel = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listePersonnel) listPersonnel.add(
             ItemWithQuantity(
@@ -182,18 +174,10 @@ class RapportChantierRepository(idChantier: String) {
             "totauxRC.totalMOPersonnel" to rapportChantier.totauxRC.totalMOPersonnel,
             "dataSaved.dataPersonnel" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
+        db.document(rapportChantier.documentId!!).update(updates).await()
     }
 
-    fun updateListeMaterielRC(rapportChantier: RapportChantier): Boolean {
+    suspend fun updateListeMaterielRC(rapportChantier: RapportChantier) {
 
         val listMateriel = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMateriel) listMateriel.add(
@@ -208,20 +192,11 @@ class RapportChantierRepository(idChantier: String) {
             "totauxRC.totalQuantiteMateriel" to rapportChantier.totauxRC.totalQuantiteMateriel,
             "dataSaved.dataMateriel" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
-
+        db.document(rapportChantier.documentId!!).update(updates).await()
 
     }
 
-    fun updateListeMaterielLocationRC(rapportChantier: RapportChantier): Boolean {
+    fun updateListeMaterielLocationRC(rapportChantier: RapportChantier) {
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMaterielLocation) listItems.add(
             ItemWithQuantity(
@@ -235,18 +210,10 @@ class RapportChantierRepository(idChantier: String) {
             "totauxRC.totalQuantiteMateriel" to rapportChantier.totauxRC.totalQuantiteMateriel,
             "dataSaved.dataMaterielLocation" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
+        db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeMateriauxRC(rapportChantier: RapportChantier): Boolean {
+    fun updateListeMateriauxRC(rapportChantier: RapportChantier) {
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMateriaux) listItems.add(
             ItemWithQuantity(
@@ -259,18 +226,10 @@ class RapportChantierRepository(idChantier: String) {
             "totauxRC.totalMateriaux" to rapportChantier.totauxRC.totalMateriaux,
             "dataSaved.dataMateriaux" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
+        db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeSousTraitanceRC(rapportChantier: RapportChantier): Boolean {
+    fun updateListeSousTraitanceRC(rapportChantier: RapportChantier) {
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeSousTraitance) listItems.add(
             ItemWithQuantity(
@@ -283,34 +242,19 @@ class RapportChantierRepository(idChantier: String) {
             "totauxRC.totalSousTraitance" to rapportChantier.totauxRC.totalSousTraitance,
             "dataSaved.dataSousTraitance" to true
         )
+        db.document(rapportChantier.documentId!!).update(updates)
 
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
     }
 
-    fun updateListeAutresInformations(rapportChantier: RapportChantier): Boolean {
+    fun updateListeAutresInformations(rapportChantier: RapportChantier) {
         val updates = hashMapOf(
             "observations" to rapportChantier.observations,
             "dataSaved.dataConformiteChantier" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
+        db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeObservations(rapportChantier: RapportChantier): Boolean {
+    fun updateListeObservations(rapportChantier: RapportChantier) {
 
         Timber.i("listeTachesEntretien2 = ${rapportChantier.tachesEntretien}")
 
@@ -321,15 +265,7 @@ class RapportChantierRepository(idChantier: String) {
             "tachesEntretien" to rapportChantier.tachesEntretien,
             "dataSaved.dataObservations" to true
         )
-
-        return try {
-            db.document(rapportChantier.documentId!!).update(updates)
-            true
-
-        } catch (e: Exception) {
-            Timber.e("Error update RapportChantier data : $e")
-            false
-        }
+        db.document(rapportChantier.documentId!!).update(updates)
     }
 }
 

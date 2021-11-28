@@ -22,9 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/loadingState"
-            layout="@layout/loading_state" />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -131,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:checked="@={viewModel.personnel.enService}"
-                        android:onCheckedChanged="@{(_,i)->viewModel.onChckedSwitchEnserviceChanged(i)}"
+                        android:onCheckedChanged="@{(_,i)->viewModel.onCheckedSwitchEnserviceChanged(i)}"
                         android:text="En service"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -261,6 +259,10 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state" />
 
         <include
             android:id="@+id/errorState"

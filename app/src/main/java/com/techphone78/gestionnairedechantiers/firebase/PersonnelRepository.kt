@@ -1,11 +1,12 @@
 package com.techphone78.gestionnairedechantiers.firebase
 
-import com.google.firebase.firestore.DocumentReference
 import com.techphone78.gestionnairedechantiers.entities.Personnel
 import com.techphone78.gestionnairedechantiers.firebase.ImagesStorage.Companion.PERSONNEL_FOLDER
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.techphone78.gestionnairedechantiers.utils.FireStoreResponse
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
@@ -25,7 +26,6 @@ class PersonnelRepository {
 
         val batch = db.batch()
 
-        try {
             personnel.urlPicturePersonnel?.let {
                 personnel.urlPicturePersonnel = imagesStorage.insertImage(it, PERSONNEL_FOLDER)
             }
@@ -46,28 +46,28 @@ class PersonnelRepository {
             batch.commit()
 
 
-        } catch (e: Exception) {
-            Timber.e("Error insert Personnel Firebase: $e")
-            throw java.lang.Exception("Erreur integration image: $e")
-//            FirebaseCrashlytics.getInstance().log("Error getting user details")
-//            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-//            FirebaseCrashlytics.getInstance().recordException(e)
         }
-    }
 
-    suspend fun getAllPersonnel(): List<Personnel> {
+    suspend fun getAllPersonnel(getServerData: Boolean = false): FireStoreResponse<List<Personnel>> {
 
         val list = mutableListOf<Personnel>()
-        val result = personnelRef.get()
+        Timber.i("Entering getAllPersonnel")
+        var result = personnelRef.get(if (getServerData) Source.SERVER else Source.DEFAULT)
             .await()
-        Timber.i("Result:")
+        Timber.i("result: ${result.isEmpty} outside")
+        if (result.isEmpty && getServerData) {
+            Timber.i("result: ${result.isEmpty} inside")
+            result = personnelRef.get()
+                .await()
+        }
         for (personnel in result) {
             list.add(personnel.toObject(Personnel::class.java))
         }
-        return list
+        return FireStoreResponse(list, result.metadata.isFromCache)
     }
 
-    suspend fun getAllAddablePersonnel(): List<Personnel> {
+
+    suspend fun getAllAddablePersonnel(): FireStoreResponse<List<Personnel>> {
 
         val list = mutableListOf<Personnel>()
         val result = personnelRef.whereEqualTo("enService", true).get()
@@ -76,14 +76,14 @@ class PersonnelRepository {
         for (personnel in result) {
             list.add(personnel.toObject(Personnel::class.java))
         }
-        return list
+        return FireStoreResponse(list, result.metadata.isFromCache)
 
     }
 
     suspend fun updatePersonnel(personnel: Personnel) {
 
         val batch = db.batch();
-        try {
+
             val oldPersonnel = getPersonnelById(personnel.documentId!!)
             if (oldPersonnel!!.mail !== personnel.mail && oldPersonnel!!.mail.isNotEmpty()) {
                 batch.delete(userRef.document(oldPersonnel.mail))
@@ -106,10 +106,7 @@ class PersonnelRepository {
             batch.commit().await()
 
             Timber.i("Personnel Updated with success")
-        } catch (e: Exception) {
-            Timber.e("Error update Personnel Firebase: $e")
         }
-    }
 
     suspend fun getPersonnelById(id: String): Personnel? {
         return personnelRef.document(id).get().await()

@@ -9,18 +9,12 @@ class SousTraitanceRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("sousTraitance")
 
-    suspend fun insertSousTraitance(sousTraitance: SousTraitance): String? {
-       return try {
-            val test = db.add(sousTraitance).await()
-            Timber.i("SousTraitance envoyé Firebase")
-           test.id
-        } catch (e: Exception) {
-            Timber.e("Error insert SousTraitance Firebase")
-//            FirebaseCrashlytics.getInstance().log("Error getting user details")
-//            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-//            FirebaseCrashlytics.getInstance().recordException(e)
-           null
-        }
+    suspend fun insertSousTraitance(sousTraitance: SousTraitance): String {
+
+        val test = db.add(sousTraitance).await()
+        Timber.i("SousTraitance envoyé Firebase")
+        return test.id
+
     }
 
     suspend fun getAllSousTraitance(): List<SousTraitance> {
@@ -37,14 +31,10 @@ class SousTraitanceRepository {
     }
 
     suspend fun updateSousTraitance(sousTraitance: SousTraitance) {
-        try {
             db.document(sousTraitance.documentId!!)
                 .set(sousTraitance)
                 .await()
             Timber.i("SousTraitance Updated with success")
-        } catch (e: Exception) {
-            Timber.e("Error update SousTraitance Firebase: $e")
-        }
     }
 
     suspend fun getSousTraitanceById(id: String): SousTraitance? {
@@ -52,17 +42,9 @@ class SousTraitanceRepository {
             .toObject(SousTraitance::class.java)
     }
 
-    suspend fun deleteSousTraitance(item: SousTraitance): Boolean {
-        return try {
-            db.document(item.documentId!!).delete().await()
-            Timber.i("SousTratiance envoyé Firebase")
-            true
-        } catch (e: Exception) {
-            Timber.e("Error insert SousTraitance Firebase")
-            //            FirebaseCrashlytics.getInstance().log("Error getting user details")
-            //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-            //            FirebaseCrashlytics.getInstance().recordException(e)
-            false
-        }
+    suspend fun deleteSousTraitance(item: SousTraitance) {
+
+        db.document(item.documentId!!).delete().await()
+        Timber.i("SousTratiance envoyé Firebase")
     }
 }

@@ -7,6 +7,8 @@
 
         <import type="com.techphone78.gestionnairedechantiers.R" />
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.personnel.GestionPersonnelViewModel" />
@@ -18,9 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/loadingState"
-            layout="@layout/loading_state" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -100,6 +99,21 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/warningMessage"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#80EE8074"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:text="Données locales, cliquez pour actualiser depuis le serveur"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.fromCache? View.VISIBLE: View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/personnelListe"
                 android:layout_width="match_parent"
@@ -110,14 +124,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/searchLayout"
+                app:layout_constraintTop_toBottomOf="@+id/warningMessage"
                 app:vm="@{viewModel}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state" />
+
+        <include
             android:id="@+id/errorState"
-            layout="@layout/error_state"/>
+            layout="@layout/error_state" />
 
     </ViewFlipper>
 </layout>

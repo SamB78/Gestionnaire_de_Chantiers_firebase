@@ -8,10 +8,8 @@ import com.techphone78.gestionnairedechantiers.firebase.MaterielRepository
 import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
 import com.techphone78.gestionnairedechantiers.utils.State
 import com.techphone78.gestionnairedechantiers.utils.Status
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.techphone78.gestionnairedechantiers.utils.TypeView
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.*
 
@@ -33,11 +31,7 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
 
     //Repo
     private val materielRepository = MaterielRepository()
-    private val couleurRepository = CouleurRepository()
 
-    //Coroutines
-    private val viewModelJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val listTypeMateriel = listOf(
         "Camions/Utilitaires",
@@ -73,6 +67,11 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
 
     var state = MutableLiveData(State(Status.LOADING))
 
+    private var _fromCache = MutableLiveData<Boolean>(false)
+    val fromCache: LiveData<Boolean>
+        get() = _fromCache
+    private lateinit var typeView: TypeView
+
     var selectedColor = MutableLiveData("")
     val selectedColorObserver = Transformations.map(selectedColor) {
         searchColor(it)
@@ -87,17 +86,15 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
 
 
     init {
-        getAllMateriel()
+        showMaterielList()
     }
 
-    private fun getAllMateriel() {
+
+    private fun showMaterielList(getServerData: Boolean = false) {
         viewModelScope.launch {
             state.value = State.loading()
             try {
-                _listeMateriel.value = materielRepository.getAllMateriel()
-                Timber.i("couleur: ${_listeMateriel.value}")
-                filterListMateriel()
-                _listCouleurs.value = couleurRepository.getAllColors()
+                getAllMateriel(getServerData)
                 state.value = State.success()
             } catch (e: Exception) {
                 state.value = State.error(e.toString())
@@ -105,7 +102,18 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
         }
     }
 
-    fun onClickBoutonAjoutMateriel() {
+    private suspend fun getAllMateriel(getServerData: Boolean = false) {
+        val result = withContext(Dispatchers.IO) {
+            materielRepository.getAllMateriel()
+        }
+        _listeMateriel.value = result.data
+        filterListMateriel()
+        _fromCache.value = result.fromCache
+
+    }
+
+
+    fun onClickButtonAjoutMateriel() {
         _navigationMateriel.value =
             NavigationMenu.EDIT_MATERIEL
         materiel.value = Materiel()
@@ -130,42 +138,27 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
 
     fun onClickButtonCreationOrModificationEnded() {
 
-
-        materiel.value?.urlPictureMateriel = imageMateriel.value
-        if (materiel.value?.documentId == null) sendNewDataToDB()
-        else updateDataInDB()
-
-        _navigationMateriel.value = NavigationMenu.ENREGISTREMENT_MATERIEL
-    }
-
-    private fun sendNewDataToDB() {
-        uiScope.launch {
-
-            state.value = State.loading()
+        state.value = State.loading()
+        viewModelScope.launch {
             try {
-                materielRepository.insertMateriel(materiel.value!!)
+                materiel.value?.urlPictureMateriel = imageMateriel.value
+                if (materiel.value?.documentId == null) sendNewDataToDB()
+                else updateDataInDB()
                 getAllMateriel()
+                _navigationMateriel.value = NavigationMenu.ENREGISTREMENT_MATERIEL
                 state.value = State.success()
             } catch (e: Exception) {
                 state.value = State.error(e.toString())
             }
-
-
         }
     }
 
-    private fun updateDataInDB() {
-        uiScope.launch {
-            state.value = State.loading()
-            try {
-                materielRepository.updateMateriel(materiel.value!!)
-                getAllMateriel()
-                state.value = State.success()
-            } catch (e: Exception) {
-                state.value = State.error(e.toString())
-            }
+    private suspend fun sendNewDataToDB() = withContext(Dispatchers.IO) {
+        materielRepository.insertMateriel(materiel.value!!)
+    }
 
-        }
+    private suspend fun updateDataInDB() = withContext(Dispatchers.IO) {
+        materielRepository.updateMateriel(materiel.value!!)
     }
 
     fun onClickAjoutImage() {
@@ -242,15 +235,20 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
         _listeMaterielFiltered.value = mutableList
     }
 
-    // onCleared()
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-
+    override fun onClickErrorScreenButton() {
+        when (typeView) {
+            TypeView.LIST -> showMaterielList()
+            TypeView.MANAGEMENT -> state.value =
+                State.success() // Provisoire, il faudrait un affichage plus propre
+        }
     }
 
-    override fun onClickErrorScreenButton() {
-        TODO("Not yet implemented")
+    fun reloadDataFromServer() {
+        showMaterielList(true)
+    }
+
+    fun updateTypeView(data: TypeView) {
+        typeView = data
     }
 
 }

@@ -31,7 +31,6 @@ data class Chantier(
 ) {
     companion object {
         fun QueryDocumentSnapshot.toChantierWithoutPersonnel(): Chantier {
-            try {
                 return Chantier(
                     numeroChantier = id,
                     nomChantier = getString("nomChantier")!!,
@@ -44,15 +43,9 @@ data class Chantier(
                     accessCode = getString("accessCode")
 
                 )
-
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return Chantier()
-            }
         }
 
         fun DocumentSnapshot.toChantierWithoutPersonnel(): Chantier {
-            try {
                 return Chantier(
                     numeroChantier = id,
                     nomChantier = getString("nomChantier")!!,
@@ -65,11 +58,6 @@ data class Chantier(
                     accessCode = getString("accessCode")
 
                 )
-
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return Chantier()
-            }
         }
     }
 }

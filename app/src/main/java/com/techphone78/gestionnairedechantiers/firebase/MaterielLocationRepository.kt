@@ -1,5 +1,7 @@
 package com.techphone78.gestionnairedechantiers.firebase
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.techphone78.gestionnairedechantiers.entities.MaterielLocation
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -9,32 +11,16 @@ class MaterielLocationRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("materielLocation")
 
-    suspend fun insertMaterielLocation(materielLocation: MaterielLocation): String? {
-        return try {
-            val test = db.add(materielLocation).await()
-            Timber.i("MaterielLocation envoyé Firebase")
-            test.id
-        } catch (e: Exception) {
-            Timber.e("Error insert MaterielLocation Firebase")
-    //            FirebaseCrashlytics.getInstance().log("Error getting user details")
-    //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-    //            FirebaseCrashlytics.getInstance().recordException(e)
-             null
-        }
+    suspend fun insertMaterielLocation(materielLocation: MaterielLocation): String {
+
+        val test = db.add(materielLocation).await()
+        Timber.i("MaterielLocation envoyé Firebase")
+        return test.id
     }
 
-    suspend fun deleteMaterielLocation(materielLocation: MaterielLocation): Boolean {
-        return try {
-            db.document(materielLocation.documentId!!).delete().await()
-            Timber.i("MaterielLocation envoyé Firebase")
-            true
-        } catch (e: Exception) {
-            Timber.e("Error insert MaterielLocation Firebase")
-            //            FirebaseCrashlytics.getInstance().log("Error getting user details")
-            //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-            //            FirebaseCrashlytics.getInstance().recordException(e)
-            false
-        }
+    suspend fun deleteMaterielLocation(materielLocation: MaterielLocation) {
+        db.document(materielLocation.documentId!!).delete().await()
+        Timber.i("MaterielLocation envoyé Firebase")
     }
 
     suspend fun getAllMaterielLocation(): List<MaterielLocation> {
@@ -51,14 +37,11 @@ class MaterielLocationRepository {
     }
 
     suspend fun updateMaterielLocation(materielLocation: MaterielLocation) {
-        try {
-            db.document(materielLocation.documentId!!)
-                .set(materielLocation)
-                .await()
-            Timber.i("MaterielLocation Updated with success")
-        } catch (e: Exception) {
-            Timber.e("Error update MaterielLocation Firebase: $e")
-        }
+        db.document(materielLocation.documentId!!)
+            .set(materielLocation)
+            .await()
+        Timber.i("MaterielLocation Updated with success")
+
     }
 
     suspend fun getMaterielLocationById(id: String): MaterielLocation? {

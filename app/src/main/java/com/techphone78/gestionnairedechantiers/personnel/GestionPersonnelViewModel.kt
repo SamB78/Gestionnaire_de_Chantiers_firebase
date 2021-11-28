@@ -9,11 +9,8 @@ import com.techphone78.gestionnairedechantiers.firebase.PersonnelRepository
 import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
 import com.techphone78.gestionnairedechantiers.utils.State
 import com.techphone78.gestionnairedechantiers.utils.Status
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.techphone78.gestionnairedechantiers.utils.TypeView
+import kotlinx.coroutines.*
 
 class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
 
@@ -33,9 +30,6 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
     //Repo
     private val personnelRepository = PersonnelRepository()
 
-    //Coroutines
-    private val viewModelJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private val _listePersonnel = MutableLiveData<List<Personnel>>(emptyList())
     val listePersonnel: LiveData<List<Personnel>>
@@ -52,25 +46,39 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
     var personnel = MutableLiveData<Personnel?>(Personnel())
     var imagePersonnel = MutableLiveData<String?>(null)
 
-    var state = MutableLiveData(State(Status.LOADING))
-    private var typeView: State.TypeView? = null
+    private var _state = MutableLiveData(State(Status.LOADING))
+    val state: LiveData<State>
+        get() = _state
+    private var _fromCache = MutableLiveData<Boolean>(false)
+    val fromCache: LiveData<Boolean>
+        get() = _fromCache
+    private lateinit var typeView: TypeView
 
     init {
-        getAllPersonnel()
+        showPersonnelList()
     }
 
-    private fun getAllPersonnel() {
-        viewModelScope.launch {
 
-            state.value = State.loading()
+    private fun showPersonnelList(getServerData: Boolean = false) {
+        viewModelScope.launch {
+            _state.value = State.loading()
             try {
-                _listePersonnel.value = personnelRepository.getAllPersonnel()
-                filterListPersonnel()
-                state.value = State.success()
+                getAllPersonnel(getServerData)
+                _state.value = State.success()
             } catch (e: Exception) {
-                state.value = State.error(e.toString())
+                _state.value = State.error(e.toString())
             }
         }
+    }
+
+    private suspend fun getAllPersonnel(getServerData: Boolean = false) {
+        val result = withContext(Dispatchers.IO) {
+            personnelRepository.getAllPersonnel()
+        }
+        _listePersonnel.value = result.data
+        filterListPersonnel()
+        _fromCache.value = result.fromCache
+
     }
 
     fun onClickBoutonAjoutPersonnel() {
@@ -92,7 +100,7 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
 
     }
 
-    fun onChckedSwitchEnserviceChanged(check: Boolean) {
+    fun onCheckedSwitchEnserviceChanged(check: Boolean) {
         personnel.value?.enService = check
     }
 
@@ -110,40 +118,27 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
 
     fun onClickButtonCreationOrModificationEnded() {
 
-        Timber.i("personnel ready to save in DB = ${personnel.value?.prenom}")
-        personnel.value?.urlPicturePersonnel = imagePersonnel.value
-        if (personnel.value?.documentId == null) sendNewDataToDB()
-        else updateDataInDB()
-
-        _navigationPersonnel.value = NavigationMenu.ENREGISTREMENT_PERSONNEL
-    }
-
-    private fun sendNewDataToDB() {
-        uiScope.launch {
-
-            state.value = State.loading()
+        _state.value = State.loading()
+        viewModelScope.launch {
             try {
-                personnelRepository.insertPersonnel(personnel.value!!)
+                personnel.value?.urlPicturePersonnel = imagePersonnel.value
+                if (personnel.value?.documentId == null) sendNewDataToDB()
+                else updateDataInDB()
                 getAllPersonnel()
-                state.value = State.success()
+                _navigationPersonnel.value = NavigationMenu.ENREGISTREMENT_PERSONNEL
+                _state.value = State.success()
             } catch (e: Exception) {
-                state.value = State.error(e.toString())
+                _state.value = State.error(e.toString())
             }
         }
     }
 
-    private fun updateDataInDB() {
-        uiScope.launch {
+    private suspend fun sendNewDataToDB() = withContext(Dispatchers.IO) {
+        personnelRepository.insertPersonnel(personnel.value!!)
+    }
 
-            state.value = State.loading()
-            try {
-                personnelRepository.updatePersonnel(personnel.value!!)
-                getAllPersonnel()
-                state.value = State.success()
-            } catch (e: Exception) {
-                state.value = State.error(e.toString())
-            }
-        }
+    private suspend fun updateDataInDB() = withContext(Dispatchers.IO) {
+        personnelRepository.updatePersonnel(personnel.value!!)
     }
 
     fun onClickAjoutImage() {
@@ -170,19 +165,19 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
 
     fun filterListPersonnel() {
         _listePersonnelFiltered.value = emptyList()
-        val listeOriginalePersonnel: MutableList<Personnel> = mutableListOf()
+        val originalList: MutableList<Personnel> = mutableListOf()
         val mutableList = mutableListOf<Personnel>()
 
         if (enServiceFilter.value!! && archiveFilter.value!!) {
-            listeOriginalePersonnel.addAll(listePersonnel.value!!)
+            originalList.addAll(listePersonnel.value!!)
         } else if (enServiceFilter.value!! && !archiveFilter.value!!) {
-            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { it.enService })
+            originalList.addAll(listePersonnel.value!!.filter { it.enService })
         } else if (!enServiceFilter.value!! && archiveFilter.value!!) {
-            listeOriginalePersonnel.addAll(listePersonnel.value!!.filter { !it.enService })
+            originalList.addAll(listePersonnel.value!!.filter { !it.enService })
         }
 
         if (!searchFilter.value.isNullOrEmpty()) {
-            listeOriginalePersonnel.filter {
+            originalList.filter {
                 it.nom.contains(searchFilter.value!!, true)
                         ||
                         it.prenom.contains(searchFilter.value!!, true)
@@ -190,28 +185,25 @@ class GestionPersonnelViewModel : ViewModel(), ParentViewModel {
                 mutableList.add(it)
             }
         } else {
-            mutableList.addAll(listeOriginalePersonnel)
+            mutableList.addAll(originalList)
         }
         _listePersonnelFiltered.value = mutableList
     }
 
-    // onCleared()
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-
-    }
-
-    fun updateTypeView(data: State.TypeView) {
+    fun updateTypeView(data: TypeView) {
         typeView = data
     }
 
     override fun onClickErrorScreenButton() {
-        when(typeView){
-            State.TypeView.LIST -> TODO()
-            State.TypeView.MANAGEMENT -> TODO()
-            null -> TODO()
+        when (typeView) {
+            TypeView.LIST -> showPersonnelList()
+            TypeView.MANAGEMENT -> _state.value =
+                State.success() // Provisoire, il faudrait un affichage plus propre
         }
+    }
+
+    fun reloadDataFromServer() {
+        showPersonnelList(true)
     }
 
 }

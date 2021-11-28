@@ -9,18 +9,10 @@ class MateriauxRepository {
 
     private val db = FirebaseFirestore.getInstance().collection("materiaux")
 
-    suspend fun insertMateriaux(materiaux: Materiaux): String? {
-        return try {
-            val test = db.add(materiaux).await()
-            Timber.i("Materiaux envoyé Firebase")
-            test.id
-        } catch (e: Exception) {
-            Timber.e("Error insert Materiaux Firebase")
-//            FirebaseCrashlytics.getInstance().log("Error getting user details")
-//            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-//            FirebaseCrashlytics.getInstance().recordException(e)
-            null
-        }
+    suspend fun insertMateriaux(materiaux: Materiaux): String {
+        val test = db.add(materiaux).await()
+        Timber.i("Materiaux envoyé Firebase")
+        return test.id
     }
 
     suspend fun getAllMateriaux(): List<Materiaux> {
@@ -37,14 +29,10 @@ class MateriauxRepository {
     }
 
     suspend fun updateMateriaux(materiaux: Materiaux) {
-        try {
-            db.document(materiaux.documentId!!)
-                .set(materiaux)
-                .await()
-            Timber.i("Materiaux Updated with success")
-        } catch (e: Exception) {
-            Timber.e("Error update Materiaux Firebase: $e")
-        }
+        db.document(materiaux.documentId!!)
+            .set(materiaux)
+            .await()
+        Timber.i("Materiaux Updated with success")
     }
 
     suspend fun getMateriauxById(id: String): Materiaux? {
@@ -53,18 +41,10 @@ class MateriauxRepository {
     }
 
 
-    suspend fun deleteMateriaux(materiaux: Materiaux): Boolean {
-        return try {
-            db.document(materiaux.documentId!!).delete().await()
-            Timber.i("MaterielLocation envoyé Firebase")
-            true
-        } catch (e: Exception) {
-            Timber.e("Error insert MaterielLocation Firebase")
-            //            FirebaseCrashlytics.getInstance().log("Error getting user details")
-            //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-            //            FirebaseCrashlytics.getInstance().recordException(e)
-            false
-        }
+    suspend fun deleteMateriaux(materiaux: Materiaux) {
+
+        db.document(materiaux.documentId!!).delete().await()
+        Timber.i("MaterielLocation envoyé Firebase")
     }
 
 

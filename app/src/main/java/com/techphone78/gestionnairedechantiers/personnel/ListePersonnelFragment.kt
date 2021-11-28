@@ -11,11 +11,7 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.ListePersonnelFragmentBinding
-import com.techphone78.gestionnairedechantiers.utils.Flipper
-import com.techphone78.gestionnairedechantiers.utils.State
-import com.techphone78.gestionnairedechantiers.utils.Status
-import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
-import kotlinx.android.synthetic.main.error_state.view.*
+import com.techphone78.gestionnairedechantiers.utils.*
 import timber.log.Timber
 
 class ListePersonnelFragment : Fragment() {
@@ -46,6 +42,10 @@ class ListePersonnelFragment : Fragment() {
                 }
             }
         })
+
+        binding.warningMessage.setOnClickListener {
+            viewModel.reloadDataFromServer()
+        }
 
         viewModel.navigationPersonnel.observe(viewLifecycleOwner, { navigation ->
             hideKeyboard(activity as MainActivity)
@@ -78,6 +78,6 @@ class ListePersonnelFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateTypeView(State.TypeView.LIST)
+        viewModel.updateTypeView(TypeView.LIST)
     }
 }

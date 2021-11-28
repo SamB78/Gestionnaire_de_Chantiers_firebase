@@ -38,7 +38,7 @@ data class RapportChantier(
 
     companion object {
         fun QueryDocumentSnapshot.toRapportChantierWithoutAllData(): RapportChantier {
-            try {
+
 
 //                val listeMaterielLocation = mutableListOf<MaterielLocation>()
 //                for (it in get("listeMaterielLocation") as List<*>) {
@@ -59,53 +59,42 @@ data class RapportChantier(
 //                    listeTachesEntretien.add(it as TacheEntretien)
 //                }
 
-                return RapportChantier(
-                    documentId = id,
-                    chantierId = getString("chantierId")!!,
-                    dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
+            return RapportChantier(
+                documentId = id,
+                chantierId = getString("chantierId")!!,
+                dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
 //                    listeMaterielLocation = listeMaterielLocation,
 //                    listeMateriaux = listeMateriaux,
 //                    listeSousTraitance = listeSousTraitance,
-                    observations = get("observations", Observations::class.java) ?: Observations(),
-                    commentaire = getString("commentaire")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    traitementPhytosanitaire = get(
-                        "traitementPhytosanitaire",
-                        TraitementPhytosanitaire::class.java
-                    )!!,
+                observations = get("observations", Observations::class.java) ?: Observations(),
+                commentaire = getString("commentaire")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                traitementPhytosanitaire = get(
+                    "traitementPhytosanitaire",
+                    TraitementPhytosanitaire::class.java
+                )!!,
 //                    tachesEntretien = listeTachesEntretien,
-                    totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
-                    meteo = get("meteo", Meteo::class.java)!!
-                )
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return RapportChantier()
-            }
+                totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
+                meteo = get("meteo", Meteo::class.java)!!
+            )
         }
 
         fun DocumentSnapshot.toRapportChantierWithoutAllData(): RapportChantier {
-            try {
-
-
-                return RapportChantier(
-                    documentId = id,
-                    chantierId = getString("chantierId")!!,
-                    dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
-                    observations = get("observations", Observations::class.java) ?: Observations(),
-                    commentaire = getString("commentaire")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    traitementPhytosanitaire = get(
-                        "traitementPhytosanitaire",
-                        TraitementPhytosanitaire::class.java
-                    )!!,
-                    totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
-                    meteo = get("meteo", Meteo::class.java)!!,
-                    dataSaved = get("dataSaved", DataSaved::class.java)!!
-                )
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return RapportChantier()
-            }
+            return RapportChantier(
+                documentId = id,
+                chantierId = getString("chantierId")!!,
+                dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
+                observations = get("observations", Observations::class.java) ?: Observations(),
+                commentaire = getString("commentaire")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                traitementPhytosanitaire = get(
+                    "traitementPhytosanitaire",
+                    TraitementPhytosanitaire::class.java
+                )!!,
+                totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
+                meteo = get("meteo", Meteo::class.java)!!,
+                dataSaved = get("dataSaved", DataSaved::class.java)!!
+            )
         }
 
         suspend fun DocumentSnapshot.toRapportChantier(
@@ -115,106 +104,98 @@ data class RapportChantier(
             materiauxRepository: MateriauxRepository,
             sousTraitanceRepository: SousTraitanceRepository,
             tacheEntretienRepository: TacheEntretienRepository
-        ): RapportChantier? {
-            try {
-                val listPersonnel = mutableListOf<Personnel>()
-                for (item in get("listePersonnel") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    personnelRepository.getPersonnelById(resultItem.id)?.let {
-                        it.nbHeuresTravaillees = resultItem.nb.toInt()
-                        listPersonnel.add(it)
-                    }
+        ): RapportChantier {
+            val listPersonnel = mutableListOf<Personnel>()
+            for (item in get("listePersonnel") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                personnelRepository.getPersonnelById(resultItem.id)?.let {
+                    it.nbHeuresTravaillees = resultItem.nb.toInt()
+                    listPersonnel.add(it)
                 }
-
-
-                val listMateriel = mutableListOf<Materiel>()
-                for (item in get("listeMateriel") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materielRepository.getMaterielById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMateriel.add(it)
-                    }
-                }
-
-                val listMaterielLocation = mutableListOf<MaterielLocation>()
-                for (item in get("listeMaterielLocation") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materielLocationRepository.getMaterielLocationById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMaterielLocation.add(it)
-                    }
-                }
-
-                val listMateriaux = mutableListOf<Materiaux>()
-                for (item in get("listeMateriaux") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materiauxRepository.getMateriauxById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMateriaux.add(it)
-                    }
-                }
-
-                val listSousTraitance = mutableListOf<SousTraitance>()
-                for (item in get("listeSousTraitance") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    sousTraitanceRepository.getSousTraitanceById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listSousTraitance.add(it)
-                    }
-                }
-
-                val listeOriginale = tacheEntretienRepository.getAllTacheEntretien()
-                val listeTachesEntretien = mutableListOf<TacheEntretien>()
-
-                for (item in get("tachesEntretien") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = TacheEntretien(
-                        item["description"] as String,
-                        item["type"] as String,
-                        item["checked"] as Boolean
-                    )
-                    listeTachesEntretien.add(resultItem)
-                }
-
-                for (tacheEntretien in listeOriginale) {
-                    if (listeTachesEntretien.find { it.type == tacheEntretien.type } == null) {
-                        listeTachesEntretien.add(tacheEntretien)
-                    }
-                }
-
-                return RapportChantier(
-                    documentId = id,
-                    chantierId = getString("chantierId")!!,
-                    dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
-                    listePersonnel = listPersonnel,
-                    listeMateriel = listMateriel,
-                    listeMaterielLocation = listMaterielLocation,
-                    listeMateriaux = listMateriaux,
-                    listeSousTraitance = listSousTraitance,
-                    observations = get("observations", Observations::class.java) ?: Observations(),
-                    commentaire = getString("commentaire")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    traitementPhytosanitaire = get(
-                        "traitementPhytosanitaire",
-                        TraitementPhytosanitaire::class.java
-                    )!!,
-                    tachesEntretien = listeTachesEntretien,
-                    totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
-                    meteo = get("meteo", Meteo::class.java)!!,
-                    dataSaved = get("dataSaved", DataSaved::class.java)!!
-                )
-
-
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return null
             }
 
+
+            val listMateriel = mutableListOf<Materiel>()
+            for (item in get("listeMateriel") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materielRepository.getMaterielById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMateriel.add(it)
+                }
+            }
+
+            val listMaterielLocation = mutableListOf<MaterielLocation>()
+            for (item in get("listeMaterielLocation") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materielLocationRepository.getMaterielLocationById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMaterielLocation.add(it)
+                }
+            }
+
+            val listMateriaux = mutableListOf<Materiaux>()
+            for (item in get("listeMateriaux") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materiauxRepository.getMateriauxById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMateriaux.add(it)
+                }
+            }
+
+            val listSousTraitance = mutableListOf<SousTraitance>()
+            for (item in get("listeSousTraitance") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                sousTraitanceRepository.getSousTraitanceById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listSousTraitance.add(it)
+                }
+            }
+
+            val listeOriginale = tacheEntretienRepository.getAllTacheEntretien()
+            val listeTachesEntretien = mutableListOf<TacheEntretien>()
+
+            for (item in get("tachesEntretien") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = TacheEntretien(
+                    item["description"] as String,
+                    item["type"] as String,
+                    item["checked"] as Boolean
+                )
+                listeTachesEntretien.add(resultItem)
+            }
+
+            for (tacheEntretien in listeOriginale) {
+                if (listeTachesEntretien.find { it.type == tacheEntretien.type } == null) {
+                    listeTachesEntretien.add(tacheEntretien)
+                }
+            }
+
+            return RapportChantier(
+                documentId = id,
+                chantierId = getString("chantierId")!!,
+                dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
+                listePersonnel = listPersonnel,
+                listeMateriel = listMateriel,
+                listeMaterielLocation = listMaterielLocation,
+                listeMateriaux = listMateriaux,
+                listeSousTraitance = listSousTraitance,
+                observations = get("observations", Observations::class.java) ?: Observations(),
+                commentaire = getString("commentaire")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                traitementPhytosanitaire = get(
+                    "traitementPhytosanitaire",
+                    TraitementPhytosanitaire::class.java
+                )!!,
+                tachesEntretien = listeTachesEntretien,
+                totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
+                meteo = get("meteo", Meteo::class.java)!!,
+                dataSaved = get("dataSaved", DataSaved::class.java)!!
+            )
 
         }
 
@@ -225,109 +206,102 @@ data class RapportChantier(
             materiauxRepository: MateriauxRepository,
             sousTraitanceRepository: SousTraitanceRepository,
             tacheEntretienRepository: TacheEntretienRepository
-        ): RapportChantier? {
-            try {
-                val listPersonnel = mutableListOf<Personnel>()
-                for (item in get("listePersonnel") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    personnelRepository.getPersonnelById(resultItem.id)?.let {
-                        it.nbHeuresTravaillees = resultItem.nb.toInt()
-                        listPersonnel.add(it)
-                    }
+        ): RapportChantier {
+
+            val listPersonnel = mutableListOf<Personnel>()
+            for (item in get("listePersonnel") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                personnelRepository.getPersonnelById(resultItem.id)?.let {
+                    it.nbHeuresTravaillees = resultItem.nb.toInt()
+                    listPersonnel.add(it)
                 }
-
-
-                val listMateriel = mutableListOf<Materiel>()
-                for (item in get("listeMateriel") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materielRepository.getMaterielById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMateriel.add(it)
-                    }
-                }
-
-                val listMaterielLocation = mutableListOf<MaterielLocation>()
-                for (item in get("listeMaterielLocation") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materielLocationRepository.getMaterielLocationById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMaterielLocation.add(it)
-                    }
-                }
-
-                val listMateriaux = mutableListOf<Materiaux>()
-                for (item in get("listeMateriaux") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    materiauxRepository.getMateriauxById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listMateriaux.add(it)
-                    }
-                }
-
-                val listSousTraitance = mutableListOf<SousTraitance>()
-                for (item in get("listeSousTraitance") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
-                    sousTraitanceRepository.getSousTraitanceById(resultItem.id)?.let {
-                        it.quantite = resultItem.nb.toInt()
-                        listSousTraitance.add(it)
-                    }
-                }
-
-                val listeOriginale = tacheEntretienRepository.getAllTacheEntretien()
-                val listeTachesEntretien = mutableListOf<TacheEntretien>()
-
-                for (item in get("tachesEntretien") as List<*>) {
-                    item as HashMap<*, *>
-                    val resultItem = TacheEntretien(
-                        item["description"] as String,
-                        item["type"] as String,
-                        item["checked"] as Boolean
-                    )
-                    listeTachesEntretien.add(resultItem)
-                }
-
-                for (tacheEntretien in listeOriginale) {
-                    if (listeTachesEntretien.find { it.type == tacheEntretien.type } == null) {
-                        listeTachesEntretien.add(tacheEntretien)
-                    }
-                }
-
-                return RapportChantier(
-                    documentId = id,
-                    chantierId = getString("chantierId")!!,
-                    dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
-                    listePersonnel = listPersonnel,
-                    listeMateriel = listMateriel,
-                    listeMaterielLocation = listMaterielLocation,
-                    listeMateriaux = listMateriaux,
-                    listeSousTraitance = listSousTraitance,
-                    observations = get("observations", Observations::class.java) ?: Observations(),
-                    commentaire = getString("commentaire")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    traitementPhytosanitaire = get(
-                        "traitementPhytosanitaire",
-                        TraitementPhytosanitaire::class.java
-                    )!!,
-                    tachesEntretien = listeTachesEntretien,
-                    totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
-                    meteo = get("meteo", Meteo::class.java)!!,
-                    dataSaved = get("dataSaved", DataSaved::class.java)!!
-                )
-
-
-            } catch (e: Exception) {
-                Timber.e("Error: $e")
-                return null
             }
 
 
-        }
+            val listMateriel = mutableListOf<Materiel>()
+            for (item in get("listeMateriel") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materielRepository.getMaterielById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMateriel.add(it)
+                }
+            }
 
+            val listMaterielLocation = mutableListOf<MaterielLocation>()
+            for (item in get("listeMaterielLocation") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materielLocationRepository.getMaterielLocationById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMaterielLocation.add(it)
+                }
+            }
+
+            val listMateriaux = mutableListOf<Materiaux>()
+            for (item in get("listeMateriaux") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                materiauxRepository.getMateriauxById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listMateriaux.add(it)
+                }
+            }
+
+            val listSousTraitance = mutableListOf<SousTraitance>()
+            for (item in get("listeSousTraitance") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                sousTraitanceRepository.getSousTraitanceById(resultItem.id)?.let {
+                    it.quantite = resultItem.nb.toInt()
+                    listSousTraitance.add(it)
+                }
+            }
+
+            val listeOriginale = tacheEntretienRepository.getAllTacheEntretien()
+            val listeTachesEntretien = mutableListOf<TacheEntretien>()
+
+            for (item in get("tachesEntretien") as List<*>) {
+                item as HashMap<*, *>
+                val resultItem = TacheEntretien(
+                    item["description"] as String,
+                    item["type"] as String,
+                    item["checked"] as Boolean
+                )
+                listeTachesEntretien.add(resultItem)
+            }
+
+            for (tacheEntretien in listeOriginale) {
+                if (listeTachesEntretien.find { it.type == tacheEntretien.type } == null) {
+                    listeTachesEntretien.add(tacheEntretien)
+                }
+            }
+
+            return RapportChantier(
+                documentId = id,
+                chantierId = getString("chantierId")!!,
+                dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
+                listePersonnel = listPersonnel,
+                listeMateriel = listMateriel,
+                listeMaterielLocation = listMaterielLocation,
+                listeMateriaux = listMateriaux,
+                listeSousTraitance = listSousTraitance,
+                observations = get("observations", Observations::class.java) ?: Observations(),
+                commentaire = getString("commentaire")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                traitementPhytosanitaire = get(
+                    "traitementPhytosanitaire",
+                    TraitementPhytosanitaire::class.java
+                )!!,
+                tachesEntretien = listeTachesEntretien,
+                totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
+                meteo = get("meteo", Meteo::class.java)!!,
+                dataSaved = get("dataSaved", DataSaved::class.java)!!
+            )
+
+
+        }
     }
 
 }

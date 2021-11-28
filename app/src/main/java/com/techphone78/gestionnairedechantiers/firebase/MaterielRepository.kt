@@ -3,6 +3,7 @@ package com.techphone78.gestionnairedechantiers.firebase
 import com.techphone78.gestionnairedechantiers.entities.Materiel
 import com.techphone78.gestionnairedechantiers.firebase.ImagesStorage.Companion.MATERIEL_FOLDER
 import com.google.firebase.firestore.FirebaseFirestore
+import com.techphone78.gestionnairedechantiers.utils.FireStoreResponse
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
@@ -13,7 +14,7 @@ class MaterielRepository {
     private val colorsRepository = CouleurRepository()
 
     suspend fun insertMateriel(materiel: Materiel) {
-        try {
+
 
             materiel.urlPictureMateriel?.let {
                 materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
@@ -36,15 +37,9 @@ class MaterielRepository {
 
             db.add(data).await()
             Timber.i("Materiel envoyé Firebase")
-        } catch (e: Exception) {
-            Timber.e("Error insert Materiel Firebase")
-//            FirebaseCrashlytics.getInstance().log("Error getting user details")
-//            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
-//            FirebaseCrashlytics.getInstance().recordException(e)
-        }
     }
 
-    suspend fun getAllMateriel(): List<Materiel> {
+    suspend fun getAllMateriel(getServerData: Boolean = false): FireStoreResponse<List<Materiel>> {
 
         val list = mutableListOf<Materiel>()
         val colors = colorsRepository.getAllColors()
@@ -57,11 +52,11 @@ class MaterielRepository {
             materielConvertToObject.couleur = couleur
             list.add(materielConvertToObject)
         }
-        return list
+        return FireStoreResponse(list, result.metadata.isFromCache)
     }
 
-    suspend fun getAllAddableMateriel(critereChantier: Int): List<Materiel> {
-        val typeChantier: String = if(critereChantier == 1) "materielChantier"
+    suspend fun getAllAddableMateriel(critereChantier: Int): FireStoreResponse<List<Materiel>> {
+        val typeChantier: String = if (critereChantier == 1) "materielChantier"
         else "materielEntretien"
 
         val list = mutableListOf<Materiel>()
@@ -78,13 +73,11 @@ class MaterielRepository {
             materielConvertToObject.couleur = couleur
             list.add(materielConvertToObject)
         }
-        return list
+        return FireStoreResponse(list, result.metadata.isFromCache)
     }
 
 
-
     suspend fun updateMateriel(materiel: Materiel) {
-        try {
 
             materiel.urlPictureMateriel?.let {
                 materiel.urlPictureMateriel = imagesStorage.insertImage(it, MATERIEL_FOLDER)
@@ -108,9 +101,6 @@ class MaterielRepository {
                 .set(data)
                 .await()
             Timber.i("Materiel Updated with success")
-        } catch (e: Exception) {
-            Timber.e("Error update Materiel Firebase: $e")
-        }
     }
 
     suspend fun getMaterielById(id: String): Materiel? {

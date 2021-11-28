@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.databinding.ListeChantiersFragmentBinding
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.Status
 import timber.log.Timber
 
 class ListeChantiersFragment : Fragment() {
@@ -32,7 +34,7 @@ class ListeChantiersFragment : Fragment() {
                     val action =
                         GestionChantierNavGraphDirections.actionGlobalGestionChantierNavGraph(null)
                     findNavController().navigate(action)
-                    viewModel.onBoutonClicked()
+                    viewModel.onButtonClicked()
                 }
                 ListeChantiersViewModel.navigationMenu.MODIFICATION -> {
                     val action =
@@ -40,7 +42,7 @@ class ListeChantiersFragment : Fragment() {
                             viewModel.chantierId
                         )
                     findNavController().navigate(action)
-                    viewModel.onBoutonClicked()
+                    viewModel.onButtonClicked()
                 }
                 ListeChantiersViewModel.navigationMenu.EN_ATTENTE -> {
                 }
@@ -48,6 +50,24 @@ class ListeChantiersFragment : Fragment() {
 
             }
         })
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
+
+        binding.warningMessage.setOnClickListener {
+            viewModel.reloadDataFromServer()
+        }
 
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

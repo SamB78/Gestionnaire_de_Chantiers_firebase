@@ -6,12 +6,20 @@
     <data>
 
         <import type="com.techphone78.gestionnairedechantiers.R" />
+        <import type="android.view.View"/>
 
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.chantiers.listeChantiers.ListeChantiersViewModel" />
 
     </data>
+
+    <ViewFlipper
+        android:id="@+id/vf_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout"
@@ -28,7 +36,7 @@
             android:layout_marginBottom="20dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{()-> viewModel.onClickBoutonAjoutChantier()}"
+            android:onClick="@{()-> viewModel.onClickButtonAjoutChantier()}"
             android:src="@android:drawable/ic_menu_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -91,6 +99,21 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/warningMessage"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingHorizontal="16dp"
+            android:text="Données locales, cliquez pour actualiser depuis le serveur"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:background="#80EE8074"
+            android:visibility="@{viewModel.fromCache? View.VISIBLE: View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchLayout" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/personnelListe"
             android:layout_width="match_parent"
@@ -101,8 +124,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchLayout"
+            app:layout_constraintTop_toBottomOf="@+id/warningMessage"
             app:vm="@{viewModel}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/loadingState"
+            layout="@layout/loading_state"/>
+
+        <include
+            android:id="@+id/errorState"
+            layout="@layout/error_state" />
+
+    </ViewFlipper>
 </layout>

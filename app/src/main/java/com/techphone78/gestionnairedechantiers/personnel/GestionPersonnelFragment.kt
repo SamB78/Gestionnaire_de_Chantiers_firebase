@@ -16,10 +16,7 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionPersonnelFragmentBinding
-import com.techphone78.gestionnairedechantiers.utils.Flipper
-import com.techphone78.gestionnairedechantiers.utils.State
-import com.techphone78.gestionnairedechantiers.utils.Status
-import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
+import com.techphone78.gestionnairedechantiers.utils.*
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
@@ -86,9 +83,8 @@ class GestionPersonnelFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateTypeView(State.TypeView.LIST)
+        viewModel.updateTypeView(TypeView.LIST)
     }
-
 
 
     private fun selectImage() {

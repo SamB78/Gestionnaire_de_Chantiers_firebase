@@ -3,11 +3,11 @@ package com.techphone78.gestionnairedechantiers.chantiers.listeChantiers
 import androidx.lifecycle.*
 import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.techphone78.gestionnairedechantiers.utils.State
+import com.techphone78.gestionnairedechantiers.utils.Status
+import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Exception
 
 class ListeChantiersViewModel : ViewModel() {
 
@@ -17,12 +17,8 @@ class ListeChantiersViewModel : ViewModel() {
         EN_ATTENTE
     }
 
-    //Repo
+    //Repo&
     private val chantierRepository = ChantierRepository()
-
-    //Coroutines
-    private val viewModelJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var _listeChantiers = MutableLiveData<List<Chantier>>(emptyList())
     val listeChantiers: LiveData<List<Chantier>>
@@ -42,37 +38,55 @@ class ListeChantiersViewModel : ViewModel() {
     var entretienFilter = MutableLiveData(true)
     var chantierFilter = MutableLiveData(true)
 
+    private var _state = MutableLiveData(State(Status.LOADING))
+    val state: LiveData<State>
+        get() = _state
+
+    private var _fromCache = MutableLiveData<Boolean>(false)
+    val fromCache: LiveData<Boolean>
+        get() = _fromCache
 
 
     private var initViewModel = true
 
     init {
-        getAllChantiers()
+        showChantiersList()
+    }
+
+    private fun showChantiersList(getServerData: Boolean = false) {
         viewModelScope.launch {
+            _state.value = State.loading()
+            try {
+                getAllChantiers()
+                _state.value = State.success()
+            } catch (e: Exception) {
+                _state.value = State.error(e.toString())
+            }
         }
     }
 
-    private fun getAllChantiers() {
-        Timber.i("GetAllChantiers")
-        viewModelScope.launch {
-            _listeChantiers.value = chantierRepository.getAllChantiers()
-            filterListChantiers()
+    private suspend fun getAllChantiers() {
+        val result = withContext(Dispatchers.IO) {
+            chantierRepository.getAllChantiers()
         }
+        _listeChantiers.value = result.data!!
+        filterListChantiers()
+        _fromCache.value = result.fromCache
     }
 
     fun onResumeFragment() {
-        if (!initViewModel) getAllChantiers()
+        if (!initViewModel) showChantiersList()
         else {
             initViewModel = false
         }
     }
 
-    fun onClickBoutonAjoutChantier() {
+    fun onClickButtonAjoutChantier() {
         _navigationPersonnel.value =
             navigationMenu.CREATION
     }
 
-    fun onBoutonClicked() {
+    fun onButtonClicked() {
         _navigationPersonnel.value =
             navigationMenu.EN_ATTENTE
     }
@@ -82,7 +96,7 @@ class ListeChantiersViewModel : ViewModel() {
         _navigationPersonnel.value = navigationMenu.MODIFICATION
     }
 
-    fun updateSearchFilter(text: String?){
+    fun updateSearchFilter(text: String?) {
         searchFilter.value = text
         filterListChantiers()
     }
@@ -93,16 +107,16 @@ class ListeChantiersViewModel : ViewModel() {
         val listeOriginaleChantiers: MutableList<Chantier> = mutableListOf()
         val mutableList = mutableListOf<Chantier>()
 
-       if(entretienFilter.value!! && chantierFilter.value!!){
-           listeOriginaleChantiers.addAll(listeChantiers.value!!)
-           Timber.i("test1")
-       }else if(entretienFilter.value!! && !chantierFilter.value!!){
-           listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier ==2})
-           Timber.i("test2")
-       }else if(!entretienFilter.value!! && chantierFilter.value!!){
-           listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier ==1})
-           Timber.i("test3")
-       }
+        if (entretienFilter.value!! && chantierFilter.value!!) {
+            listeOriginaleChantiers.addAll(listeChantiers.value!!)
+            Timber.i("test1")
+        } else if (entretienFilter.value!! && !chantierFilter.value!!) {
+            listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier == 2 })
+            Timber.i("test2")
+        } else if (!entretienFilter.value!! && chantierFilter.value!!) {
+            listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier == 1 })
+            Timber.i("test3")
+        }
 
         if (!searchFilter.value.isNullOrEmpty()) {
             listeOriginaleChantiers.filter {
@@ -118,10 +132,9 @@ class ListeChantiersViewModel : ViewModel() {
         _listeChantiersFiltered.value = mutableList
     }
 
-    // onCleared()
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
+
+    fun reloadDataFromServer() {
+        showChantiersList(true)
     }
 
 

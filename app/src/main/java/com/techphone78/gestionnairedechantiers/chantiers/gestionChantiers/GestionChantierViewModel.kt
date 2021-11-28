@@ -108,7 +108,7 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     private suspend fun getAllPersonnel() {
         val listeChefChantiers = mutableListOf<Personnel>()
         viewModelScope.launch {
-            listePersonnel.value = personnelRepository.getAllPersonnel()
+            listePersonnel.value = personnelRepository.getAllPersonnel().data
             listePersonnel.value?.filter { it.chefEquipe }?.forEach {
                 listeChefChantiers.add(it.copy())
             }
