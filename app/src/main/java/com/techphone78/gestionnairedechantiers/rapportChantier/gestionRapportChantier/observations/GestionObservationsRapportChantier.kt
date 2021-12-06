@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.FragmentGestionObservationsRapportChantierBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.Status
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 
 
@@ -28,6 +31,24 @@ class GestionObservationsRapportChantier : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    Snackbar.make(
+                        binding.mainConstraintLayout,
+                        "Impossible de sauvegarder les données, veuillez réessayer",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    Flipper.CONTENT
+                }
+            }
+        })
 
         viewModel.navigation.observe(viewLifecycleOwner,  { navigation ->
             hideKeyboard(activity as MainActivity)

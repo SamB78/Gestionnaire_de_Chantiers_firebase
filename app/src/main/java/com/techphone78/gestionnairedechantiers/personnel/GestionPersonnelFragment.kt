@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionPersonnelFragmentBinding
@@ -50,8 +51,12 @@ class GestionPersonnelFragment : Fragment() {
                 Status.SUCCESS -> Flipper.CONTENT
 
                 Status.ERROR -> {
-                    binding.errorState.tvMessageError.text = it.message
-                    Flipper.ERROR
+                    Snackbar.make(
+                        binding.mainConstraintLayout,
+                        "Impossible de sauvegarder les données, veuillez réessayer",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    Flipper.CONTENT
                 }
             }
         })

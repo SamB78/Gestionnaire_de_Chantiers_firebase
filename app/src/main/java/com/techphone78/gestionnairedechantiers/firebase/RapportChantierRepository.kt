@@ -141,7 +141,7 @@ class RapportChantierRepository(idChantier: String) {
                         materiauxRepository,
                         sousTraitanceRepository,
                         tacheEntretienRepository
-                    ) ?: RapportChantier()
+                    )
                 )
             }
         }

@@ -1,13 +1,16 @@
 package com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.gestionPersonnel
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.FragmentAjoutPersonnelBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel
@@ -46,7 +49,7 @@ class AjoutPersonnelFragment : Fragment() {
 
 
 
-        viewModel.addablePersonnelState.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner, {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -61,6 +64,10 @@ class AjoutPersonnelFragment : Fragment() {
         })
 
         binding.warningMessage.setOnClickListener {
+            viewModel.initializeDataPersonnelAddable()
+        }
+
+        binding.errorState.buttonRetry.setOnClickListener {
             viewModel.initializeDataPersonnelAddable()
         }
 

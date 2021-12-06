@@ -57,6 +57,7 @@ class GestionRapportChantierViewModel(
         EN_ATTENTE,
     }
 
+
     //Navigation
     private var _navigation = MutableLiveData<GestionNavigation>()
     val navigation: LiveData<GestionNavigation>
@@ -97,9 +98,13 @@ class GestionRapportChantierViewModel(
     private var isDataPersonnelNeededToActualize = false
     private var isDataMaterielNeededToActualize = false
 
-    private var _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    private var _state = MutableLiveData(State(Status.LOADING))
+    val state: LiveData<State>
+        get() = _state
+
+    private var _successDialog = MutableLiveData(false)
+    val successDialog: LiveData<Boolean>
+        get() = _successDialog
 
     init {
         initializeData()
@@ -107,59 +112,65 @@ class GestionRapportChantierViewModel(
     }
 
     private fun initializeData() {
-        when {
-            idRapportChantier != null -> {
-                viewModelScope.launch {
-                    _isLoading.value = true
-                    loadRapportChantier().also {
+        viewModelScope.launch {
+            try {
+                _state.value = State.loading()
+                when {
+                    idRapportChantier != null -> {
+
+                        loadRapportChantier().also {
+                            _chantier.value =
+                                withContext(Dispatchers.IO) {
+                                    chantierRepository.getChantierById(
+                                        rapportChantierOriginal.value!!.chantierId!!
+                                    )
+                                }
+                        }
+                    }
+                    dateRapportChantier != -1L -> {
+                        val date = Instant.ofEpochMilli(dateRapportChantier)
+                        Timber.i("Date: $date")
                         _chantier.value =
                             withContext(Dispatchers.IO) {
                                 chantierRepository.getChantierById(
-                                    rapportChantierOriginal.value!!.chantierId!!
+                                    idChantier
+                                )
+                            }!!
+
+                        idRapportChantier =
+                            withContext(Dispatchers.IO) {
+                                rapportChantierRepository.getRapportChantierIdByDate(
+                                    Date.from(date)
                                 )
                             }
-                    }
 
-                    _isLoading.value = false
-                }
-            }
-            dateRapportChantier != -1L -> {
-                val date = Instant.ofEpochMilli(dateRapportChantier)
-                Timber.i("Date: $date")
-                viewModelScope.launch {
-                    _isLoading.value = true
-                    _chantier.value =
-                        withContext(Dispatchers.IO) { chantierRepository.getChantierById(idChantier) }!!
-
-                    idRapportChantier =
-                        withContext(Dispatchers.IO) {
-                            rapportChantierRepository.getRapportChantierIdByDate(
-                                Date.from(date)
+                        if (idRapportChantier != null) {
+                            Timber.i("idRapportChantier = $idRapportChantier")
+                            loadRapportChantier()
+                        } else {
+                            // Si nouveau rapport de Chantier
+                            _rapportChantier.value = RapportChantier(
+                                chantierId = chantier.value!!.numeroChantier,
+                                chefChantier = chantier.value!!.chefChantier,
+                                dateRapportChantier = date,
+                                typeChantier = chantier.value!!.typeChantier,
+                                listePersonnel = chantier.value!!.listEquipe
                             )
+                            idRapportChantier = withContext(Dispatchers.IO) {
+                                rapportChantierRepository.insertRapportChantier(_rapportChantier.value!!)
+                            }
+                            loadRapportChantier()
                         }
-
-                    if (idRapportChantier != null) {
-                        Timber.i("idRapportChantier = $idRapportChantier")
-                        loadRapportChantier()
-                    } else {
-                        // Si nouveau rapport de Chantier
-                        _rapportChantier.value = RapportChantier(
-                            chantierId = chantier.value!!.numeroChantier,
-                            chefChantier = chantier.value!!.chefChantier,
-                            dateRapportChantier = date,
-                            typeChantier = chantier.value!!.typeChantier,
-                            listePersonnel = chantier.value!!.listEquipe
-                        )
-                        idRapportChantier = withContext(Dispatchers.IO) {
-                            rapportChantierRepository.insertRapportChantier(_rapportChantier.value!!)
-                        }
-                        loadRapportChantier()
                     }
-                    _isLoading.value = false
+                    else -> {
+                        Timber.e("ERROR: PAS DE DATE OU D'ID")
+                    }
+
                 }
-            }
-            else -> {
-                Timber.e("ERROR: PAS DE DATE OU D'ID")
+                _state.value = State.success()
+            } catch (e: Exception) {
+                _state.value = State.error(e.toString())
+
             }
         }
     }
@@ -182,13 +193,11 @@ class GestionRapportChantierViewModel(
     }
 
     private suspend fun loadRapportChantierAfterUpdate() {
-        _isLoading.value = true
         idRapportChantier?.let {
             rapportChantierOriginal.value = withContext(Dispatchers.IO) {
                 rapportChantierRepository.getRapportChantierById(it)
             }
         }
-        _isLoading.value = false
     }
 
     private fun showErrorLoadingRapportChantier() {
@@ -215,6 +224,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonGestionPersonnel() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_PERSONNEL
+        _state.value = State.success()
     }
 
     fun onClickButtonAddPersonnel() {
@@ -264,6 +274,7 @@ class GestionRapportChantierViewModel(
         updateTotauxPersonnel()
         viewModelScope.launch {
             try {
+                _state.value = State.loading()
                 withContext(Dispatchers.IO) {
                     rapportChantierRepository.updateListePersonnelRC(rapportChantier.value!!)
                 }
@@ -274,7 +285,10 @@ class GestionRapportChantierViewModel(
                 _navigation.value = GestionNavigation.VALIDATION_GESTION_PERSONNEL
             } catch (e: Exception) {
 
+                _state.value = State.error()
+
             }
+            _state.value = State.success()
         }
 
     }
@@ -284,9 +298,6 @@ class GestionRapportChantierViewModel(
     var listePersonnelAjoutable = MutableLiveData<MutableList<Personnel>??>(mutableListOf())
     var listePersonnelAjoutableFiltered = MutableLiveData<MutableList<Personnel>>(mutableListOf())
     var searchFilterPersonnel = MutableLiveData<String?>("")
-    private var _addablePersonnelState = MutableLiveData(State(Status.LOADING))
-    val addablePersonnelState: LiveData<State>
-        get() = _addablePersonnelState
 
     private var _fromCache = MutableLiveData(false)
     val fromCache: LiveData<Boolean>
@@ -296,8 +307,7 @@ class GestionRapportChantierViewModel(
     fun initializeDataPersonnelAddable() {
         listePersonnelAjoutable.value = mutableListOf()
         viewModelScope.launch {
-//            _isLoading.value = true
-            _addablePersonnelState.value = State.loading()
+            _state.value = State.loading()
             try {
                 val list = getAddablePersonnel()
 
@@ -311,11 +321,10 @@ class GestionRapportChantierViewModel(
                 }
                 listePersonnelAjoutableFiltered.value = listePersonnelAjoutable.value
                 filterListPersonnel()
-                _addablePersonnelState.value = State.success()
+                _state.value = State.success()
             } catch (e: Exception) {
-                _addablePersonnelState.value = State.error(e.toString())
+                _state.value = State.error(e.toString())
             }
-//            _isLoading.value = false
         }
     }
 
@@ -376,6 +385,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonGestionMateriel() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIEL
+        _state.value = State.success()
     }
 
     fun onClickButtonAddMateriel() {
@@ -418,6 +428,7 @@ class GestionRapportChantierViewModel(
     fun onClickButtonValidationGestionMateriel() {
         updateTotauxMateriel()
         viewModelScope.launch {
+            _state.value = State.loading()
             try {
                 withContext(Dispatchers.IO) {
                     rapportChantierRepository.updateListeMaterielRC(rapportChantier.value!!)
@@ -425,10 +436,12 @@ class GestionRapportChantierViewModel(
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMateriel = true
                 }
+
                 loadRapportChantierAfterUpdate()
                 _navigation.value = GestionNavigation.VALIDATION_GESTION_MATERIEL
+                _state.value = State.success()
             } catch (e: Exception) {
-
+                _state.value = State.error()
             }
         }
     }
@@ -444,15 +457,10 @@ class GestionRapportChantierViewModel(
     var searchFilterMateriel = MutableLiveData("")
     var filterByChantierColor = MutableLiveData(true)
 
-    private var _addableMaterielState = MutableLiveData(State(Status.LOADING))
-    val addableMaterielState: LiveData<State>
-        get() = _addableMaterielState
 
     fun initializeDataMaterielAddable() {
-
         viewModelScope.launch {
-//            _isLoading.value = true
-            _addableMaterielState.value = State.loading()
+            _state.value = State.loading()
             try {
                 val list = getAddableMateriel()
                 listeMaterielAjoutable.value = mutableListOf()
@@ -466,9 +474,9 @@ class GestionRapportChantierViewModel(
                 }
                 listeMaterielAjoutableFiltered.value = listeMaterielAjoutable.value
                 filterListMateriel()
-                _addableMaterielState.value = State.success()
+                _state.value = State.success()
             } catch (e: Exception) {
-                _addableMaterielState.value = State.error(e.toString())
+                _state.value = State.error(e.toString())
             }
 
 //            _isLoading.value = false
@@ -559,6 +567,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonGestionMaterielLocation() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIEL_LOCATION
+        _state.value = State.success()
     }
 
     fun onMaterielLocationProgressChanged(progress: Int) {
@@ -588,7 +597,6 @@ class GestionRapportChantierViewModel(
                 _rapportChantier.value = _rapportChantier.value!!.also {
                     it.listeMaterielLocation = listeMaterielLocation
                 }
-
             } catch (e: Exception) {
 
             }
@@ -602,6 +610,8 @@ class GestionRapportChantierViewModel(
     fun onClickButtonValidationGestionMaterielLocation() {
         updateTotauxMaterielLocation()
         viewModelScope.launch {
+            _state.value = State.loading()
+
             try {
                 withContext(Dispatchers.IO) {
                     rapportChantierRepository.updateListeMaterielLocationRC(
@@ -612,12 +622,11 @@ class GestionRapportChantierViewModel(
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMaterielLocation = true
                 }
-                viewModelScope.launch {
-                    loadRapportChantierAfterUpdate()
-                    _navigation.value = GestionNavigation.VALIDATION_GESTION_MATERIEL_LOCATION
-                }
+                loadRapportChantierAfterUpdate()
+                _navigation.value = GestionNavigation.VALIDATION_GESTION_MATERIEL_LOCATION
+                _state.value = State.success()
             } catch (e: Exception) {
-
+                _state.value = State.error()
             }
         }
     }
@@ -631,14 +640,16 @@ class GestionRapportChantierViewModel(
         _navigation.value = GestionNavigation.PASSAGE_AJOUT_MATERIEL_LOCATION
     }
 
+
     fun onClickButtonConfirmationAjoutMaterielLocation() {
 
         viewModelScope.launch {
+            _state.value = State.loading()
+            _successDialog.value = false
             try {
                 val documentId = withContext(Dispatchers.IO) {
                     materielLocationRepository.insertMaterielLocation(newMaterielLocation.value!!)
                 }
-
                 Timber.i("reussite")
                 newMaterielLocation.value!!.documentId = documentId
                 val completeList = mutableListOf<MaterielLocation>()
@@ -647,14 +658,12 @@ class GestionRapportChantierViewModel(
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.listeMaterielLocation = completeList
                 }
-
-                Timber.i("complete liste = ${rapportChantier.value!!.listeMaterielLocation}")
-//        _navigation.value = GestionNavigation.VALIDATION_AJOUT_MATERIEL_LOCATION
+                _successDialog.value = true
+                _state.value = State.success()
             } catch (e: Exception) {
-
+                _state.value = State.error(e.toString())
             }
         }
-
     }
 
     private fun showErrorAddMaterielLocation() {
@@ -677,6 +686,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonGestionMateriaux() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIAUX
+        _state.value = State.success()
     }
 
     fun onMateriauxProgressChanged(progress: Int) {
@@ -711,6 +721,7 @@ class GestionRapportChantierViewModel(
     fun onClickButtonValidationGestionMateriaux() {
         updateTotauxMateriaux()
         viewModelScope.launch {
+            _state.value = State.loading()
             try {
                 rapportChantierRepository.updateListeMateriauxRC(rapportChantier.value!!)
 
@@ -719,9 +730,10 @@ class GestionRapportChantierViewModel(
                 }
                 loadRapportChantierAfterUpdate()
                 _navigation.value = GestionNavigation.VALIDATION_GESTION_MATERIAUX
+                _state.value = State.success()
 
             } catch (e: Exception) {
-
+                _state.value = State.error()
             }
         }
     }
@@ -738,6 +750,8 @@ class GestionRapportChantierViewModel(
     fun onClickButtonConfirmationAjoutMateriaux() {
 
         viewModelScope.launch {
+            _state.value = State.loading()
+            _successDialog.value = false
             try {
                 val documentId =
                     withContext(Dispatchers.IO) {
@@ -752,14 +766,14 @@ class GestionRapportChantierViewModel(
                     _rapportChantier.value = _rapportChantier.value.also {
                         it!!.listeMateriaux = completeList
                     }
-
-                    Timber.i("complete liste = ${rapportChantier.value!!.listeMateriaux}")
+                    _successDialog.value = true
+                    _state.value = State.success()
                 } else {
                     Timber.i("ERROR ")
                     showErrorAddMateriaux()
                 }
             } catch (e: Exception) {
-
+                _state.value = State.error(e.toString())
             }
         }
 
@@ -784,6 +798,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonGestionSousTraitance() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_SOUS_TRAITANCE
+        _state.value = State.success()
     }
 
     fun onClickDeleteSousTraitance(item: SousTraitance) {
@@ -810,6 +825,7 @@ class GestionRapportChantierViewModel(
     fun onClickButtonValidationGestionSousTraitance() {
         updateTotauxSousTraitance()
         viewModelScope.launch {
+            _state.value = State.loading()
             try {
                 rapportChantierRepository.updateListeSousTraitanceRC(rapportChantier.value!!)
                 _rapportChantier.value = _rapportChantier.value.also {
@@ -817,10 +833,10 @@ class GestionRapportChantierViewModel(
                 }
                 loadRapportChantierAfterUpdate()
                 _navigation.value = GestionNavigation.VALIDATION_GESTION_SOUS_TRAITANCE
+                _state.value = State.success()
 
             } catch (e: Exception) {
-
-
+                _state.value = State.error()
             }
         }
     }
@@ -837,6 +853,8 @@ class GestionRapportChantierViewModel(
     fun onClickButtonConfirmationAjoutSousTraitance() {
 
         viewModelScope.launch {
+            _state.value = State.loading()
+            _successDialog.value = false
             try {
                 val documentId =
                     sousTraitanceRepository.insertSousTraitance(newSousTraitance.value!!)
@@ -849,17 +867,16 @@ class GestionRapportChantierViewModel(
                     _rapportChantier.value = _rapportChantier.value.also {
                         it!!.listeSousTraitance = completeList
                     }
-
-                    Timber.i("complete liste = ${rapportChantier.value!!.listeSousTraitance}")
+                    _successDialog.value = true
+                    _state.value = State.success()
                 } else {
                     Timber.i("ERROR ")
                     showErrorAddSousTraitance()
                 }
             } catch (e: Exception) {
-
+                _state.value = State.error(e.toString())
             }
         }
-
     }
 
     private fun showErrorAddSousTraitance() {
@@ -878,8 +895,8 @@ class GestionRapportChantierViewModel(
     /////////////////////// SECURITE & ENVIRONNEMENT ////////////////////////////////////////
 
     fun onClickButtonAutresInformations() {
-
         _navigation.value = GestionNavigation.PASSAGE_AUTRES_INFORMATIONS
+        _state.value = State.success()
     }
 
     fun radioGroupsSecurite(id: Int) {
@@ -957,14 +974,21 @@ class GestionRapportChantierViewModel(
     }
 
     fun onClickButtonValidationAutresInformations() {
-
-        rapportChantierRepository.updateListeAutresInformations(rapportChantier.value!!)
-        _rapportChantier.value = _rapportChantier.value.also {
-            it!!.dataSaved.dataConformiteChantier = true
-        }
         viewModelScope.launch {
-            loadRapportChantierAfterUpdate()
-            _navigation.value = GestionNavigation.VALIDATION_AUTRES_INFORMATIONS
+            _state.value = State.loading()
+            try {
+                rapportChantierRepository.updateListeAutresInformations(rapportChantier.value!!)
+                _rapportChantier.value = _rapportChantier.value.also {
+                    it!!.dataSaved.dataConformiteChantier = true
+                }
+
+                loadRapportChantierAfterUpdate()
+                _navigation.value = GestionNavigation.VALIDATION_AUTRES_INFORMATIONS
+                _state.value = State.success()
+
+            } catch (e: Exception) {
+                _state.value = State.error(e.toString())
+            }
         }
     }
     /////////////////////// OBSERVATIONS ////////////////////////////////////////
@@ -980,6 +1004,7 @@ class GestionRapportChantierViewModel(
     fun onClickButtonValidationObservations() {
 
         viewModelScope.launch {
+            _state.value = State.loading()
             try {
                 rapportChantierRepository.updateListeObservations(rapportChantier.value!!)
                 _rapportChantier.value = _rapportChantier.value.also {
@@ -987,8 +1012,9 @@ class GestionRapportChantierViewModel(
                 }
                 loadRapportChantierAfterUpdate()
                 _navigation.value = GestionNavigation.VALIDATION_OBSERVATIONS
+                _state.value = State.success()
             } catch (e: Exception) {
-
+                _state.value = State.error(e.toString())
             }
         }
     }
@@ -1005,6 +1031,7 @@ class GestionRapportChantierViewModel(
 
     fun onClickButtonObservations() {
         _navigation.value = GestionNavigation.PASSAGE_OBSERVATIONS
+        _state.value = State.success()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////

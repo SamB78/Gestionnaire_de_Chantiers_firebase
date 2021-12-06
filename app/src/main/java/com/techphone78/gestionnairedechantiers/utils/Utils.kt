@@ -68,7 +68,7 @@ data class State(val status: Status, val message: String? = null) {
             return State(Status.SUCCESS)
         }
 
-        fun error(msg: String): State {
+        fun error(msg: String =""): State {
             return State(Status.ERROR, msg)
         }
 

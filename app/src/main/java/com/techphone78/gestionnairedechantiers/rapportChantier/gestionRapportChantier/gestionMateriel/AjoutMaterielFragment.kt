@@ -47,7 +47,7 @@ class AjoutMaterielFragment : Fragment() {
             }
         })
 
-        viewModel.addablePersonnelState.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner, {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -62,6 +62,9 @@ class AjoutMaterielFragment : Fragment() {
         })
 
         binding.warningMessage.setOnClickListener {
+            viewModel.initializeDataMaterielAddable()
+        }
+        binding.errorState.buttonRetry.setOnClickListener {
             viewModel.initializeDataMaterielAddable()
         }
 

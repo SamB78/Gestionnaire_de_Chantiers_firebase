@@ -15,16 +15,20 @@
 
     </data>
 
+    <ViewFlipper
+        android:id="@+id/vf_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout4"
+        android:id="@+id/mainConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".rapportChantier.gestionRapportChantier.gestionMateriaux.GestionRapportChantierMateriauxFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}">
+            android:layout_height="match_parent">
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -54,10 +58,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include
-            android:id="@+id/loadingState"
-            layout="@layout/loading_state"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/loadingState"
+        layout="@layout/loading_state" />
+
+    <include
+        android:id="@+id/errorState"
+        layout="@layout/error_state" />
+
+    </ViewFlipper>
 </layout>

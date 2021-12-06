@@ -10,6 +10,8 @@ import androidx.navigation.navGraphViewModels
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionRapportChantierFragmentBinding
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.Status
 import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 
 class GestionRapportChantierFragment : Fragment() {
@@ -39,6 +41,17 @@ class GestionRapportChantierFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
+
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+                Status.LOADING -> Flipper.LOADING
+                Status.SUCCESS -> Flipper.CONTENT
+                Status.ERROR -> {
+                    binding.errorState.tvMessageError.text = it.message
+                    Flipper.ERROR
+                }
+            }
+        })
 
 
         //Navigation

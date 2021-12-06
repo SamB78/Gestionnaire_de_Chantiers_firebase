@@ -10,6 +10,9 @@ import com.techphone78.gestionnairedechantiers.databinding.DialogAddSousTraitanc
 import com.techphone78.gestionnairedechantiers.databinding.FragmentGestionSousTraitanceRapportChantierBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.gestionRapportChantier.GestionRapportChantierViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.techphone78.gestionnairedechantiers.utils.Flipper
+import com.techphone78.gestionnairedechantiers.utils.Status
 import timber.log.Timber
 
 
@@ -53,6 +56,24 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
+        viewModel.state.observe(viewLifecycleOwner, {
+            binding.vfMain.displayedChild = when (it.status) {
+
+                Status.LOADING -> Flipper.LOADING
+
+                Status.SUCCESS -> Flipper.CONTENT
+
+                Status.ERROR -> {
+                    Snackbar.make(
+                        binding.mainConstraintLayout,
+                        "Impossible de sauvegarder les données, veuillez réessayer",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    Flipper.CONTENT
+                }
+            }
+        })
+
         viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_SOUS_TRAITANCE -> {
@@ -67,9 +88,10 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
                         }
                         .setPositiveButton("Valider") { dialog, which ->
                             viewModel.onClickButtonConfirmationAjoutSousTraitance()
-                            dialog.dismiss()
-                        }
-                        .show()
+                            viewModel.successDialog.observe(viewLifecycleOwner, {
+                                if (it) dialog.dismiss()
+                            })
+                        }.show()
 
 
                     viewModel.onBoutonClicked()

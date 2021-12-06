@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintBottom_toTopOf="@+id/buttonRetry"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
             tools:text="Impossible de charger les données" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/buttonRetry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{()->viewModel.onClickErrorScreenButton()}"
