@@ -45,7 +45,7 @@ class ListeRapportsChantierFragment : Fragment() {
             viewModel.onDateSelected()
         }
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 AffichageChantierViewModel.NavigationMenu.SELECTION_PAR_DATE -> {
 
@@ -79,7 +79,7 @@ class ListeRapportsChantierFragment : Fragment() {
                     Timber.i("Nothing")
                 }
             }
-        })
+        }
         return binding.root
     }
 

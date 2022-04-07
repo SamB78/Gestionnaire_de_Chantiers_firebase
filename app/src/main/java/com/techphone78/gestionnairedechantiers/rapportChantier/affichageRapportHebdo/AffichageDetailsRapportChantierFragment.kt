@@ -42,7 +42,7 @@ class AffichageDetailsRapportChantierFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 AffichageDetailsRapportChantierViewModel.GestionNavigation.AFFICHAGE_EXCEL -> {
                     viewModel.onButtonClicked()
@@ -61,7 +61,7 @@ class AffichageDetailsRapportChantierFragment : Fragment() {
 
                 }
             }
-        })
+        }
 
         return binding.root
     }

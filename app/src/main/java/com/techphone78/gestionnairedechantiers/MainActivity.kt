@@ -17,6 +17,7 @@ import com.techphone78.gestionnairedechantiers.databinding.LogoHeaderBinding
 import com.techphone78.gestionnairedechantiers.utils.Status
 import com.google.android.material.navigation.NavigationView
 import com.techphone78.gestionnairedechantiers.entities.Personnel
+import com.techphone78.gestionnairedechantiers.rapportChantier.weeklyBuildingReports.WeeklyBuildingReportsFragmentDirections
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
@@ -58,29 +59,27 @@ class MainActivity : AppCompatActivity() {
         // first find the nav controller
 
 
-        viewModel.state.observe(this, {
+        viewModel.state.observe(this) {
             if (it.status == Status.SUCCESS) {
                 setupNavGraph()
                 setupNavigation(viewModel.user.value!!.userData!!)
                 binding.linearLayout.visibility = View.VISIBLE
                 binding.loadingState.visibility = View.INVISIBLE
             }
-        })
+        }
         profileLogout()
 
     }
 
-    private fun profileLogout() {
-        viewModel.logoutObseve.observe(this, {
-            Timber.i("logout")
-            if (it) {
-                val intent = Intent(applicationContext, AuthActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.putExtra("error", viewModel.state.value!!.message)
-                startActivity(intent)
-                finish()
-            }
-        })
+    private fun profileLogout() = viewModel.logoutObseve.observe(this) {
+        Timber.i("logout")
+        if (it) {
+            val intent = Intent(applicationContext, AuthActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.putExtra("error", viewModel.state.value!!.message)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onSupportNavigateUp() =
@@ -115,6 +114,13 @@ class MainActivity : AppCompatActivity() {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                         val action =
                             GestionMaterielNavGraphDirections.actionGlobalGestionMaterielNavGraph()
+                        findNavController(R.id.navHostFragment).navigate(action)
+                        true
+                    }
+                    R.id.itemAffichageRapportChantiers -> {
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
+                        val action =
+                            WeeklyBuildingReportsFragmentDirections.actionGlobalWeeklyBuildingReportsFragment()
                         findNavController(R.id.navHostFragment).navigate(action)
                         true
                     }

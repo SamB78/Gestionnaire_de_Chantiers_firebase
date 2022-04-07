@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.techphone78.gestionnairedechantiers.R" />
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />

@@ -15,7 +15,7 @@ import java.util.*
 
 class GestionRapportChantierViewModel(
     var idRapportChantier: String? = null,
-    val idChantier: String,
+    private val idChantier: String,
     val dateRapportChantier: Long = -1L
 ) : ViewModel(), ParentViewModel {
     enum class GestionNavigation {
@@ -76,7 +76,7 @@ class GestionRapportChantierViewModel(
         get() = this._chantier
 
     private val chantierRepository = ChantierRepository()
-    private val rapportChantierRepository = RapportChantierRepository(idChantier)
+    private val rapportChantierRepository = RapportChantierRepository()
     private val personnelRepository = PersonnelRepository()
     private val materielRepository = MaterielRepository()
     private val materielLocationRepository = MaterielLocationRepository()
@@ -140,7 +140,7 @@ class GestionRapportChantierViewModel(
                         idRapportChantier =
                             withContext(Dispatchers.IO) {
                                 rapportChantierRepository.getRapportChantierIdByDate(
-                                    Date.from(date)
+                                    Date.from(date), idChantier
                                 )
                             }
 
@@ -157,7 +157,7 @@ class GestionRapportChantierViewModel(
                                 listePersonnel = chantier.value!!.listEquipe
                             )
                             idRapportChantier = withContext(Dispatchers.IO) {
-                                rapportChantierRepository.insertRapportChantier(_rapportChantier.value!!)
+                                rapportChantierRepository.insertRapportChantier(_rapportChantier.value!!, idChantier)
                             }
                             loadRapportChantier()
                         }
@@ -181,11 +181,11 @@ class GestionRapportChantierViewModel(
             rapportChantierOriginal.value =
                 withContext(Dispatchers.IO) {
                     rapportChantierRepository.getRapportChantierById(
-                        it
+                        it, idChantier
                     )
                 }
             _rapportChantier.value = withContext(Dispatchers.IO) {
-                rapportChantierRepository.getRapportChantierById(it)
+                rapportChantierRepository.getRapportChantierById(it, idChantier)
             }
         } ?: showErrorLoadingRapportChantier()
         Timber.i("date rapport = ${rapportChantier.value!!.dateRapportChantier}")
@@ -195,7 +195,7 @@ class GestionRapportChantierViewModel(
     private suspend fun loadRapportChantierAfterUpdate() {
         idRapportChantier?.let {
             rapportChantierOriginal.value = withContext(Dispatchers.IO) {
-                rapportChantierRepository.getRapportChantierById(it)
+                rapportChantierRepository.getRapportChantierById(it, idChantier)
             }
         }
     }
@@ -276,7 +276,7 @@ class GestionRapportChantierViewModel(
             try {
                 _state.value = State.loading()
                 withContext(Dispatchers.IO) {
-                    rapportChantierRepository.updateListePersonnelRC(rapportChantier.value!!)
+                    rapportChantierRepository.updateListePersonnelRC(rapportChantier.value!!, idChantier)
                 }
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataPersonnel = true
@@ -382,6 +382,19 @@ class GestionRapportChantierViewModel(
 
     /////////////////////// GESTION MATERIEL ////////////////////////////////////////
 
+    val listTypeMateriel = listOf(
+        "TOUS",
+        "Camions/Utilitaires",
+        "Remorques",
+        "Tondeuses",
+        "Tondeuses autoportées",
+        "Tracteurs",
+        "Engins",
+        "Aspirateurs",
+        "Petit matériel",
+        "Divers"
+    )
+
 
     fun onClickButtonGestionMateriel() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIEL
@@ -431,7 +444,7 @@ class GestionRapportChantierViewModel(
             _state.value = State.loading()
             try {
                 withContext(Dispatchers.IO) {
-                    rapportChantierRepository.updateListeMaterielRC(rapportChantier.value!!)
+                    rapportChantierRepository.updateListeMaterielRC(rapportChantier.value!!, idChantier)
                 }
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMateriel = true
@@ -457,6 +470,7 @@ class GestionRapportChantierViewModel(
     var searchFilterMateriel = MutableLiveData("")
     var filterByChantierColor = MutableLiveData(true)
 
+    var filterTypeMateriel = MutableLiveData<String>(null)
 
     fun initializeDataMaterielAddable() {
         viewModelScope.launch {
@@ -529,14 +543,24 @@ class GestionRapportChantierViewModel(
                         ||
                         it.numeroSerie.contains(searchFilterMateriel.value!!, true)
             }.forEach {
-                mutableList.add(it)
+                Timber.i("filterTypeMateriel = ${filterTypeMateriel.value}")
+                if (!filterTypeMateriel.value.isNullOrBlank() && filterTypeMateriel.value != "TOUS" && it.type == filterTypeMateriel.value) {
+                    Timber.i(" filterTypeMateriel Passage if OK  = ${filterTypeMateriel.value}")
+                    mutableList.add(it)
+                } else {
+                    Timber.i(" filterTypeMateriel Passage if NOK  = ${filterTypeMateriel.value}")
+                    mutableList.add(it)
+                }
+
+
             }
         } else {
             mutableList.addAll(listeOriginaleMateriel)
         }
 
-        listeMaterielAjoutableFiltered.value =
-            mutableList.sortedByDescending { it.couleur == chantier.value!!.couleur } as MutableList<Materiel>
+        mutableList.sortByDescending { it.couleur == chantier.value!!.couleur }
+
+        listeMaterielAjoutableFiltered.value = mutableList
     }
 
     fun onClickValidationAjoutMateriel() {
@@ -546,6 +570,12 @@ class GestionRapportChantierViewModel(
             it.isChecked = false
             completeList.add(it)
         }
+        listeMaterielAjoutable.value!!.filter { it.isChecked }.forEach { materiel ->
+            if (completeList.find { materiel.documentId == it.documentId } == null) {
+                completeList.add(materiel)
+            }
+        }
+
         _rapportChantier.value!!.listeMateriel = completeList
         _navigation.value = GestionNavigation.VALIDATION_AJOUT_MATERIEL
     }
@@ -615,7 +645,7 @@ class GestionRapportChantierViewModel(
             try {
                 withContext(Dispatchers.IO) {
                     rapportChantierRepository.updateListeMaterielLocationRC(
-                        rapportChantier.value!!
+                        rapportChantier.value!!, idChantier
                     )
                 }
 
@@ -723,7 +753,7 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeMateriauxRC(rapportChantier.value!!)
+                rapportChantierRepository.updateListeMateriauxRC(rapportChantier.value!!, idChantier)
 
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMateriaux = true
@@ -827,7 +857,7 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeSousTraitanceRC(rapportChantier.value!!)
+                rapportChantierRepository.updateListeSousTraitanceRC(rapportChantier.value!!, idChantier)
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataSousTraitance = true
                 }
@@ -977,7 +1007,7 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeAutresInformations(rapportChantier.value!!)
+                rapportChantierRepository.updateListeAutresInformations(rapportChantier.value!!, idChantier)
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataConformiteChantier = true
                 }
@@ -1002,11 +1032,11 @@ class GestionRapportChantierViewModel(
 
 
     fun onClickButtonValidationObservations() {
-
+        Timber.i("adresseChantier = ${rapportChantier.value!!.adresseChantier}")
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeObservations(rapportChantier.value!!)
+                rapportChantierRepository.updateListeObservations(rapportChantier.value!!, idChantier)
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataObservations = true
                 }

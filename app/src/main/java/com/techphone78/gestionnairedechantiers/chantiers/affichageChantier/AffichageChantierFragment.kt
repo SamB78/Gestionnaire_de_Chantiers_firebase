@@ -2,21 +2,20 @@ package com.techphone78.gestionnairedechantiers.chantiers.affichageChantier
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.tabs.TabLayoutMediator
+import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.AffichageChantierFragmentBinding
 import com.techphone78.gestionnairedechantiers.rapportChantier.listeRapportsChantier.ListeRapportsChantierFragment
-import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.tabs.TabLayoutMediator
-import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.utils.Flipper
-import com.techphone78.gestionnairedechantiers.utils.ProfileFragment
 import com.techphone78.gestionnairedechantiers.utils.Status
-import kotlinx.android.synthetic.main.error_state.view.*
+import com.techphone78.gestionnairedechantiers.utils.hideKeyboard
 
 class AffichageChantierFragment : Fragment() {
 
@@ -30,12 +29,13 @@ class AffichageChantierFragment : Fragment() {
     val viewModel: AffichageChantierViewModel by navGraphViewModels(R.id.affichageChantierNavGraph) { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
+
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+
         inflater.inflate(R.menu.menu_chantier, menu)
     }
 
@@ -59,8 +59,6 @@ class AffichageChantierFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         val chantierId = AffichageChantierFragmentArgs.fromBundle(requireArguments()).id
         viewModelFactory = AffichageChantierViewModelFactory(chantierId)
 
@@ -91,7 +89,7 @@ class AffichageChantierFragment : Fragment() {
             }
         }.attach()
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
                 Status.LOADING -> Flipper.LOADING
 
@@ -102,9 +100,18 @@ class AffichageChantierFragment : Fragment() {
                     Flipper.ERROR
                 }
             }
-        })
+        }
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.isUserAdmin.observe(viewLifecycleOwner) {
+            if (it) {
+                setHasOptionsMenu(true)
+            }
+        }
+
+
+        viewModel.navigation.observe(
+            viewLifecycleOwner
+        ) { navigation ->
 
             when (navigation) {
                 AffichageChantierViewModel.NavigationMenu.SELECTION_DATE_EXPORT -> {
@@ -134,7 +141,6 @@ class AffichageChantierFragment : Fragment() {
                 }
             }
         }
-        )
 
 
         return binding.root

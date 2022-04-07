@@ -216,9 +216,13 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
         _navigation.value = GestionNavigation.MODIFICATION
     }
 
+    fun onCheckAdresseUnique() {
+        chantier.value =   chantier.value
+        Timber.i("chantier after checked: ${chantier.value}")
+    }
+
     fun onClickSaveData() {
         sendDataToDB()
-
     }
 
     private fun sendDataToDB() {

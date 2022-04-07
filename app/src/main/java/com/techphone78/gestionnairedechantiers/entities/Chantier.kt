@@ -14,6 +14,7 @@ data class Chantier(
     @DocumentId
     var numeroChantier: String? = null,
     var nomChantier: String = "",
+    var adresseUnique: Boolean = true,
     var adresseChantier: Adresse = Adresse(),
     var urlPictureChantier: String? = null,
     var identiteResponsableSite: String = "",
@@ -26,7 +27,10 @@ data class Chantier(
     @Exclude @set:Exclude @get:Exclude
     var listEquipe: List<Personnel> = emptyList(),
     @Exclude @set:Exclude @get:Exclude
-    var couleur: Couleur? = null
+    var couleur: Couleur? = null,
+    @Exclude @set:Exclude @get:Exclude
+    var listRapportChantiers: List<RapportChantier>? = null
+
 
 ) {
     companion object {
@@ -34,6 +38,7 @@ data class Chantier(
                 return Chantier(
                     numeroChantier = id,
                     nomChantier = getString("nomChantier")!!,
+                    adresseUnique = getBoolean("adresseUnique")?: true,
                     adresseChantier = get("adresseChantier", Adresse::class.java)!!,
                     urlPictureChantier = getString("urlPictureChantier"),
                     identiteResponsableSite = getString("identiteResponsableSite")!!,
@@ -49,6 +54,7 @@ data class Chantier(
                 return Chantier(
                     numeroChantier = id,
                     nomChantier = getString("nomChantier")!!,
+                    adresseUnique = getBoolean("adresseUnique")?: true,
                     adresseChantier = get("adresseChantier", Adresse::class.java)!!,
                     urlPictureChantier = getString("urlPictureChantier"),
                     identiteResponsableSite = getString("identiteResponsableSite")!!,

@@ -78,9 +78,24 @@
                     android:checked="@={viewModel.entretienFilter}"
                     android:onClick="@{() -> viewModel.filterListChantiers()}"
                     android:text="ENTRETIEN"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/checkBox13"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <CheckBox
+                    android:id="@+id/checkBox12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="@={viewModel.allChantiers}"
+                    android:onClick="@{() -> viewModel.filterListChantiers()}"
+                    android:text="TOUS LES CHANTIERS"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/checkBox13"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <CheckBox
                     android:id="@+id/checkBox13"
@@ -89,10 +104,11 @@
                     android:checked="@={viewModel.chantierFilter}"
                     android:onClick="@{() -> viewModel.filterListChantiers()}"
                     android:text="CHANTIER"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/checkBox12"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/checkBox14"
-                    tools:layout_editor_absoluteY="0dp" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

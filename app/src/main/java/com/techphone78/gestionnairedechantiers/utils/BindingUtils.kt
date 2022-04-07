@@ -359,7 +359,7 @@ fun setAdapter(autoCompleteTextView: AutoCompleteTextView, items: List<String>) 
 }
 
 @BindingAdapter("colorsAdapter")
-fun setCouleursAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?) {
+fun setColorsAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?) {
     colors?.let {
         val items = mutableListOf<String>()
         for (couleur in it) {

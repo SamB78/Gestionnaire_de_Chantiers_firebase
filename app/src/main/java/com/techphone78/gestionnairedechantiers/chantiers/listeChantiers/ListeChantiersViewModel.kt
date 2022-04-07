@@ -2,6 +2,8 @@ package com.techphone78.gestionnairedechantiers.chantiers.listeChantiers
 
 import androidx.lifecycle.*
 import com.techphone78.gestionnairedechantiers.entities.Chantier
+import com.techphone78.gestionnairedechantiers.entities.User
+import com.techphone78.gestionnairedechantiers.firebase.AuthRepository
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
 import com.techphone78.gestionnairedechantiers.utils.State
 import com.techphone78.gestionnairedechantiers.utils.Status
@@ -17,8 +19,11 @@ class ListeChantiersViewModel : ViewModel() {
         EN_ATTENTE
     }
 
+
     //Repo&
     private val chantierRepository = ChantierRepository()
+    private val authRepository = AuthRepository()
+    var user = User()
 
     private var _listeChantiers = MutableLiveData<List<Chantier>>(emptyList())
     val listeChantiers: LiveData<List<Chantier>>
@@ -37,6 +42,7 @@ class ListeChantiersViewModel : ViewModel() {
     var searchFilter = MutableLiveData("")
     var entretienFilter = MutableLiveData(true)
     var chantierFilter = MutableLiveData(true)
+    var allChantiers = MutableLiveData(false)
 
     private var _state = MutableLiveData(State(Status.LOADING))
     val state: LiveData<State>
@@ -57,6 +63,7 @@ class ListeChantiersViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = State.loading()
             try {
+                user = authRepository.getDataUser()
                 getAllChantiers()
                 _state.value = State.success()
             } catch (e: Exception) {
@@ -109,13 +116,19 @@ class ListeChantiersViewModel : ViewModel() {
 
         if (entretienFilter.value!! && chantierFilter.value!!) {
             listeOriginaleChantiers.addAll(listeChantiers.value!!)
-            Timber.i("test1")
         } else if (entretienFilter.value!! && !chantierFilter.value!!) {
             listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier == 2 })
-            Timber.i("test2")
         } else if (!entretienFilter.value!! && chantierFilter.value!!) {
             listeOriginaleChantiers.addAll(listeChantiers.value!!.filter { it.typeChantier == 1 })
-            Timber.i("test3")
+        }
+        if (!allChantiers.value!!) {
+            Timber.i("passage AllChantier = false, ${user.userData} ")
+           // Timber.i("listOrginale: before $listeOriginaleChantiers")
+            val tmpList =
+                listeOriginaleChantiers.filter { it.chefChantier.documentId != user.userData!!.documentId }
+            Timber.i("tmpList: ${tmpList.map { it.chefChantier.documentId }}")
+            listeOriginaleChantiers.removeAll(tmpList)
+            Timber.i("listOrgiinale: $listeOriginaleChantiers")
         }
 
         if (!searchFilter.value.isNullOrEmpty()) {

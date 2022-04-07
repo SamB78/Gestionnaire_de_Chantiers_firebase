@@ -100,6 +100,93 @@
                             </com.google.android.material.card.MaterialCardView>
 
                             <com.google.android.material.card.MaterialCardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="@{viewModel.chantier.adresseUnique ? View.GONE : View.VISIBLE}"
+                                android:layout_margin="8dp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <TextView
+                                        android:id="@+id/textView90"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="16dp"
+                                        android:layout_marginTop="16dp"
+                                        android:text="Adresse"
+                                        android:textSize="24sp"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/editTextRue"
+                                        android:layout_width="0dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginStart="16dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginEnd="16dp"
+                                        android:ems="10"
+                                        android:hint="Rue"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/textView90">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:inputType="textPersonName"
+                                            android:text="@={viewModel.rapportChantier.adresseChantier.rue}" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/editTextCodePostal"
+                                        android:layout_width="95dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginTop="24dp"
+                                        android:ems="10"
+                                        android:hint="C. Postal"
+                                        android:inputType="phone"
+                                        app:layout_constraintStart_toStartOf="@+id/editTextRue"
+                                        app:layout_constraintTop_toBottomOf="@+id/editTextRue">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:text="@={viewModel.rapportChantier.adresseChantier.codePostal}" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/editTextVille"
+                                        android:layout_width="0dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginStart="16dp"
+                                        android:layout_marginTop="24dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:ems="10"
+                                        android:hint="Ville"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="@+id/editTextRue"
+                                        app:layout_constraintStart_toEndOf="@+id/editTextCodePostal"
+                                        app:layout_constraintTop_toBottomOf="@+id/editTextRue">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:inputType="textPersonName"
+                                            android:text="@={viewModel.rapportChantier.adresseChantier.ville}" />
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/cardSecurite"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

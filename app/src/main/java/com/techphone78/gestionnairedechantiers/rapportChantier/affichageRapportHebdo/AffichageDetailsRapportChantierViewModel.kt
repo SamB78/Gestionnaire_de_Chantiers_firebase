@@ -13,7 +13,9 @@ import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.entities.*
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
 import com.techphone78.gestionnairedechantiers.firebase.RapportChantierRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.apache.poi.ss.usermodel.*
 import timber.log.Timber
 import java.io.File
@@ -53,7 +55,7 @@ class AffichageDetailsRapportChantierViewModel(
 
     lateinit var uri: Uri
 
-    private val rapportChantierRepository = RapportChantierRepository(idChantier)
+    private val rapportChantierRepository = RapportChantierRepository()
     private val chantierRepository = ChantierRepository()
 
     private val totalDates: MutableList<LocalDate> = ArrayList()
@@ -92,8 +94,9 @@ class AffichageDetailsRapportChantierViewModel(
         }
         Timber.i("list dates = ^$totalDates")
         viewModelScope.launch {
-            _listRapportsChantier.value =
-                rapportChantierRepository.getListRapportsChantierByListOfDates(listDates)
+            _listRapportsChantier.value = withContext(Dispatchers.IO) {
+                rapportChantierRepository.getListRapportsChantierByListOfDates(listDates, idChantier)
+            }!!
             Timber.i("liste rapport Chantiers = ${listRapportsChantier.value}")
             uri = generateXlsxFile()
         }.join()
@@ -140,6 +143,7 @@ class AffichageDetailsRapportChantierViewModel(
                     xlwb.numberOfSheets - 1,
                     "SEMAINE ${date.get(weekFiled.weekOfWeekBasedYear())}"
                 )
+
                 firstSheet = false
             }
 
@@ -154,6 +158,8 @@ class AffichageDetailsRapportChantierViewModel(
                     Timber.i("currentDateOfSheet 2 = $currentDateOfSheet")
                     xlWs.getRow(0).getCell(0)
                         .setCellValue("RAPPORT HEBDOMADAIRE du $currentDateOfSheet au $lastDateOfSheet")
+                    xlWs.getRow(1).getCell(0)
+                        .setCellValue("Semaine n°${date.get(weekFiled.weekOfWeekBasedYear())}")
                     xlWs.getRow(1).getCell(3).setCellValue("du $currentDateOfSheet")
                     xlWs.getRow(1).getCell(6).setCellValue("au $lastDateOfSheet")
                     xlWs.getRow(1).getCell(13)
@@ -177,8 +183,14 @@ class AffichageDetailsRapportChantierViewModel(
                 Timber.i("firstDateOfSheet 2 = $currentDateOfSheet")
                 xlWs.getRow(0).getCell(0)
                     .setCellValue("RAPPORT HEBDOMADAIRE du $currentDateOfSheet au $lastDateOfSheet")
+                xlWs.getRow(1).getCell(0)
+                    .setCellValue("Semaine n°${date.get(weekFiled.weekOfWeekBasedYear())}")
                 xlWs.getRow(1).getCell(3).setCellValue("du $currentDateOfSheet")
                 xlWs.getRow(1).getCell(6).setCellValue("au $lastDateOfSheet")
+                xlWs.getRow(1).getCell(13)
+                    .setCellValue("Chantier n° ${selectedChantier.value!!.numeroChantier}")
+                xlWs.getRow(1).getCell(15)
+                    .setCellValue(selectedChantier.value!!.adresseChantier.adresseToString())
             }
 
         }

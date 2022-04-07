@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.techphone78.gestionnairedechantiers.rapportChantier.affichageRapportHebdo.AffichageDetailsRapportChantierViewModel" />
+            type="com.techphone78.gestionnairedechantiers.rapportChantier.weeklyBuildingReports.WeeklyBuildingReportsViewModel" />
 
     </data>
 
@@ -27,10 +27,9 @@
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()-> viewModel.onClickShowExcelDocument()}"
-                android:text="Afficher Document Excel"
-                android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+                android:text="Générer Document Excel"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"

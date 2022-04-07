@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel" />
@@ -131,7 +133,6 @@
                     android:layout_width="280dp"
                     android:layout_height="56dp"
                     android:layout_marginTop="24dp"
-                    android:hint="Couleur équipe"
                     app:layout_constraintEnd_toEndOf="@+id/editTextNomChantier"
                     app:layout_constraintStart_toStartOf="@+id/editTextNomChantier"
                     app:layout_constraintTop_toBottomOf="@+id/editTextNomChantier">
@@ -141,21 +142,32 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
+                        android:hint="Couleur équipe"
                         android:text="@={viewModel.selectedColor}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/adresseUnique"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adresse unique"
+                    android:onClick="@{()-> viewModel.onCheckAdresseUnique()}"
+                    android:checked="@={viewModel.chantier.adresseUnique}"
+                    app:layout_constraintStart_toStartOf="@+id/selectionColor"
+                    app:layout_constraintTop_toBottomOf="@+id/selectionColor" />
 
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/editTextRue"
                     android:layout_width="280dp"
                     android:layout_height="56dp"
-                    android:layout_marginTop="24dp"
                     android:ems="10"
                     android:hint="Rue"
+                    android:visibility="@{viewModel.chantier.adresseUnique ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@+id/selectionColor"
                     app:layout_constraintStart_toStartOf="@+id/selectionColor"
-                    app:layout_constraintTop_toBottomOf="@+id/selectionColor">
+                    app:layout_constraintTop_toBottomOf="@+id/adresseUnique">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -173,6 +185,7 @@
                     android:ems="10"
                     android:hint="C. Postal"
                     android:inputType="phone"
+                    android:visibility="@{viewModel.chantier.adresseUnique ? View.VISIBLE : View.GONE}"
                     app:layout_constraintStart_toStartOf="@+id/editTextRue"
                     app:layout_constraintTop_toBottomOf="@+id/editTextRue">
 
@@ -192,6 +205,7 @@
                     android:layout_marginTop="24dp"
                     android:ems="10"
                     android:hint="Ville"
+                    android:visibility="@{viewModel.chantier.adresseUnique ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@+id/editTextRue"
                     app:layout_constraintTop_toBottomOf="@+id/editTextRue">
 
@@ -207,11 +221,10 @@
                     android:id="@+id/editAccessCode"
                     android:layout_width="280dp"
                     android:layout_height="56dp"
-
                     android:layout_marginTop="24dp"
                     android:ems="10"
                     android:hint="Code accès site"
-
+                    android:visibility="@{viewModel.chantier.adresseUnique ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@+id/editTextVille"
                     app:layout_constraintStart_toStartOf="@+id/editTextCodePostal"
                     app:layout_constraintTop_toBottomOf="@+id/editTextVille">
@@ -305,6 +318,7 @@
                     android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="@{viewModel.chantier.adresseUnique ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/editTextRue"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
                     app:layout_constraintStart_toStartOf="@+id/imageView"

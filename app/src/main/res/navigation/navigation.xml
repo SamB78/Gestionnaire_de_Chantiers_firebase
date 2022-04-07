@@ -377,4 +377,10 @@
             android:id="@+id/action_authFragment_to_listeChantiersFragment"
             app:destination="@id/listeChantiersFragment" />
     </fragment><action android:id="@+id/action_global_authFragment" app:destination="@id/authFragment"/>
+    <fragment
+        android:id="@+id/weeklyBuildingReportsFragment"
+        android:name="com.techphone78.gestionnairedechantiers.rapportChantier.weeklyBuildingReports.WeeklyBuildingReportsFragment"
+        android:label="fragment_weekly_building_reports"
+        tools:layout="@layout/fragment_weekly_building_reports" />
+    <action android:id="@+id/action_global_weeklyBuildingReportsFragment" app:destination="@id/weeklyBuildingReportsFragment" />
 </navigation>

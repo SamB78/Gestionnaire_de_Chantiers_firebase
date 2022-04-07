@@ -12,5 +12,10 @@
             android:id="@+id/itemMateriel"
             android:icon="@drawable/ic_baseline_build_24"
             android:title="@string/gestion_materiel" />
+
+        <item
+            android:id="@+id/itemAffichageRapportChantiers"
+            android:icon="@drawable/ic_baseline_cloud_download_24"
+            android:title="@string/affichage_rapport_chantiers" />
     </group>
 </menu>

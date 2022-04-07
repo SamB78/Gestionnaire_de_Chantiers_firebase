@@ -21,10 +21,10 @@ class ChantierRepository {
     private val authRepository = AuthRepository()
 
     suspend fun insertChantier(chantier: Chantier) {
-            db.document(chantier.numeroChantier!!)
-                .set(chantier)
-                .await()
-            Timber.i("chantier envoyé Firebase")
+        db.document(chantier.numeroChantier!!)
+            .set(chantier)
+            .await()
+        Timber.i("chantier envoyé Firebase")
 //            FirebaseCrashlytics.getInstance().log("Error getting user details")
 //            FirebaseCrashlytics.getInstance().setCustomKey("user id", xpertSlug)
 //            FirebaseCrashlytics.getInstance().recordException(e)
@@ -33,61 +33,65 @@ class ChantierRepository {
 
     suspend fun setChantier(chantier: Chantier) {
 
-            Timber.i("Entree setChantier")
-            Timber.i("chantier: $chantier")
+        Timber.i("Entree setChantier")
+        Timber.i("chantier: $chantier")
 
-            val listEquipe = mutableListOf<String>()
+        val listEquipe = mutableListOf<String>()
 
-            for (personnel in chantier.listEquipe) {
-                listEquipe.add(personnel.documentId!!)
-            }
+        for (personnel in chantier.listEquipe) {
+            listEquipe.add(personnel.documentId!!)
+        }
 
-            chantier.urlPictureChantier?.let {
-                chantier.urlPictureChantier = imagesStorage.insertImage(it, CHANTIER_FOLDER)
-            }
+        chantier.urlPictureChantier?.let {
+            chantier.urlPictureChantier = imagesStorage.insertImage(it, CHANTIER_FOLDER)
+        }
 
-            val data = hashMapOf(
-                "adresseChantier" to chantier.adresseChantier,
-                "chefChantier" to chantier.chefChantier.documentId,
-                "identiteResponsableSite" to chantier.identiteResponsableSite,
-                "mailContactResponsableSite" to chantier.mailContactResponsableSite,
-                "nomChantier" to chantier.nomChantier,
-                "numContactResponsableSite" to chantier.numContactResponsableSite,
-                "typeChantier" to chantier.typeChantier,
-                "urlPictureChantier" to chantier.urlPictureChantier,
-                "listEquipe" to listEquipe,
-                "couleur" to chantier.couleur?.colorName,
-                "accessCode" to chantier.accessCode
-            )
-            Timber.i("date: $data")
+        val data = hashMapOf(
+            "adresseChantier" to chantier.adresseChantier,
+            "chefChantier" to chantier.chefChantier.documentId,
+            "adresseUnique" to chantier.adresseUnique,
+            "identiteResponsableSite" to chantier.identiteResponsableSite,
+            "mailContactResponsableSite" to chantier.mailContactResponsableSite,
+            "nomChantier" to chantier.nomChantier,
+            "numContactResponsableSite" to chantier.numContactResponsableSite,
+            "typeChantier" to chantier.typeChantier,
+            "urlPictureChantier" to chantier.urlPictureChantier,
+            "listEquipe" to listEquipe,
+            "couleur" to chantier.couleur?.colorName,
+            "accessCode" to chantier.accessCode
+        )
+        Timber.i("date: $data")
 
 
 
-            db.document(chantier.numeroChantier!!)
-                .set(data)
-                .await()
-            Timber.i("Materiel Updated with success")
+        db.document(chantier.numeroChantier!!)
+            .set(data)
+            .await()
+        Timber.i("Materiel Updated with success")
     }
 
     suspend fun getAllChantiers(): FireStoreResponse<List<Chantier>> {
 
-        val user = authRepository.getDataUser()
+//        val user = authRepository.getDataUser()
         val list = mutableListOf<Chantier>()
-        val result: QuerySnapshot = if (user.userData!!.administrateur) {
-            db.get().await()
-        } else {
-            db.whereEqualTo("chefChantier", user.userData!!.documentId).get().await()
-        }
+//        val result: QuerySnapshot = if (user.userData!!.administrateur) {
+//            db.get().await()
+//        } else {
+//            db.whereEqualTo("chefChantier", user.userData!!.documentId).get().await()
+//        }
+
+        val result = db.get().await()
         val colors = colorsRepository.getAllColors()
         for (chantier in result) {
-//            val idChefChantier = chantier.get("chefChantier") as String
-//            val chefChantier = dbPersonnel.document(idChefChantier).get().await()
-//                .toObject(Personnel::class.java) ?: Personnel()
+           val idChefChantier = chantier.get("chefChantier") as String
+           val chefChantier = Personnel(documentId = idChefChantier)
+
 
             val idCouleur = chantier.get("couleur") as String?
             val couleur = colors.find { it.colorName == idCouleur }
             val chantierConvertedToObject = chantier.toChantierWithoutPersonnel()
             chantierConvertedToObject.couleur = couleur
+            chantierConvertedToObject.chefChantier = chefChantier
             list.add(chantierConvertedToObject)
 
         }

@@ -10,11 +10,8 @@ import timber.log.Timber
 import java.util.*
 
 
-class RapportChantierRepository(idChantier: String) {
+class RapportChantierRepository() {
 
-    private val db = FirebaseFirestore.getInstance()
-        .collection("chantiers").document(idChantier)
-        .collection("rapportsChantier")
 
     private val personnelRepository = PersonnelRepository()
     private val materielRepository = MaterielRepository()
@@ -24,7 +21,12 @@ class RapportChantierRepository(idChantier: String) {
     private val tacheEntretienRepository = TacheEntretienRepository()
 
 
-    suspend fun insertRapportChantier(rapportChantier: RapportChantier): String? {
+    suspend fun insertRapportChantier(rapportChantier: RapportChantier, idChantier: String): String? {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
         try {
 
             val listPersonnel = mutableListOf<ItemWithQuantity>()
@@ -83,7 +85,8 @@ class RapportChantierRepository(idChantier: String) {
                 "traitementPhytosanitaire" to rapportChantier.traitementPhytosanitaire,
                 "tachesEntretien" to rapportChantier.tachesEntretien,
                 "totauxRC" to rapportChantier.totauxRC,
-                "meteo" to rapportChantier.meteo
+                "meteo" to rapportChantier.meteo,
+                "adresseChantier" to rapportChantier.adresseChantier
             )
 
             val result = db.add(data).await()
@@ -94,7 +97,10 @@ class RapportChantierRepository(idChantier: String) {
         }
     }
 
-    suspend fun getAllRapportsChantier(): List<RapportChantier> {
+    suspend fun getAllRapportsChantier(idChantier: String): List<RapportChantier> {
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
         val list = mutableListOf<RapportChantier>()
         val result = db.orderBy("dateRapportChantier", Query.Direction.DESCENDING).get().await()
         for (item in result) {
@@ -107,7 +113,11 @@ class RapportChantierRepository(idChantier: String) {
         return list
     }
 
-    suspend fun getRapportChantierById(id: String): RapportChantier {
+    suspend fun getRapportChantierById(id: String, idChantier: String): RapportChantier {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
 
         val result = db.document(id).get().await()
         return result.toRapportChantier(
@@ -120,14 +130,18 @@ class RapportChantierRepository(idChantier: String) {
         )
     }
 
-    suspend fun getListRapportsChantierByListOfDates(listDates: List<Date>): List<RapportChantier> {
+    suspend fun getListRapportsChantierByListOfDates(listDates: List<Date>, idChantier: String): List<RapportChantier> {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
 
         val listOfRC = mutableListOf<RapportChantier>()
 
         for (date in listDates) {
             val calendar = Calendar.getInstance()
             calendar.time = date
-            calendar.add(Calendar.HOUR_OF_DAY, 2)
+            calendar.add(Calendar.HOUR_OF_DAY, 1)
 
             val result = db.whereEqualTo("dateRapportChantier", calendar.time).get().await()
             Timber.i("result: ${result.documents.size} for date : ${calendar.time}")
@@ -148,7 +162,11 @@ class RapportChantierRepository(idChantier: String) {
         return listOfRC
     }
 
-    suspend fun getRapportChantierIdByDate(date: Date): String? {
+    suspend fun getRapportChantierIdByDate(date: Date, idChantier: String): String? {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
 
         val result = db.whereEqualTo("dateRapportChantier", date).get().await()
         Timber.i("result = ${result.documents}")
@@ -159,7 +177,12 @@ class RapportChantierRepository(idChantier: String) {
         }
     }
 
-    suspend fun updateListePersonnelRC(rapportChantier: RapportChantier) {
+    suspend fun updateListePersonnelRC(rapportChantier: RapportChantier, idChantier: String) {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
         val listPersonnel = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listePersonnel) listPersonnel.add(
             ItemWithQuantity(
@@ -177,7 +200,11 @@ class RapportChantierRepository(idChantier: String) {
         db.document(rapportChantier.documentId!!).update(updates).await()
     }
 
-    suspend fun updateListeMaterielRC(rapportChantier: RapportChantier) {
+    suspend fun updateListeMaterielRC(rapportChantier: RapportChantier, idChantier: String) {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
 
         val listMateriel = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMateriel) listMateriel.add(
@@ -196,7 +223,12 @@ class RapportChantierRepository(idChantier: String) {
 
     }
 
-    fun updateListeMaterielLocationRC(rapportChantier: RapportChantier) {
+    fun updateListeMaterielLocationRC(rapportChantier: RapportChantier, idChantier: String) {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMaterielLocation) listItems.add(
             ItemWithQuantity(
@@ -213,7 +245,11 @@ class RapportChantierRepository(idChantier: String) {
         db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeMateriauxRC(rapportChantier: RapportChantier) {
+    fun updateListeMateriauxRC(rapportChantier: RapportChantier, idChantier: String) {
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeMateriaux) listItems.add(
             ItemWithQuantity(
@@ -229,7 +265,13 @@ class RapportChantierRepository(idChantier: String) {
         db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeSousTraitanceRC(rapportChantier: RapportChantier) {
+    fun updateListeSousTraitanceRC(rapportChantier: RapportChantier, idChantier: String) {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
+
         val listItems = mutableListOf<ItemWithQuantity>()
         for (item in rapportChantier.listeSousTraitance) listItems.add(
             ItemWithQuantity(
@@ -246,7 +288,12 @@ class RapportChantierRepository(idChantier: String) {
 
     }
 
-    fun updateListeAutresInformations(rapportChantier: RapportChantier) {
+    fun updateListeAutresInformations(rapportChantier: RapportChantier, idChantier: String) {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
         val updates = hashMapOf(
             "observations" to rapportChantier.observations,
             "dataSaved.dataConformiteChantier" to true
@@ -254,16 +301,22 @@ class RapportChantierRepository(idChantier: String) {
         db.document(rapportChantier.documentId!!).update(updates)
     }
 
-    fun updateListeObservations(rapportChantier: RapportChantier) {
+    fun updateListeObservations(rapportChantier: RapportChantier, idChantier: String) {
 
-        Timber.i("listeTachesEntretien2 = ${rapportChantier.tachesEntretien}")
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
+
+        Timber.i("adresseChantier = ${rapportChantier.adresseChantier}")
 
         val updates = hashMapOf(
             "commentaire" to rapportChantier.commentaire,
             "meteo" to rapportChantier.meteo,
             "traitementPhytosanitaire" to rapportChantier.traitementPhytosanitaire,
             "tachesEntretien" to rapportChantier.tachesEntretien,
-            "dataSaved.dataObservations" to true
+            "dataSaved.dataObservations" to true,
+            "adresseChantier" to rapportChantier.adresseChantier
         )
         db.document(rapportChantier.documentId!!).update(updates)
     }

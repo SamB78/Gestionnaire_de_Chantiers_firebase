@@ -6,6 +6,7 @@
     <string name="champs_non_conformes">Champs non conformes: </string>
     <string name="observations">Observations: %s</string>
     <string name="gestion_materiel">Gestion Materiel</string>
+    <string name="affichage_rapport_chantiers">Rapports de chantiers</string>
     <string name="gestion_personnel">Gestion Personnel</string>
     <string name="chef_d_quipe">Chef d\'équipe</string>
     <string name="int_rimaire">Intérimaire</string>

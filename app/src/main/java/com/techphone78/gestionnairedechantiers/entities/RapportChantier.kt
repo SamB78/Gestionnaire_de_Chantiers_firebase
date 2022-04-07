@@ -33,39 +33,18 @@ data class RapportChantier(
     var traitementPhytosanitaire: TraitementPhytosanitaire = TraitementPhytosanitaire(),
     var tachesEntretien: List<TacheEntretien> = emptyList(),
     var totauxRC: TotauxRapportChantier = TotauxRapportChantier(),
-    var meteo: Meteo = Meteo()
+    var meteo: Meteo = Meteo(),
+    var adresseChantier: Adresse = Adresse()
 ) {
 
     companion object {
         fun QueryDocumentSnapshot.toRapportChantierWithoutAllData(): RapportChantier {
 
-
-//                val listeMaterielLocation = mutableListOf<MaterielLocation>()
-//                for (it in get("listeMaterielLocation") as List<*>) {
-//                    listeMaterielLocation.add(it as MaterielLocation)
-//                }
-//
-//                val listeMateriaux = mutableListOf<Materiaux>()
-//                for (it in get("listeMaterielLocation") as List<*>) {
-//                    listeMateriaux.add(it as Materiaux)
-//                }
-//
-//                val listeSousTraitance = mutableListOf<SousTraitance>()
-//                for (it in get("listeMaterielLocation") as List<*>) {
-//                    listeSousTraitance.add(it as SousTraitance)
-//                }
-//                val listeTachesEntretien = mutableListOf<TacheEntretien>()
-//                for (it in get("tachesEntretien") as List<*>) {
-//                    listeTachesEntretien.add(it as TacheEntretien)
-//                }
-
             return RapportChantier(
                 documentId = id,
                 chantierId = getString("chantierId")!!,
                 dateRapportChantier = getDate("dateRapportChantier")!!.toInstant(),
-//                    listeMaterielLocation = listeMaterielLocation,
-//                    listeMateriaux = listeMateriaux,
-//                    listeSousTraitance = listeSousTraitance,
+
                 observations = get("observations", Observations::class.java) ?: Observations(),
                 commentaire = getString("commentaire")!!,
                 typeChantier = getLong("typeChantier")!!.toInt(),
@@ -73,9 +52,9 @@ data class RapportChantier(
                     "traitementPhytosanitaire",
                     TraitementPhytosanitaire::class.java
                 )!!,
-//                    tachesEntretien = listeTachesEntretien,
                 totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
-                meteo = get("meteo", Meteo::class.java)!!
+                meteo = get("meteo", Meteo::class.java)!!,
+                adresseChantier = get("adresseChantier", Adresse::class.java)?: Adresse(),
             )
         }
 
@@ -93,7 +72,8 @@ data class RapportChantier(
                 )!!,
                 totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
                 meteo = get("meteo", Meteo::class.java)!!,
-                dataSaved = get("dataSaved", DataSaved::class.java)!!
+                dataSaved = get("dataSaved", DataSaved::class.java)!!,
+                adresseChantier = get("adresseChantier", Adresse::class.java)?: Adresse(),
             )
         }
 
@@ -194,7 +174,8 @@ data class RapportChantier(
                 tachesEntretien = listeTachesEntretien,
                 totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
                 meteo = get("meteo", Meteo::class.java)!!,
-                dataSaved = get("dataSaved", DataSaved::class.java)!!
+                dataSaved = get("dataSaved", DataSaved::class.java)!!,
+                adresseChantier = get("adresseChantier", Adresse::class.java)?: Adresse(),
             )
 
         }
@@ -297,7 +278,8 @@ data class RapportChantier(
                 tachesEntretien = listeTachesEntretien,
                 totauxRC = get("totauxRC", TotauxRapportChantier::class.java)!!,
                 meteo = get("meteo", Meteo::class.java)!!,
-                dataSaved = get("dataSaved", DataSaved::class.java)!!
+                dataSaved = get("dataSaved", DataSaved::class.java)!!,
+                adresseChantier = get("adresseChantier", Adresse::class.java)?: Adresse(),
             )
 
 

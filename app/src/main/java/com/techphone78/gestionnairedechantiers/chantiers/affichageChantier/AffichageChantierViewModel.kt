@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.entities.RapportChantier
+import com.techphone78.gestionnairedechantiers.entities.User
+import com.techphone78.gestionnairedechantiers.firebase.AuthRepository
 import com.techphone78.gestionnairedechantiers.firebase.ChantierRepository
 import com.techphone78.gestionnairedechantiers.firebase.RapportChantierRepository
 import com.techphone78.gestionnairedechantiers.utils.ParentViewModel
@@ -35,11 +37,18 @@ class AffichageChantierViewModel(
 
 
     private val chantierRepository = ChantierRepository()
-    private val rapportChantierRepository = RapportChantierRepository(id)
+    private val rapportChantierRepository = RapportChantierRepository()
+    private val authRepository = AuthRepository()
 
     private var _navigation = MutableLiveData<NavigationMenu>()
     val navigation: LiveData<NavigationMenu>
         get() = this._navigation
+
+    var user = User()
+
+    private var _isUserAdmin = MutableLiveData<Boolean>(false)
+    val isUserAdmin: LiveData<Boolean>
+        get() = this._isUserAdmin
 
     var state = MutableLiveData(State(Status.LOADING))
 
@@ -82,9 +91,11 @@ class AffichageChantierViewModel(
         uiScope.launch {
             state.value = State.loading()
             try {
+                user = authRepository.getDataUser()
+                _isUserAdmin.value = user.userData?.administrateur
                 _chantier.value = chantierRepository.getChantierById(id)
                 Timber.i("Chantier initialisé  = ${chantier.value?.numeroChantier}")
-                _listeRapportsChantiers.value = rapportChantierRepository.getAllRapportsChantier()
+                _listeRapportsChantiers.value = rapportChantierRepository.getAllRapportsChantier(id)
                 state.value = State.success()
             } catch (e: Exception) {
                 state.value = State.error(e.toString())
