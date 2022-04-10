@@ -59,7 +59,7 @@ class GestionMaterielFragment : Fragment() {
             viewModel.onDateSelected(Date(it))
         }
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
                 Status.LOADING -> Flipper.LOADING
 
@@ -70,9 +70,13 @@ class GestionMaterielFragment : Fragment() {
                     Flipper.ERROR
                 }
             }
-        })
+        }
+        binding.autoCompleteTextColor.setOnItemClickListener { parent, view, position, id ->
+            val colorString = parent.adapter.getItem(position) as String
+            viewModel.setColorChantier(colorString)
+        }
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
                 GestionMaterielViewModel.NavigationMenu.ANNULATION -> {
@@ -101,7 +105,7 @@ class GestionMaterielFragment : Fragment() {
 
             }
 
-        })
+        }
 
         return binding.root
     }

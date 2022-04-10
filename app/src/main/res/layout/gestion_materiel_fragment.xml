@@ -138,11 +138,12 @@
                         app:layout_constraintTop_toBottomOf="@+id/editTextMiseEnCirculation">
 
                         <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTextColor"
                             colorsAdapter="@{viewModel.listCouleurs}"
+                            currentColor="@{viewModel.selectedColor}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:text="@={viewModel.selectedColor}" />
+                            android:inputType="none" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

@@ -138,12 +138,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/editTextNomChantier">
 
                     <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextColor"
                         colorsAdapter="@{viewModel.listCouleurs}"
+                        currentColor="@{viewModel.selectedColor}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
                         android:hint="Couleur équipe"
-                        android:text="@={viewModel.selectedColor}" />
+                        android:inputType="none" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,9 +152,9 @@
                     android:id="@+id/adresseUnique"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Adresse unique"
-                    android:onClick="@{()-> viewModel.onCheckAdresseUnique()}"
                     android:checked="@={viewModel.chantier.adresseUnique}"
+                    android:onClick="@{()-> viewModel.onCheckAdresseUnique()}"
+                    android:text="Adresse unique"
                     app:layout_constraintStart_toStartOf="@+id/selectionColor"
                     app:layout_constraintTop_toBottomOf="@+id/selectionColor" />
 

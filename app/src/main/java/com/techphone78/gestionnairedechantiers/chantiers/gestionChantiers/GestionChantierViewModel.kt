@@ -77,6 +77,10 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
         Timber.i("selectedColor: $it")
     }
 
+    fun setColorChantier(colorString: String?){
+        searchColor(colorString)
+    }
+
     private fun searchColor(color: String?) {
         listCouleurs.value?.find { it.colorName == color }?.let {
             Timber.i("Couleur found: $it")

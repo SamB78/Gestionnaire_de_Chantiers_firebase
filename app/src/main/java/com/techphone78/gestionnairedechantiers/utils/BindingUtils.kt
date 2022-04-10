@@ -55,7 +55,6 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 @BindingAdapter(value = ["imageUrl2", "typeEntity"], requireAll = false)
 fun bindImage2(imgView: ImageView, imgUrl: String?, typeEntity: TypeEntity?) {
 
-    Timber.i("typeEntity: $typeEntity")
 
     val placeholder: Int = when (typeEntity) {
         TypeEntity.MATERIEL -> R.drawable.ic_baseline_handyman_24
@@ -359,15 +358,17 @@ fun setAdapter(autoCompleteTextView: AutoCompleteTextView, items: List<String>) 
     autoCompleteTextView.setAdapter(adapter)
 }
 
-@BindingAdapter("colorsAdapter")
-fun setColorsAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?) {
-    colors?.let {
-        val items = mutableListOf<String>()
-        for (couleur in it) {
-            items.add(couleur.colorName!!)
-        }
-        val adapter = ArrayAdapter(autoCompleteTextView.context, R.layout.list_items_colors, items)
+@BindingAdapter(value = ["colorsAdapter", "currentColor"], requireAll = false)
+fun setColorsAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?, currentColor: String?) {
+    colors?.let { list ->
+       Timber.i("colors: $list")
+        /*      val items = mutableListOf<String>()
+             for (couleur in list) {
+                 items.add(couleur.colorName!!)
+             }*/
+        val adapter = ArrayAdapter(autoCompleteTextView.context, R.layout.list_items_colors, list.map { it.colorName })
         autoCompleteTextView.setAdapter(adapter)
+        currentColor?.let { autoCompleteTextView.setText(currentColor, false) }
     }
 }
 

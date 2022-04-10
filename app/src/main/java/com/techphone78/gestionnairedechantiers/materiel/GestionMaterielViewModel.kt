@@ -31,6 +31,7 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
 
     //Repo
     private val materielRepository = MaterielRepository()
+    private val couleurRepository = CouleurRepository()
 
 
     val listTypeMateriel = listOf(
@@ -77,6 +78,10 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
         searchColor(it)
     }
 
+    fun setColorChantier(colorString: String?){
+        searchColor(colorString)
+    }
+
     private fun searchColor(color: String?) {
         listCouleurs.value?.find { it.colorName == color }?.let {
             materiel.value!!.couleur = if (it.colorName == "Pas de couleur") null
@@ -95,6 +100,7 @@ class GestionMaterielViewModel : ViewModel(), ParentViewModel {
             state.value = State.loading()
             try {
                 getAllMateriel(getServerData)
+                _listCouleurs.value = couleurRepository.getAllColors()
                 state.value = State.success()
             } catch (e: Exception) {
                 state.value = State.error(e.toString())

@@ -72,6 +72,11 @@ class GestionChantier1Fragment : Fragment() {
 
         viewModel.selectedColorObserver.observe(viewLifecycleOwner, {})
 
+        binding.autoCompleteTextColor.setOnItemClickListener { parent, view, position, id ->
+            val colorString = parent.adapter.getItem(position) as String
+            viewModel.setColorChantier(colorString)
+        }
+
 
         //Navigation
         viewModel.navigation.observe(viewLifecycleOwner, Observer { navigation ->
