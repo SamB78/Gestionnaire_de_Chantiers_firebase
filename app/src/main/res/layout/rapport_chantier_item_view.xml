@@ -25,6 +25,8 @@
         app:cardElevation="0dp"
         app:shapeAppearance="?attr/shapeAppearanceLargeComponent"
         app:strokeColor="@color/stroke_color"
+        currentUser="@{viewModel.currentUser.userData}"
+        rapportChantier="@{item}"
         android:onClick="@{() -> viewModel.onButtonClickEditRapportChantier(item)}"
         app:strokeWidth="1dp">
 

@@ -359,14 +359,21 @@ fun setAdapter(autoCompleteTextView: AutoCompleteTextView, items: List<String>) 
 }
 
 @BindingAdapter(value = ["colorsAdapter", "currentColor"], requireAll = false)
-fun setColorsAdapter(autoCompleteTextView: AutoCompleteTextView, colors: List<Couleur>?, currentColor: String?) {
+fun setColorsAdapter(
+    autoCompleteTextView: AutoCompleteTextView,
+    colors: List<Couleur>?,
+    currentColor: String?
+) {
     colors?.let { list ->
-       Timber.i("colors: $list")
+        Timber.i("colors: $list")
         /*      val items = mutableListOf<String>()
              for (couleur in list) {
                  items.add(couleur.colorName!!)
              }*/
-        val adapter = ArrayAdapter(autoCompleteTextView.context, R.layout.list_items_colors, list.map { it.colorName })
+        val adapter = ArrayAdapter(
+            autoCompleteTextView.context,
+            R.layout.list_items_colors,
+            list.map { it.colorName })
         autoCompleteTextView.setAdapter(adapter)
         currentColor?.let { autoCompleteTextView.setText(currentColor, false) }
     }
@@ -392,4 +399,16 @@ fun setText(checkBox: CheckBox, rapportChantier: RapportChantier) {
             ""
         }
     }
+}
+
+@BindingAdapter(value = ["currentUser", "rapportChantier"], requireAll = true)
+fun isRapportChantierClickable(
+    materialCardView: MaterialCardView,
+    currentUser: Personnel?,
+    currentRapport: RapportChantier
+) {
+
+    materialCardView.isClickable = (currentUser?.administrateur == true
+            || currentUser?.documentId == currentRapport.chefChantier.documentId)
+
 }

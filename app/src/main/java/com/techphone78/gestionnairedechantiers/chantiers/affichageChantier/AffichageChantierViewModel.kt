@@ -44,7 +44,9 @@ class AffichageChantierViewModel(
     val navigation: LiveData<NavigationMenu>
         get() = this._navigation
 
-    var user = User()
+    private var _currentUser = MutableLiveData<User>()
+    val currentUser: LiveData<User>
+        get() = this._currentUser
 
     private var _isUserAdmin = MutableLiveData<Boolean>(false)
     val isUserAdmin: LiveData<Boolean>
@@ -91,8 +93,8 @@ class AffichageChantierViewModel(
         uiScope.launch {
             state.value = State.loading()
             try {
-                user = authRepository.getDataUser()
-                _isUserAdmin.value = user.userData?.administrateur
+                _currentUser.value = authRepository.getDataUser()
+                _isUserAdmin.value = _currentUser.value?.userData?.administrateur
                 _chantier.value = chantierRepository.getChantierById(id)
                 Timber.i("Chantier initialisé  = ${chantier.value?.numeroChantier}")
                 _listeRapportsChantiers.value = rapportChantierRepository.getAllRapportsChantier(id)
@@ -104,19 +106,29 @@ class AffichageChantierViewModel(
         }
     }
 
+    fun isRapportChantierClickable(rapportChantier: RapportChantier): Boolean {
+
+        return if (currentUser.value?.userData?.administrateur == true
+            || currentUser.value?.userData?.documentId == rapportChantier.chefChantier.documentId
+        ) {
+            return true
+        } else false
+
+    }
+
 
     fun onBoutonClicked() {
         _navigation.value = NavigationMenu.EN_ATTENTE
     }
 
-    private var needToActualizeData= false
+    private var needToActualizeData = false
     fun onClickButtonEditChantier() {
         _navigation.value = NavigationMenu.EDIT
         needToActualizeData = true
     }
 
-    fun onResumeLoadData(){
-        if(needToActualizeData){
+    fun onResumeLoadData() {
+        if (needToActualizeData) {
             onResumeGestionFragment()
             needToActualizeData = false
         }

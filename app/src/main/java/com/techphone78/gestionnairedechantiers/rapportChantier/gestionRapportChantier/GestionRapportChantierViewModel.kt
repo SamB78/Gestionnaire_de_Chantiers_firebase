@@ -76,6 +76,7 @@ class GestionRapportChantierViewModel(
         get() = this._chantier
 
     private val chantierRepository = ChantierRepository()
+    private val authRepository = AuthRepository()
     private val rapportChantierRepository = RapportChantierRepository()
     private val personnelRepository = PersonnelRepository()
     private val materielRepository = MaterielRepository()
@@ -113,6 +114,7 @@ class GestionRapportChantierViewModel(
 
     private fun initializeData() {
         viewModelScope.launch {
+            val currentUser = authRepository.getDataUser().userData
             try {
                 _state.value = State.loading()
                 when {
@@ -151,7 +153,7 @@ class GestionRapportChantierViewModel(
                             // Si nouveau rapport de Chantier
                             _rapportChantier.value = RapportChantier(
                                 chantierId = chantier.value!!.numeroChantier,
-                                chefChantier = chantier.value!!.chefChantier,
+                                chefChantier = currentUser!!,
                                 dateRapportChantier = date,
                                 typeChantier = chantier.value!!.typeChantier,
                                 listePersonnel = chantier.value!!.listEquipe
