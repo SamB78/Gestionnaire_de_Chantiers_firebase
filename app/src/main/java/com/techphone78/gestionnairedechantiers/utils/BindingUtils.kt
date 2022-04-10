@@ -22,6 +22,7 @@ import com.techphone78.gestionnairedechantiers.entities.Couleur
 import com.techphone78.gestionnairedechantiers.entities.Personnel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import com.techphone78.gestionnairedechantiers.entities.RapportChantier
 import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneId
@@ -376,5 +377,18 @@ fun setBackGroundColor(view: View, color: String?) {
     view.background = null
     color?.let {
         view.setBackgroundColor(Color.parseColor(color))
+    }
+}
+
+
+@BindingAdapter("textFilterByTypeChantier")
+fun setText(checkBox: CheckBox, rapportChantier: RapportChantier) {
+    checkBox.text = when (rapportChantier.typeChantier) {
+        1 -> "Mat. Chantier Uniquement"
+        2 -> "Mat. Entretien Uniquement"
+        else -> {
+            checkBox.visibility = View.GONE
+            ""
+        }
     }
 }

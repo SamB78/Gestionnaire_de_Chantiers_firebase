@@ -49,7 +49,6 @@
                     app:queryHint="Recherche" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:visibility="gone"
                     android:id="@+id/filterTypeMateriel"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
@@ -57,6 +56,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="12dp"
                     android:maxWidth="280dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/checkBox14"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,8 +67,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Filtre Recherche"
-                        android:text="@={viewModel.filterTypeMateriel}"
-                        android:inputType="none" />
+                        android:inputType="none"
+                        android:text="@={viewModel.filterTypeMateriel}" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -78,14 +78,26 @@
                     android:id="@+id/checkBox14"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="8dp"
                     android:checked="@={viewModel.filterByChantierColor}"
                     android:onClick="@{() -> viewModel.updateSearchFilterMateriel()}"
-                    android:text="Matériel équipe uniquement"
+                    android:text="Mat. équipe uniquement"
+                    app:layout_constraintEnd_toStartOf="@+id/checkBox15"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+                <CheckBox
+                    android:id="@+id/checkBox15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="@={viewModel.filterByTypeChantier}"
+                    android:onClick="@{() -> viewModel.updateSearchFilterMateriel()}"
+                    textFilterByTypeChantier="@{viewModel.rapportChantier}"
+                    tools:text="Mat. Chantier Uniquement"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/filterTypeMateriel"
+                    app:layout_constraintStart_toEndOf="@+id/checkBox14"
                     app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
 

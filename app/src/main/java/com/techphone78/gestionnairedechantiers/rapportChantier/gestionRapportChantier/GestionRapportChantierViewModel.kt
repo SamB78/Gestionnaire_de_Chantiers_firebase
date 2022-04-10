@@ -157,7 +157,10 @@ class GestionRapportChantierViewModel(
                                 listePersonnel = chantier.value!!.listEquipe
                             )
                             idRapportChantier = withContext(Dispatchers.IO) {
-                                rapportChantierRepository.insertRapportChantier(_rapportChantier.value!!, idChantier)
+                                rapportChantierRepository.insertRapportChantier(
+                                    _rapportChantier.value!!,
+                                    idChantier
+                                )
                             }
                             loadRapportChantier()
                         }
@@ -276,7 +279,10 @@ class GestionRapportChantierViewModel(
             try {
                 _state.value = State.loading()
                 withContext(Dispatchers.IO) {
-                    rapportChantierRepository.updateListePersonnelRC(rapportChantier.value!!, idChantier)
+                    rapportChantierRepository.updateListePersonnelRC(
+                        rapportChantier.value!!,
+                        idChantier
+                    )
                 }
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataPersonnel = true
@@ -444,7 +450,10 @@ class GestionRapportChantierViewModel(
             _state.value = State.loading()
             try {
                 withContext(Dispatchers.IO) {
-                    rapportChantierRepository.updateListeMaterielRC(rapportChantier.value!!, idChantier)
+                    rapportChantierRepository.updateListeMaterielRC(
+                        rapportChantier.value!!,
+                        idChantier
+                    )
                 }
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMateriel = true
@@ -469,6 +478,7 @@ class GestionRapportChantierViewModel(
     var listeMaterielAjoutableFiltered = MutableLiveData<MutableList<Materiel>>(mutableListOf())
     var searchFilterMateriel = MutableLiveData("")
     var filterByChantierColor = MutableLiveData(true)
+    var filterByTypeChantier = MutableLiveData(true)
 
     var filterTypeMateriel = MutableLiveData<String>(null)
 
@@ -476,7 +486,7 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                val list = getAddableMateriel()
+                val list = getMateriel()
                 listeMaterielAjoutable.value = mutableListOf()
 
                 list.forEach lit@{ materiel ->
@@ -492,7 +502,6 @@ class GestionRapportChantierViewModel(
             } catch (e: Exception) {
                 _state.value = State.error(e.toString())
             }
-
 //            _isLoading.value = false
         }
     }
@@ -502,6 +511,14 @@ class GestionRapportChantierViewModel(
             materielRepository.getAllAddableMateriel(
                 chantier.value?.typeChantier ?: 1
             )
+        }.let {
+            _fromCache.value = it.fromCache
+            return it.data
+        }
+
+    private suspend fun getMateriel(): List<Materiel> =
+        withContext(Dispatchers.IO) {
+            materielRepository.getAllMateriel()
         }.let {
             _fromCache.value = it.fromCache
             return it.data
@@ -527,10 +544,36 @@ class GestionRapportChantierViewModel(
         val listeOriginaleMateriel: MutableList<Materiel> = mutableListOf()
         val mutableList = mutableListOf<Materiel>()
 
+/*
         if (filterByChantierColor.value!!) {
             listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!.filter { it.couleur == chantier.value!!.couleur || it.couleur == null })
         } else {
             listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!)
+        }
+*/
+
+        listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!)
+
+        if(filterByChantierColor.value!!) {
+            listeOriginaleMateriel.removeAll {
+                it.couleur != chantier.value!!.couleur && it.couleur != null
+            }
+        }
+
+
+        if (filterByTypeChantier.value!!) {
+            listeOriginaleMateriel.removeAll {
+                when (rapportChantier.value?.typeChantier) {
+                    1 -> {
+                        !it.materielChantier
+                    }
+                    2 -> {
+                        !it.materielEntretien
+                    }
+                    else -> { false
+                    }
+                }
+            }
         }
 
 
@@ -543,12 +586,9 @@ class GestionRapportChantierViewModel(
                         ||
                         it.numeroSerie.contains(searchFilterMateriel.value!!, true)
             }.forEach {
-                Timber.i("filterTypeMateriel = ${filterTypeMateriel.value}")
                 if (!filterTypeMateriel.value.isNullOrBlank() && filterTypeMateriel.value != "TOUS" && it.type == filterTypeMateriel.value) {
-                    Timber.i(" filterTypeMateriel Passage if OK  = ${filterTypeMateriel.value}")
                     mutableList.add(it)
                 } else {
-                    Timber.i(" filterTypeMateriel Passage if NOK  = ${filterTypeMateriel.value}")
                     mutableList.add(it)
                 }
 
@@ -753,7 +793,10 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeMateriauxRC(rapportChantier.value!!, idChantier)
+                rapportChantierRepository.updateListeMateriauxRC(
+                    rapportChantier.value!!,
+                    idChantier
+                )
 
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataMateriaux = true
@@ -857,7 +900,10 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeSousTraitanceRC(rapportChantier.value!!, idChantier)
+                rapportChantierRepository.updateListeSousTraitanceRC(
+                    rapportChantier.value!!,
+                    idChantier
+                )
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataSousTraitance = true
                 }
@@ -1007,7 +1053,10 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeAutresInformations(rapportChantier.value!!, idChantier)
+                rapportChantierRepository.updateListeAutresInformations(
+                    rapportChantier.value!!,
+                    idChantier
+                )
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataConformiteChantier = true
                 }
@@ -1036,7 +1085,10 @@ class GestionRapportChantierViewModel(
         viewModelScope.launch {
             _state.value = State.loading()
             try {
-                rapportChantierRepository.updateListeObservations(rapportChantier.value!!, idChantier)
+                rapportChantierRepository.updateListeObservations(
+                    rapportChantier.value!!,
+                    idChantier
+                )
                 _rapportChantier.value = _rapportChantier.value.also {
                     it!!.dataSaved.dataObservations = true
                 }
