@@ -10,6 +10,7 @@ data class Materiaux(
     var description: String = "",
     var nDeBon: String = "",
     @Exclude @set:Exclude @get:Exclude
-    var quantite: Int = 0
+    var quantite: Int = 0,
+    var type: String? = null
 ) {
 }

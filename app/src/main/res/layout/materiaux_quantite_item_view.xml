@@ -64,14 +64,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:onProgressChanged="@{(picker, progress, fromUser) -> viewModel.onMateriauxProgressChanged(progress, item)}"
+
                 android:progress="@{item.quantite}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textView15"
                 app:picker_min="0"
                 app:picker_orientation="vertical"
                 app:picker_tracker="exponential" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@{item.type}"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPicker"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/numberPicker"
+                tools:text="Tonnes" />
 
             <TextView
                 android:id="@+id/textView11"

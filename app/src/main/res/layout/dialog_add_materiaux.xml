@@ -92,11 +92,33 @@
                 android:onProgressChanged="@{(picker, progress, fromUser) -> viewModel.onMateriauxProgressChanged(progress)}"
                 android:progress="@{viewModel.newMateriaux.quantite}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/editTextTypeMateriel"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView10"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextTypeMateriel"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Type de Matériel"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/numberPicker"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <AutoCompleteTextView
+                    adapter="@{viewModel.listTypeMateriaux}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="@={viewModel.newMateriaux.type}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

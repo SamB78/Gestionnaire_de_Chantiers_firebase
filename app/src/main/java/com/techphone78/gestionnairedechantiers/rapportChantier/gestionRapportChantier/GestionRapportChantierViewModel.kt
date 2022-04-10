@@ -556,7 +556,7 @@ class GestionRapportChantierViewModel(
 
         listeOriginaleMateriel.addAll(listeMaterielAjoutable.value!!)
 
-        if(filterByChantierColor.value!!) {
+        if (filterByChantierColor.value!!) {
             listeOriginaleMateriel.removeAll {
                 it.couleur != chantier.value!!.couleur && it.couleur != null
             }
@@ -572,7 +572,8 @@ class GestionRapportChantierViewModel(
                     2 -> {
                         !it.materielEntretien
                     }
-                    else -> { false
+                    else -> {
+                        false
                     }
                 }
             }
@@ -755,6 +756,17 @@ class GestionRapportChantierViewModel(
     /////////////////////// GESTION DES MATERIAUX ////////////////////////////////////////
 
     var newMateriaux = MutableLiveData(Materiaux())
+
+    val listTypeMateriaux = listOf(
+        "Unité",
+        "m2",
+        "m3",
+        "litres",
+        "Kg",
+        "To",
+        "palettes",
+        "sacs"
+    )
 
     fun onClickButtonGestionMateriaux() {
         _navigation.value = GestionNavigation.PASSAGE_GESTION_MATERIAUX
