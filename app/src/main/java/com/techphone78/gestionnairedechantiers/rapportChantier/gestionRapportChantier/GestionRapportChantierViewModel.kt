@@ -250,21 +250,36 @@ class GestionRapportChantierViewModel(
             _rapportChantier.value!!.listePersonnel as MutableList
 
         listePersonnel.remove(item)
-        Timber.i("$listePersonnel")
         _rapportChantier.value = _rapportChantier.value!!.also {
             it.listePersonnel = listePersonnel
         }
     }
 
+    fun onClickAddWorkedHours(item: Personnel) {
+        if(item.nbHeuresTravaillees < 9) {
+            item.nbHeuresTravaillees += 0.5
+            _rapportChantier.value = _rapportChantier.value!!
+        }
+
+    }
+
+    fun onClickRemoveWorkedHours(item: Personnel) {
+        if(item.nbHeuresTravaillees > 0) {
+            item.nbHeuresTravaillees -= 0.5
+            _rapportChantier.value = _rapportChantier.value!!
+        }
+
+    }
+
     fun onPersonnelProgressChanged(progress: Int, item: Personnel) {
 
-        _rapportChantier.value!!.listePersonnel.find { it.documentId == item.documentId }?.nbHeuresTravaillees =
-            progress
+/*        _rapportChantier.value!!.listePersonnel.find { it.documentId == item.documentId }?.nbHeuresTravaillees =
+            progress*/
     }
 
     private fun updateTotauxPersonnel() {
-        rapportChantier.value!!.totauxRC.totalMOPersonnel = 0
-        rapportChantier.value!!.totauxRC.totalMOInterimaire = 0
+        rapportChantier.value!!.totauxRC.totalMOPersonnel = 0.0
+        rapportChantier.value!!.totauxRC.totalMOInterimaire = 0.0
         for (personnel in rapportChantier.value!!.listePersonnel) {
             if (!personnel.interimaire)
                 rapportChantier.value!!.totauxRC.totalMOPersonnel += personnel.nbHeuresTravaillees

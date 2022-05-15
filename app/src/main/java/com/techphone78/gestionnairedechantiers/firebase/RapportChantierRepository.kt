@@ -29,9 +29,9 @@ class RapportChantierRepository() {
 
         try {
 
-            val listPersonnel = mutableListOf<ItemWithQuantity>()
+            val listPersonnel = mutableListOf<ItemWithQuantity3>()
             for (item in rapportChantier.listePersonnel) listPersonnel.add(
-                ItemWithQuantity(
+                ItemWithQuantity3(
                     item.documentId!!,
                     item.nbHeuresTravaillees
                 )
@@ -120,6 +120,7 @@ class RapportChantierRepository() {
             .collection("rapportsChantier")
 
         val result = db.document(id).get().await()
+        result
         return result.toRapportChantier(
             personnelRepository,
             materielRepository,
@@ -183,9 +184,9 @@ class RapportChantierRepository() {
             .collection("chantiers").document(idChantier)
             .collection("rapportsChantier")
 
-        val listPersonnel = mutableListOf<ItemWithQuantity>()
+        val listPersonnel = mutableListOf<ItemWithQuantity3>()
         for (item in rapportChantier.listePersonnel) listPersonnel.add(
-            ItemWithQuantity(
+            ItemWithQuantity3(
                 item.documentId!!,
                 item.nbHeuresTravaillees
             )
@@ -324,6 +325,4 @@ class RapportChantierRepository() {
 
 data class ItemWithQuantity(var id: String, var nb: Int)
 data class ItemWithQuantity2(var id: String, var nb: Long)
-
-
-data class ListItemWithQuantity(var list: List<ItemWithQuantity>)
+data class ItemWithQuantity3(var id: String, var nb: Double)

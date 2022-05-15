@@ -88,9 +88,9 @@ data class RapportChantier(
             val listPersonnel = mutableListOf<Personnel>()
             for (item in get("listePersonnel") as List<*>) {
                 item as HashMap<*, *>
-                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                val resultItem = ItemWithQuantity3(item["id"] as String, item["nb"].toString().toDouble())
                 personnelRepository.getPersonnelById(resultItem.id)?.let {
-                    it.nbHeuresTravaillees = resultItem.nb.toInt()
+                    it.nbHeuresTravaillees = resultItem.nb
                     listPersonnel.add(it)
                 }
             }
@@ -192,9 +192,9 @@ data class RapportChantier(
             val listPersonnel = mutableListOf<Personnel>()
             for (item in get("listePersonnel") as List<*>) {
                 item as HashMap<*, *>
-                val resultItem = ItemWithQuantity2(item["id"] as String, item["nb"] as Long)
+                val resultItem = ItemWithQuantity3(item["id"] as String, item["nb"] as Double)
                 personnelRepository.getPersonnelById(resultItem.id)?.let {
-                    it.nbHeuresTravaillees = resultItem.nb.toInt()
+                    it.nbHeuresTravaillees = resultItem.nb
                     listPersonnel.add(it)
                 }
             }
@@ -318,9 +318,9 @@ data class TacheEntretien(
 )
 
 data class TotauxRapportChantier(
-    var totalMOPersonnel: Int = 0,
-    var totalMOInterimaire: Int = 0,
-    var totalMO: Int = 0,
+    var totalMOPersonnel: Double = 0.0,
+    var totalMOInterimaire: Double = 0.0,
+    var totalMO: Double = 0.0,
     var totalQuantiteMaterielSociete: Int = 0,
     var totalQuantiteMaterielLocation: Int = 0,
     var totalQuantiteMateriel: Int = 0,

@@ -213,7 +213,7 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
     ) {
         listPersonnel.forEachIndexed { index, personnel ->
             val rowToEdit = 3 + index
-            val value = personnel.nbHeuresTravaillees.toDouble()
+            val value = personnel.nbHeuresTravaillees
 
             xlWs.getRow(rowToEdit).getCell(0)
                 .setCellValue(personnel.prenom + " " + personnel.nom)
@@ -262,7 +262,7 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
     ) {
         listPersonnelInterimaire.forEachIndexed { index, personnel ->
             val rowToEdit = 14 + index
-            val value = personnel.nbHeuresTravaillees.toDouble()
+            val value = personnel.nbHeuresTravaillees
 
             xlWs.getRow(rowToEdit).getCell(0)
                 .setCellValue(personnel.prenom + " " + personnel.nom)

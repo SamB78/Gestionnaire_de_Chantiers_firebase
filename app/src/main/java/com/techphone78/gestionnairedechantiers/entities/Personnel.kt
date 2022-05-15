@@ -18,5 +18,5 @@ data class Personnel(
     @Exclude @set:Exclude @get:Exclude
     var isChecked: Boolean = false,
     @Exclude @set:Exclude @get:Exclude
-    var nbHeuresTravaillees: Int = 0
+    var nbHeuresTravaillees: Double = 0.0
 )

@@ -239,7 +239,7 @@ class AffichageDetailsRapportChantierViewModel(
                 }
 
                 val value =
-                    rapportChantier.listePersonnel.find { it.documentId == personnel.documentId }?.nbHeuresTravaillees?.toDouble()
+                    rapportChantier.listePersonnel.find { it.documentId == personnel.documentId }?.nbHeuresTravaillees
 
                 when (rapportChantier.dateRapportChantier?.atZone(ZoneId.systemDefault())?.dayOfWeek) {
                     DayOfWeek.MONDAY -> value?.let {
@@ -309,7 +309,7 @@ class AffichageDetailsRapportChantierViewModel(
                 }
 
                 val value =
-                    rapportChantier.listePersonnel.find { it.documentId == personnel.documentId }?.nbHeuresTravaillees?.toDouble()
+                    rapportChantier.listePersonnel.find { it.documentId == personnel.documentId }?.nbHeuresTravaillees
 
                 when (rapportChantier.dateRapportChantier?.atZone(ZoneId.systemDefault())?.dayOfWeek) {
                     DayOfWeek.MONDAY -> value?.let {

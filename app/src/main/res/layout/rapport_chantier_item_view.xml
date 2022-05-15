@@ -115,7 +115,7 @@
                         android:layout_margin="1dp"
                         android:background="#FFFFFF"
                         android:gravity="center"
-                        android:text="@{Integer.toString(item.totauxRC.totalMOPersonnel)}"
+                        android:text="@{Double.toString(item.totauxRC.totalMOPersonnel)}"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textStyle="bold"
                         tools:text="15" />
@@ -170,7 +170,7 @@
                         android:layout_margin="1dp"
                         android:background="#FFFFFF"
                         android:gravity="center"
-                        android:text="@{Integer.toString(item.totauxRC.totalMOInterimaire)}"
+                        android:text="@{Double.toString(item.totauxRC.totalMOInterimaire)}"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textStyle="bold"
                         tools:text="15" />
@@ -225,7 +225,7 @@
                         android:layout_margin="1dp"
                         android:background="#FFFFFF"
                         android:gravity="center"
-                        android:text="@{Integer.toString(item.totauxRC.totalMO)}"
+                        android:text="@{Double.toString(item.totauxRC.totalMO)}"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textStyle="bold"
                         tools:text="15" />
