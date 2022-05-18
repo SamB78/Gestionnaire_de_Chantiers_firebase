@@ -72,7 +72,7 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
             }
         })
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIAUX -> {
                     val customLayout = DialogAddMateriauxBinding.inflate(inflater)
@@ -102,7 +102,7 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
                 }
             }
 
-        })
+        }
         return binding.root
     }
 

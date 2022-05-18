@@ -12,6 +12,12 @@
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_baseline_edit_24"
         android:title="Editer"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_archive"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:title="Archiver"
+        app:showAsAction="never" />
 
 </menu>

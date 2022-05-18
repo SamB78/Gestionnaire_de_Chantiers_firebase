@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.MainActivity
@@ -49,9 +50,24 @@ class AffichageChantierFragment : Fragment() {
             viewModel.onClickButtonEditChantier()
             true
         }
+        R.id.action_archive -> {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Annulation")
+                .setMessage("Souhaitez vous archiver le chantier ?")
+                .setNegativeButton("ARCHIVER") { _, _ ->
+                    // Respond to negative button press
+                    viewModel.onClickButtonArchive()
+                    findNavController().popBackStack()
+                }
+                .setPositiveButton("ANNULER") { dialog, _ ->
+                    // Respond to positive button press
+                    dialog.dismiss()
+                }
+                .show()
+            true
+        }
         else -> {
             super.onOptionsItemSelected(item)
-
         }
     }
 
@@ -151,6 +167,5 @@ class AffichageChantierFragment : Fragment() {
         hideKeyboard(activity as MainActivity)
         super.onResume()
     }
-
 
 }

@@ -24,6 +24,7 @@ data class Chantier(
     @Exclude @set:Exclude @get:Exclude
     var chefChantier: Personnel = Personnel(),
     var typeChantier: Int = 1, // 1 = Chantier 2 = Entretien
+    var enService: Boolean = true,
     @Exclude @set:Exclude @get:Exclude
     var listEquipe: List<Personnel> = emptyList(),
     @Exclude @set:Exclude @get:Exclude
@@ -45,7 +46,8 @@ data class Chantier(
                     numContactResponsableSite = getString("numContactResponsableSite")!!,
                     mailContactResponsableSite = getString("mailContactResponsableSite")!!,
                     typeChantier = getLong("typeChantier")!!.toInt(),
-                    accessCode = getString("accessCode")
+                    accessCode = getString("accessCode"),
+                    enService = getBoolean("enService")?: true
 
                 )
         }
@@ -61,7 +63,8 @@ data class Chantier(
                     numContactResponsableSite = getString("numContactResponsableSite")!!,
                     mailContactResponsableSite = getString("mailContactResponsableSite")!!,
                     typeChantier = getLong("typeChantier")!!.toInt(),
-                    accessCode = getString("accessCode")
+                    accessCode = getString("accessCode"),
+                    enService = getBoolean("enService")?: true
 
                 )
         }

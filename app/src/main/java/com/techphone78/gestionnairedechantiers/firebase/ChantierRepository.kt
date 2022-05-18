@@ -58,7 +58,8 @@ class ChantierRepository {
             "urlPictureChantier" to chantier.urlPictureChantier,
             "listEquipe" to listEquipe,
             "couleur" to chantier.couleur?.colorName,
-            "accessCode" to chantier.accessCode
+            "accessCode" to chantier.accessCode,
+            "enService" to chantier.enService
         )
         Timber.i("date: $data")
 
@@ -80,7 +81,7 @@ class ChantierRepository {
 //            db.whereEqualTo("chefChantier", user.userData!!.documentId).get().await()
 //        }
 
-        val result = db.get().await()
+        val result = db.whereEqualTo ("enService", true).get().await()
         val colors = colorsRepository.getAllColors()
         for (chantier in result) {
            val idChefChantier = chantier.get("chefChantier") as String

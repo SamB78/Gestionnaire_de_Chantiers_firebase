@@ -13,8 +13,8 @@ import timber.log.Timber
 
 class AffichageDetailsRapportChantierFragment : Fragment() {
 
-    private lateinit var viewMOdelFactory: AffichageDetailsRapportChantierViewModelFactory
-    val viewModel: AffichageDetailsRapportChantierViewModel by viewModels { viewMOdelFactory }
+    private lateinit var viewModelFactory: AffichageDetailsRapportChantierViewModelFactory
+    val viewModel: AffichageDetailsRapportChantierViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +29,7 @@ class AffichageDetailsRapportChantierFragment : Fragment() {
         val dateEnd =
             AffichageDetailsRapportChantierFragmentArgs.fromBundle(requireArguments()).dateEnd
 
-        viewMOdelFactory = AffichageDetailsRapportChantierViewModelFactory(
+        viewModelFactory = AffichageDetailsRapportChantierViewModelFactory(
             application,
             idChantier,
             dateBeginning,

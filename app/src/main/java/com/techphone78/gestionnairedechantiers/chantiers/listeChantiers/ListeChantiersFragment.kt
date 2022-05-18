@@ -28,7 +28,7 @@ class ListeChantiersFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 ListeChantiersViewModel.navigationMenu.CREATION -> {
                     val action =
@@ -49,9 +49,9 @@ class ListeChantiersFragment : Fragment() {
                 else -> Timber.e("ERROR NAVIGATION ListeCchantiersFragments:  $navigation")
 
             }
-        })
+        }
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -63,7 +63,7 @@ class ListeChantiersFragment : Fragment() {
                     Flipper.ERROR
                 }
             }
-        })
+        }
 
         binding.warningMessage.setOnClickListener {
             viewModel.reloadDataFromServer()

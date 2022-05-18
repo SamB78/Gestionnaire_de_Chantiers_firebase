@@ -3,6 +3,8 @@ package com.techphone78.gestionnairedechantiers.chantiers.affichageChantier
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers.GestionChantierViewModel
 import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.entities.RapportChantier
 import com.techphone78.gestionnairedechantiers.entities.User
@@ -164,6 +166,13 @@ class AffichageChantierViewModel(
 
     override fun onClickErrorScreenButton() {
         TODO("Not yet implemented")
+    }
+
+    fun onClickButtonArchive() {
+        viewModelScope.launch {
+            chantier.value!!.enService = false
+            chantierRepository.setChantier(chantier.value!!)
+        }
     }
 
 
