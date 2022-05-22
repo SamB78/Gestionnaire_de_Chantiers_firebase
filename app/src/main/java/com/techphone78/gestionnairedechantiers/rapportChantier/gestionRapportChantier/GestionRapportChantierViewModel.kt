@@ -256,19 +256,35 @@ class GestionRapportChantierViewModel(
     }
 
     fun onClickAddWorkedHours(item: Personnel) {
-        if(item.nbHeuresTravaillees < 9) {
+        if (item.nbHeuresTravaillees < 9) {
             item.nbHeuresTravaillees += 0.5
-            _rapportChantier.value = _rapportChantier.value!!
-        }
-
+        } else item.nbHeuresTravaillees = 9.0
+        _rapportChantier.value = _rapportChantier.value!!
     }
 
     fun onClickRemoveWorkedHours(item: Personnel) {
-        if(item.nbHeuresTravaillees > 0) {
+        if (item.nbHeuresTravaillees > 0) {
             item.nbHeuresTravaillees -= 0.5
-            _rapportChantier.value = _rapportChantier.value!!
-        }
 
+        } else item.nbHeuresTravaillees = 0.0
+        _rapportChantier.value = _rapportChantier.value!!
+    }
+
+    var currentValue: Double = 0.0
+    fun onChangeValueQuantityWorked(item: Personnel, text: CharSequence) {
+       try {
+           val value = text.toString().toDouble()
+
+           item.nbHeuresTravaillees = when {
+                value < 0 -> 0.0.also { _rapportChantier.value = _rapportChantier.value!! }
+                value > 9 -> 9.0.also { _rapportChantier.value = _rapportChantier.value!! }
+                else -> value
+            }
+        } catch(e:Exception) { }
+    }
+
+    fun validateQuantityWorked(){
+            /*_rapportChantier.value = _rapportChantier.value!!*/
     }
 
     fun onPersonnelProgressChanged(progress: Int, item: Personnel) {

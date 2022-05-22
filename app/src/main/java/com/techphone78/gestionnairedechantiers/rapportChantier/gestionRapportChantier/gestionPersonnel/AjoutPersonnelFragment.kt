@@ -35,7 +35,7 @@ class AjoutPersonnelFragment : Fragment() {
         binding.executePendingBindings()
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_AJOUT_PERSONNEL -> {
                     val action = AjoutPersonnelFragmentDirections.actionAjoutPersonnelFragmentPop()
@@ -45,11 +45,11 @@ class AjoutPersonnelFragment : Fragment() {
                 else -> {
                 }
             }
-        })
+        }
 
 
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -61,7 +61,7 @@ class AjoutPersonnelFragment : Fragment() {
                     Flipper.ERROR
                 }
             }
-        })
+        }
 
         binding.warningMessage.setOnClickListener {
             viewModel.initializeDataPersonnelAddable()
@@ -87,6 +87,5 @@ class AjoutPersonnelFragment : Fragment() {
 
         return binding.root
     }
-
 
 }
