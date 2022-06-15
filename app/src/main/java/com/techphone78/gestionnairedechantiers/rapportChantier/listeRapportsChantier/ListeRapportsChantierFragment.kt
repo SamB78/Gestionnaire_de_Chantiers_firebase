@@ -51,9 +51,9 @@ class ListeRapportsChantierFragment : Fragment() {
 
                     val action =
                         AffichageChantierNavGraphDirections.actionGlobalGestionRapportChantierNavGraph(
-                            null,
-                            date,
-                            viewModel.chantier.value?.numeroChantier
+                            idRapportChantier = null,
+                            date = date,
+                            idChantier = viewModel.chantier.value?.numeroChantier
                         )
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
@@ -62,9 +62,9 @@ class ListeRapportsChantierFragment : Fragment() {
                     Timber.i("id rapport chaniter = ${viewModel.idRapportChantier.value!!}")
                     val action =
                         AffichageChantierNavGraphDirections.actionGlobalGestionRapportChantierNavGraph(
-                            viewModel.idRapportChantier.value!!,
-                            -1L,
-                            viewModel.chantier.value!!.numeroChantier!!
+                            idRapportChantier = viewModel.idRapportChantier.value!!,
+                            date = -1L,
+                            idChantier = viewModel.chantier.value!!.numeroChantier!!
                         )
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()

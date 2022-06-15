@@ -21,7 +21,10 @@ class RapportChantierRepository() {
     private val tacheEntretienRepository = TacheEntretienRepository()
 
 
-    suspend fun insertRapportChantier(rapportChantier: RapportChantier, idChantier: String): String? {
+    suspend fun insertRapportChantier(
+        rapportChantier: RapportChantier,
+        idChantier: String
+    ): String? {
 
         val db = FirebaseFirestore.getInstance()
             .collection("chantiers").document(idChantier)
@@ -131,7 +134,10 @@ class RapportChantierRepository() {
         )
     }
 
-    suspend fun getListRapportsChantierByListOfDates(listDates: List<Date>, idChantier: String): List<RapportChantier> {
+    suspend fun getListRapportsChantierByListOfDates(
+        listDates: List<Date>,
+        idChantier: String
+    ): List<RapportChantier> {
 
         val db = FirebaseFirestore.getInstance()
             .collection("chantiers").document(idChantier)
@@ -140,12 +146,23 @@ class RapportChantierRepository() {
         val listOfRC = mutableListOf<RapportChantier>()
 
         for (date in listDates) {
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-            calendar.add(Calendar.HOUR_OF_DAY, 1)
+            val calendarBegin = Calendar.getInstance()
+            calendarBegin.time = date
+            /*calendarBegin.add(Calendar.HOUR_OF_DAY, 1)*/
 
-            val result = db.whereEqualTo("dateRapportChantier", calendar.time).get().await()
-            Timber.i("result: ${result.documents.size} for date : ${calendar.time}")
+            val calendarEnd = Calendar.getInstance()
+            calendarEnd.time = date
+            calendarEnd.add(Calendar.HOUR_OF_DAY, 22)
+
+            Timber.i("TEST12: ${calendarBegin.time}, ${calendarEnd.time}")
+
+            val result = db
+                /*.whereEqualTo("dateRapportChantier", calendar.time)*/
+                .whereGreaterThanOrEqualTo("dateRapportChantier", calendarBegin.time)
+                .whereLessThanOrEqualTo("dateRapportChantier", calendarEnd.time)
+                .get()
+                .await()
+            Timber.i("result: ${result.documents.size} for date : ${calendarBegin.time}")
             for (document in result) {
                 Timber.i("document: ${document.data}")
                 listOfRC.add(
@@ -160,6 +177,52 @@ class RapportChantierRepository() {
                 )
             }
         }
+        return listOfRC
+    }
+
+    suspend fun getWeeklyListRapportsChantierByListOfDates(
+        date: Date,
+        idChantier: String
+    ): List<RapportChantier> {
+
+        val db = FirebaseFirestore.getInstance()
+            .collection("chantiers").document(idChantier)
+            .collection("rapportsChantier")
+
+        val listOfRC = mutableListOf<RapportChantier>()
+
+
+        val calendarBegin = Calendar.getInstance()
+        calendarBegin.time = date
+
+        val calendarEnd = Calendar.getInstance()
+        calendarEnd.time = date
+        calendarEnd.add(Calendar.HOUR_OF_DAY, 22)
+        calendarEnd.add(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
+
+        Timber.i("TEST12: ${calendarBegin.time}, ${calendarEnd.time}")
+
+        val result = db
+            /*.whereEqualTo("dateRapportChantier", calendar.time)*/
+            .whereGreaterThanOrEqualTo("dateRapportChantier", calendarBegin.time)
+            .whereLessThanOrEqualTo("dateRapportChantier", calendarEnd.time)
+            .get()
+            .await()
+        Timber.i("result: ${result.documents.size} for date : ${calendarBegin.time}")
+        for (document in result) {
+            Timber.i("document: ${document.data}")
+            listOfRC.add(
+                document.toRapportChantier(
+                    personnelRepository,
+                    materielRepository,
+                    materielLocationRepository,
+                    materiauxRepository,
+                    sousTraitanceRepository,
+                    tacheEntretienRepository
+                )
+            )
+        }
+
         return listOfRC
     }
 

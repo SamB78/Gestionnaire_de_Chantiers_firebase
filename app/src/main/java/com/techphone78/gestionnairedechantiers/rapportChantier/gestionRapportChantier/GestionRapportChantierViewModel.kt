@@ -126,7 +126,7 @@ class GestionRapportChantierViewModel(
                                     chantierRepository.getChantierById(
                                         rapportChantierOriginal.value!!.chantierId!!
                                     )
-                                }
+                                }!!
                         }
                     }
                     dateRapportChantier != -1L -> {
@@ -188,10 +188,10 @@ class GestionRapportChantierViewModel(
                     rapportChantierRepository.getRapportChantierById(
                         it, idChantier
                     )
-                }
+                }!!
             _rapportChantier.value = withContext(Dispatchers.IO) {
                 rapportChantierRepository.getRapportChantierById(it, idChantier)
-            }
+            }!!
         } ?: showErrorLoadingRapportChantier()
         Timber.i("date rapport = ${rapportChantier.value!!.dateRapportChantier}")
 
@@ -201,7 +201,7 @@ class GestionRapportChantierViewModel(
         idRapportChantier?.let {
             rapportChantierOriginal.value = withContext(Dispatchers.IO) {
                 rapportChantierRepository.getRapportChantierById(it, idChantier)
-            }
+            }!!
         }
     }
 
@@ -796,7 +796,8 @@ class GestionRapportChantierViewModel(
         "Kg",
         "To",
         "palettes",
-        "sacs"
+        "sacs",
+        "mètres"
     )
 
     fun onClickButtonGestionMateriaux() {

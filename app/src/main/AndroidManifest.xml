@@ -21,7 +21,8 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
         </activity>
         <activity
-            android:name="com.techphone78.gestionnairedechantiers.auth.AuthActivity">
+            android:name="com.techphone78.gestionnairedechantiers.auth.AuthActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

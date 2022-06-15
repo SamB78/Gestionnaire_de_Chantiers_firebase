@@ -192,7 +192,14 @@ data class RapportChantier(
             val listPersonnel = mutableListOf<Personnel>()
             for (item in get("listePersonnel") as List<*>) {
                 item as HashMap<*, *>
-                val resultItem = ItemWithQuantity3(item["id"] as String, item["nb"] as Double)
+                val resultItem = try {
+                    ItemWithQuantity3(item["id"] as String, item["nb"] as Double)
+                } catch (e: Exception){
+                    val id = item["id"] as String
+                    val nb = item["nb"] as Long
+                    ItemWithQuantity3(id, nb.toDouble())
+                }
+
                 personnelRepository.getPersonnelById(resultItem.id)?.let {
                     it.nbHeuresTravaillees = resultItem.nb
                     listPersonnel.add(it)

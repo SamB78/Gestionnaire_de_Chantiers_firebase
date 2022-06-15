@@ -42,7 +42,7 @@ class GestionRapportChantierFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
                 Status.LOADING -> Flipper.LOADING
                 Status.SUCCESS -> Flipper.CONTENT
@@ -51,49 +51,56 @@ class GestionRapportChantierFragment : Fragment() {
                     Flipper.ERROR
                 }
             }
-        })
+        }
 
 
         //Navigation
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_GESTION_PERSONNEL -> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionPersonnelRapportChantierFragment()
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionPersonnelRapportChantierFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_GESTION_MATERIEL -> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMaterielRapportChantierFragment()
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMaterielRapportChantierFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_GESTION_MATERIEL_LOCATION -> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMaterielLocationRapportChantierFragment()
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMaterielLocationRapportChantierFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_GESTION_MATERIAUX -> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMateriauxRapportChantierFragment()
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionMateriauxRapportChantierFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_GESTION_SOUS_TRAITANCE -> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionSousTraitanceRapportChantierFragment()
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionSousTraitanceRapportChantierFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
-                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AUTRES_INFORMATIONS-> {
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToAutresInformationsFragment()
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AUTRES_INFORMATIONS -> {
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToAutresInformationsFragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
-                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_OBSERVATIONS ->{
-                    val action = GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionObservationsRapportChantier()
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_OBSERVATIONS -> {
+                    val action =
+                        GestionRapportChantierFragmentDirections.actionGestionRapportChantierFragmentToGestionObservationsRapportChantier()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
             }
-        })
+        }
 
         return binding.root
     }

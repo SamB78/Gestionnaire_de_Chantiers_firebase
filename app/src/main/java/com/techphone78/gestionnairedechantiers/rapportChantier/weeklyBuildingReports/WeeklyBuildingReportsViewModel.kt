@@ -70,13 +70,13 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
         val datesList = generateListDates()
         Timber.i("listDates: $datesList")
         viewModelScope.launch {
-            _isLoading.value  = true
+            _isLoading.value = true
             val deferred = mutableListOf<Deferred<Any>>()
             _listeChantiers.value?.forEach { chantier ->
                 deferred.add(async {
                     val rapports = chantier.numeroChantier?.let { it ->
-                        rapportChantierRepository.getListRapportsChantierByListOfDates(
-                            datesList,
+                        rapportChantierRepository.getWeeklyListRapportsChantierByListOfDates(
+                            datesList.first(),
                             it
                         )
                     }
@@ -89,14 +89,13 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
             }
 
             deferred.awaitAll()
-            Timber.i("test")
-            Timber.i("listeRapportsChantiers : ${listeChantiers.value?.map { rapportChantier -> rapportChantier.nomChantier }}")
+            Timber.i("listeRapportsChantiers : ${listeChantiers.value?.map { rapportChantier -> rapportChantier.numeroChantier }}")
 
             uri = generateXlsxFile(datesList)
 
 
             _navigation.value = Navigation.EXCEL_DISPLAY
-            _isLoading.value  = false
+            _isLoading.value = false
         }
     }
 
@@ -135,7 +134,18 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
 
         listeChantiers.value?.forEachIndexed { index, chantier ->
             val xlWs = xlwb.getSheetAt(index)
-            xlwb.setSheetName(index, chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_"))
+
+            try {
+                xlwb.setSheetName(
+                    index,
+                    chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_")
+                )
+            } catch (e: Exception) {
+                xlwb.setSheetName(
+                    index,
+                    "2 ${ chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_") }"
+                )
+            }
 
             fillSheetMainInformation(xlWs, chantier, datesList)
             chantier.listRapportChantiers?.let { fillSheet(xlWs, it, style) }

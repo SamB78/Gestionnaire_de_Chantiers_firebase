@@ -179,6 +179,7 @@
                 app:nullable="true" />
             <argument
                 android:name="date"
+                app:argType="long"
                 android:defaultValue="-1L" />
             <argument
                 android:name="idChantier"
