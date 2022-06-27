@@ -14,6 +14,7 @@ data class Chantier(
     @DocumentId
     var numeroChantier: String? = null,
     var nomChantier: String = "",
+    var aliasChantier: String = "",
     var adresseUnique: Boolean = true,
     var adresseChantier: Adresse = Adresse(),
     var urlPictureChantier: String? = null,
@@ -36,37 +37,39 @@ data class Chantier(
 ) {
     companion object {
         fun QueryDocumentSnapshot.toChantierWithoutPersonnel(): Chantier {
-                return Chantier(
-                    numeroChantier = id,
-                    nomChantier = getString("nomChantier")!!,
-                    adresseUnique = getBoolean("adresseUnique")?: true,
-                    adresseChantier = get("adresseChantier", Adresse::class.java)!!,
-                    urlPictureChantier = getString("urlPictureChantier"),
-                    identiteResponsableSite = getString("identiteResponsableSite")!!,
-                    numContactResponsableSite = getString("numContactResponsableSite")!!,
-                    mailContactResponsableSite = getString("mailContactResponsableSite")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    accessCode = getString("accessCode"),
-                    enService = getBoolean("enService")?: true
+            return Chantier(
+                numeroChantier = id,
+                nomChantier = getString("nomChantier")!!,
+                aliasChantier = getString("aliasChantier") ?: "",
+                adresseUnique = getBoolean("adresseUnique") ?: true,
+                adresseChantier = get("adresseChantier", Adresse::class.java)!!,
+                urlPictureChantier = getString("urlPictureChantier"),
+                identiteResponsableSite = getString("identiteResponsableSite")!!,
+                numContactResponsableSite = getString("numContactResponsableSite")!!,
+                mailContactResponsableSite = getString("mailContactResponsableSite")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                accessCode = getString("accessCode"),
+                enService = getBoolean("enService") ?: true
 
-                )
+            )
         }
 
         fun DocumentSnapshot.toChantierWithoutPersonnel(): Chantier {
-                return Chantier(
-                    numeroChantier = id,
-                    nomChantier = getString("nomChantier")!!,
-                    adresseUnique = getBoolean("adresseUnique")?: true,
-                    adresseChantier = get("adresseChantier", Adresse::class.java)!!,
-                    urlPictureChantier = getString("urlPictureChantier"),
-                    identiteResponsableSite = getString("identiteResponsableSite")!!,
-                    numContactResponsableSite = getString("numContactResponsableSite")!!,
-                    mailContactResponsableSite = getString("mailContactResponsableSite")!!,
-                    typeChantier = getLong("typeChantier")!!.toInt(),
-                    accessCode = getString("accessCode"),
-                    enService = getBoolean("enService")?: true
+            return Chantier(
+                numeroChantier = id,
+                nomChantier = getString("nomChantier")!!,
+                aliasChantier = getString("aliasChantier") ?: "",
+                adresseUnique = getBoolean("adresseUnique") ?: true,
+                adresseChantier = get("adresseChantier", Adresse::class.java)!!,
+                urlPictureChantier = getString("urlPictureChantier"),
+                identiteResponsableSite = getString("identiteResponsableSite")!!,
+                numContactResponsableSite = getString("numContactResponsableSite")!!,
+                mailContactResponsableSite = getString("mailContactResponsableSite")!!,
+                typeChantier = getLong("typeChantier")!!.toInt(),
+                accessCode = getString("accessCode"),
+                enService = getBoolean("enService") ?: true
 
-                )
+            )
         }
     }
 }

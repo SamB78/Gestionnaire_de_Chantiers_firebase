@@ -53,6 +53,7 @@ class ChantierRepository {
             "identiteResponsableSite" to chantier.identiteResponsableSite,
             "mailContactResponsableSite" to chantier.mailContactResponsableSite,
             "nomChantier" to chantier.nomChantier,
+            "aliasChantier" to chantier.aliasChantier,
             "numContactResponsableSite" to chantier.numContactResponsableSite,
             "typeChantier" to chantier.typeChantier,
             "urlPictureChantier" to chantier.urlPictureChantier,

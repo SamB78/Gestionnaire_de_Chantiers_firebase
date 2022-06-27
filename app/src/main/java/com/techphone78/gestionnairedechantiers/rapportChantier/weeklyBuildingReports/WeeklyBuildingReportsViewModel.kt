@@ -135,15 +135,20 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
         listeChantiers.value?.forEachIndexed { index, chantier ->
             val xlWs = xlwb.getSheetAt(index)
 
+            var sheetName = if (chantier.aliasChantier.isNotBlank())
+                chantier.aliasChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_")
+            else chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_")
+
+            if (chantier.typeChantier == 1) sheetName += " TS"
             try {
                 xlwb.setSheetName(
                     index,
-                    chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_")
+                    sheetName
                 )
             } catch (e: Exception) {
                 xlwb.setSheetName(
                     index,
-                    "2 ${ chantier.nomChantier.replace(Regex("""[\\/:*?"<>&|]"""), "_") }"
+                    "2 $sheetName"
                 )
             }
 
@@ -201,6 +206,11 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
         val firstDateString = sdf.format(datesList.first())
         val lastDateString = sdf.format(datesList.last())
 
+        var stringNumeroChantier = "Chantier n° ${chantier.numeroChantier}"
+
+        if (chantier.typeChantier == 1) stringNumeroChantier += " TS"
+
+
         xlWs.getRow(0).getCell(0)
             .setCellValue("RAPPORT HEBDOMADAIRE du $firstDateString au $lastDateString")
         xlWs.getRow(1).getCell(0)
@@ -208,7 +218,7 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
         xlWs.getRow(1).getCell(3).setCellValue("du $firstDateString")
         xlWs.getRow(1).getCell(6).setCellValue("au $lastDateString")
         xlWs.getRow(1).getCell(13)
-            .setCellValue("Chantier n° ${chantier.numeroChantier}")
+            .setCellValue(stringNumeroChantier)
         xlWs.getRow(1).getCell(15)
             .setCellValue(chantier.adresseChantier.adresseToString())
         xlWs.getRow(56).getCell(6).setCellValue("Etabli par ${chantier.chefChantier.nom}")
@@ -525,7 +535,13 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
 
         list.forEach { rapportChantier ->
 
-            val value = rapportChantier.commentaire
+            var value = rapportChantier.commentaire
+
+            if (value.isNotBlank()) value += "\n"
+
+            rapportChantier.tachesEntretien.forEach { it ->
+                if (it.checked) value += "${it.description}, "
+            }
 
             when (rapportChantier.dateRapportChantier?.atZone(ZoneId.systemDefault())?.dayOfWeek) {
                 DayOfWeek.MONDAY -> {
