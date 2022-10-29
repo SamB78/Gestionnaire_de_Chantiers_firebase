@@ -69,21 +69,24 @@ class GestionMaterielRapportChantierFragment : Fragment() {
         })
 
         //Navigation
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_GESTION_MATERIEL -> {
-                    val action = GestionMaterielRapportChantierFragmentDirections.actionGestionMaterielRapportChantierFragmentPop()
+                    val action =
+                        GestionMaterielRapportChantierFragmentDirections.actionGestionMaterielRapportChantierFragmentPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIEL -> {
-                    val action = GestionMaterielRapportChantierFragmentDirections.actionGestionMaterielRapportChantierFragmentToAjoutMaterielFragment()
+                    val action =
+                        GestionMaterielRapportChantierFragmentDirections.actionGestionMaterielRapportChantierFragmentToAjoutMaterielFragment()
 
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
         return binding.root
     }

@@ -54,7 +54,7 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
 
 
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -70,7 +70,7 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
                     Flipper.CONTENT
                 }
             }
-        })
+        }
 
         viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
@@ -86,9 +86,9 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
                         }
                         .setPositiveButton("Valider") { dialog, which ->
                             viewModel.onClickButtonConfirmationAjoutMateriaux()
-                            viewModel.successDialog.observe(viewLifecycleOwner, {
+                            viewModel.successDialog.observe(viewLifecycleOwner) {
                                 if (it) dialog.dismiss()
-                            })
+                            }
                         }.show()
 
                     viewModel.onBoutonClicked()
@@ -100,6 +100,7 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
 
         }

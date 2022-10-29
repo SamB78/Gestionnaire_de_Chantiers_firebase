@@ -74,7 +74,7 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
             }
         })
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_SOUS_TRAITANCE -> {
                     val customLayout = DialogAddSousTraitanceBinding.inflate(inflater)
@@ -103,9 +103,10 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
 
-        })
+        }
 
 
         return binding.root

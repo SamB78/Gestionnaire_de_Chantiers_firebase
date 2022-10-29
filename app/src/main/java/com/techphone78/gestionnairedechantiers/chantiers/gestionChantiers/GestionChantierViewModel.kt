@@ -10,10 +10,7 @@ import com.techphone78.gestionnairedechantiers.firebase.CouleurRepository
 import com.techphone78.gestionnairedechantiers.firebase.PersonnelRepository
 import com.techphone78.gestionnairedechantiers.utils.State
 import com.techphone78.gestionnairedechantiers.utils.Status
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 class GestionChantierViewModel(val id: String? = null) : ViewModel() {
@@ -226,15 +223,15 @@ class GestionChantierViewModel(val id: String? = null) : ViewModel() {
     }
 
     fun onClickSaveData() {
-        sendDataToDB()
-    }
-
-    private fun sendDataToDB() {
-        chantier.value!!.urlPictureChantier = imageChantier.value
         viewModelScope.launch {
-            chantierRepository.setChantier(chantier.value!!)
+            sendDataToDB()
             _navigation.value = GestionNavigation.ENREGISTREMENT_CHANTIER
         }
+    }
+
+    private suspend fun sendDataToDB() = withContext(Dispatchers.IO) {
+        chantier.value!!.urlPictureChantier = imageChantier.value
+            chantierRepository.setChantier(chantier.value!!)
     }
 
     // onCleared()

@@ -65,6 +65,7 @@ class WeeklyBuildingReportsFragment : Fragment() {
                     }
 
                 }
+                else -> {}
             }
         }
 

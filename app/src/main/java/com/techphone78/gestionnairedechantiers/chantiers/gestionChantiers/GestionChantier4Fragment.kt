@@ -1,8 +1,6 @@
 package com.techphone78.gestionnairedechantiers.chantiers.gestionChantiers
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,11 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.techphone78.gestionnairedechantiers.GestionChantierNavGraphDirections
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.FragmentGestionChantier4Binding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.theartofdev.edmodo.cropper.CropImage
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -28,6 +28,20 @@ class GestionChantier4Fragment : Fragment() {
 
     //ViewModel
     val viewModel: GestionChantierViewModel by navGraphViewModels(R.id.gestionChantierNavGraph)
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val imageFilePath =
+                context?.let {
+                    result.getUriFilePath(context = it, uniqueName = true).toString()
+                }
+            val cachePhotoFile = imageFilePath?.let { File(it) }
+            cachePhotoFile?.let { saveCroppedImage(it) }
+        } else {
+            // an error occurred
+            val exception = result.error
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -74,7 +88,7 @@ class GestionChantier4Fragment : Fragment() {
         binding.viewModel = viewModel
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionChantierViewModel.GestionNavigation.AJOUT_IMAGE -> {
                     selectImage()
@@ -92,8 +106,9 @@ class GestionChantier4Fragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -119,19 +134,34 @@ class GestionChantier4Fragment : Fragment() {
                 requestPermissions(permission, PERMISSION_CODE)
             } else {
                 //permission already granted
-                CropImage.activity()
+/*                CropImage.activity()
                     .setAspectRatio(1, 1)
-                    .start(requireContext(), this);
+                    .start(requireContext(), this);*/
+
+                cropImage.launch(
+                    options {
+                        setGuidelines(CropImageView.Guidelines.ON)
+                        setAspectRatio(1, 1)
+                    }
+                )
             }
         } else {
             //system os is < marshmallow
-            CropImage.activity()
-                .start(requireContext(), this);
+            /*CropImage.activity()
+                .start(requireContext(), this);*/
+
+            cropImage.launch(
+                options {
+                    setGuidelines(CropImageView.Guidelines.ON)
+                    setAspectRatio(1, 1)
+                }
+            )
+
         }
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+/*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //called when image was captured from camera intent
         when (requestCode) {
 
@@ -147,7 +177,7 @@ class GestionChantier4Fragment : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
 
     private fun saveCroppedImage(file: File) {
@@ -170,7 +200,8 @@ class GestionChantier4Fragment : Fragment() {
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        val storageDir: File =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */

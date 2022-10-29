@@ -47,7 +47,7 @@ class ListePersonnelFragment : Fragment() {
             viewModel.reloadDataFromServer()
         }
 
-        viewModel.navigationPersonnel.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigationPersonnel.observe(viewLifecycleOwner) { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
                 GestionPersonnelViewModel.NavigationMenu.EDIT_PERSONNEL -> {
@@ -59,7 +59,7 @@ class ListePersonnelFragment : Fragment() {
                 else -> Timber.e("ERROR NAVIGATION LISTEPERSONNELFRAGMENT $navigation")
             }
 
-        })
+        }
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {

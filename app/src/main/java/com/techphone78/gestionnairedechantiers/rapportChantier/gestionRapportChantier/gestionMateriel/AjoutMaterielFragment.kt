@@ -33,7 +33,7 @@ class AjoutMaterielFragment : Fragment() {
         binding.executePendingBindings()
         viewModel.reinitSearchField()
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
 
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_AJOUT_MATERIEL -> {
@@ -45,7 +45,7 @@ class AjoutMaterielFragment : Fragment() {
                 else -> {
                 }
             }
-        })
+        }
 
         viewModel.state.observe(viewLifecycleOwner, {
             binding.vfMain.displayedChild = when (it.status) {

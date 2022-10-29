@@ -50,16 +50,18 @@ class GestionObservationsRapportChantier : Fragment() {
             }
         })
 
-        viewModel.navigation.observe(viewLifecycleOwner,  { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_OBSERVATIONS -> {
-                    val action = GestionObservationsRapportChantierDirections.actionGestionObservationsRapportChantierPop()
+                    val action =
+                        GestionObservationsRapportChantierDirections.actionGestionObservationsRapportChantierPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
         // Inflate the layout for this fragment
         return binding.root

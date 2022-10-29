@@ -79,10 +79,11 @@ class GestionChantier3Fragment : Fragment() {
 //            })
 
         //Navigation
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionChantierViewModel.GestionNavigation.CONFIRMATION_ETAPE3 -> {
-                   val action = GestionChantier3FragmentDirections.actionGestionChantier3FragmentToGestionChantier4Fragment()
+                    val action =
+                        GestionChantier3FragmentDirections.actionGestionChantier3FragmentToGestionChantier4Fragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
@@ -93,9 +94,10 @@ class GestionChantier3Fragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
 
-        })
+        }
         // Inflate the layout for this fragment
         return binding.root
     }

@@ -1,5 +1,6 @@
 package com.techphone78.gestionnairedechantiers.auth
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,19 +34,20 @@ class AuthFragment : Fragment() {
         binding.lifecycleOwner = this
         initGoogleSignInClient()
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 AuthViewModel.Navigation.AUTHENTIFICATION -> {
                     val signInIntent = googleSignInClient!!.signInIntent
                     startActivityForResult(signInIntent, RC_SIGN_IN)
                 }
-                AuthViewModel.Navigation.PASSAGE_ECRAN_PRINCIPAL->{
+                AuthViewModel.Navigation.PASSAGE_ECRAN_PRINCIPAL -> {
                     val action = AuthFragmentDirections.actionAuthFragmentToListeChantiersFragment()
                     findNavController().navigate(action)
                     viewModel.onButtonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
 
         // Inflate the layout for this fragment

@@ -73,7 +73,7 @@ class GestionChantier2Fragment : Fragment() {
             }
         val customLayout = layoutInflater.inflate(R.layout.personnel_item_view, null)
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionChantierViewModel.GestionNavigation.PASSAGE_ETAPE3 -> {
                     val action =
@@ -87,13 +87,14 @@ class GestionChantier2Fragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
-                GestionChantierViewModel.GestionNavigation.CONFIRMATION_CHEF ->{
+                GestionChantierViewModel.GestionNavigation.CONFIRMATION_CHEF -> {
 
 
                     if (customLayout.parent != null)
                         (customLayout.parent as ViewGroup).removeView(customLayout) // <- fix
                     confirmationDialog.setView(customLayout)
-                    val bindingDialog = PersonnelItemViewBinding.inflate(inflater, customLayout as ViewGroup, false)
+                    val bindingDialog =
+                        PersonnelItemViewBinding.inflate(inflater, customLayout as ViewGroup, false)
                     bindingDialog.item = viewModel.chefChantierSelectionne.value
                     confirmationDialog.setView(bindingDialog.root)
                     confirmationDialog.show()
@@ -102,7 +103,7 @@ class GestionChantier2Fragment : Fragment() {
                 else -> Timber.e("ERREUR NAVIGATION $navigation")
 
             }
-        })
+        }
 
         // Inflate the layout for this fragment
         return binding.root

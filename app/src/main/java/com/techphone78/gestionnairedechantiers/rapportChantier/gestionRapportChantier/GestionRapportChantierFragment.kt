@@ -99,6 +99,7 @@ class GestionRapportChantierFragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
         }
 

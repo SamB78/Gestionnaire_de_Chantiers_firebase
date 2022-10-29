@@ -10,7 +10,7 @@ class AffichageDetailsRapportChantierViewModelFactory(
     private val dateBeginning: Long = -1L,
     private val dateEnd: Long = -1L
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(AffichageDetailsRapportChantierViewModel::class.java)) {
             return AffichageDetailsRapportChantierViewModel(
                 application,

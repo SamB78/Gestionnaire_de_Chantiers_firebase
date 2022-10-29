@@ -1,5 +1,6 @@
 package com.techphone78.gestionnairedechantiers.firebase
 
+import android.util.Log
 import com.techphone78.gestionnairedechantiers.entities.Chantier
 import com.techphone78.gestionnairedechantiers.entities.Chantier.Companion.toChantierWithoutPersonnel
 import com.techphone78.gestionnairedechantiers.entities.Personnel
@@ -44,6 +45,7 @@ class ChantierRepository {
 
         chantier.urlPictureChantier?.let {
             chantier.urlPictureChantier = imagesStorage.insertImage(it, CHANTIER_FOLDER)
+            Log.i("urlPic2", "${chantier.urlPictureChantier}")
         }
 
         val data = hashMapOf(

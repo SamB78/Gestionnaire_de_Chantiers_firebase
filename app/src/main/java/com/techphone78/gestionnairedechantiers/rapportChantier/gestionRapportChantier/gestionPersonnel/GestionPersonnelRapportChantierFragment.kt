@@ -70,21 +70,24 @@ class GestionPersonnelRapportChantierFragment : Fragment() {
 
 
         //Navigation
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_GESTION_PERSONNEL -> {
-                    val action = GestionPersonnelRapportChantierFragmentDirections.actionGestionPersonnelRapportChantierFragmentPop()
+                    val action =
+                        GestionPersonnelRapportChantierFragmentDirections.actionGestionPersonnelRapportChantierFragmentPop()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_PERSONNEL -> {
-                    val action = GestionPersonnelRapportChantierFragmentDirections.actionGestionPersonnelRapportChantierFragmentToAjoutPersonnelFragment()
+                    val action =
+                        GestionPersonnelRapportChantierFragmentDirections.actionGestionPersonnelRapportChantierFragmentToAjoutPersonnelFragment()
 
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
         return binding.root
     }
 

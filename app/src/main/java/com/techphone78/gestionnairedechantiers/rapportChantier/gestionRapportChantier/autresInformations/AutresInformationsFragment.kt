@@ -25,16 +25,18 @@ class AutresInformationsFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
-        viewModel.navigation.observe(viewLifecycleOwner,  { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_ETAPE_2_AUTRES_INFORMATIONS -> {
 
-                    val action = AutresInformationsFragmentDirections.actionAutresInformationsFragmentToAutresInformations2Fragment()
+                    val action =
+                        AutresInformationsFragmentDirections.actionAutresInformationsFragmentToAutresInformations2Fragment()
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
         // Inflate the layout for this fragment
         return binding.root

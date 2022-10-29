@@ -104,7 +104,7 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
 
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIEL_LOCATION -> {
 
@@ -131,9 +131,10 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
 
-        })
+        }
 
 
         return binding.root

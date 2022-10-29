@@ -43,6 +43,7 @@ class GestionRapportChantierViewModel(
 
         PASSAGE_GESTION_MATERIAUX,
         PASSAGE_AJOUT_MATERIAUX,
+        PASSAGE_MODIFICATIONS_MATERIAUX,
         VALIDATION_AJOUT_MATERIAUX,
         VALIDATION_GESTION_MATERIAUX,
 
@@ -828,6 +829,17 @@ class GestionRapportChantierViewModel(
                 it.listeMateriaux = listeMateriaux
             }
         }
+    }
+
+    var materiauxToModify: Materiaux? = null
+
+    fun onClickEditMateriaux(item: Materiaux) {
+        _navigation.value  = GestionNavigation.PASSAGE_MODIFICATIONS_MATERIAUX
+        materiauxToModify = item
+    }
+
+    fun onClickValidateEditionMateriaux(item: Materiaux) {
+
     }
 
     private fun showErrorDeleteMateriaux() {

@@ -15,6 +15,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionMaterielFragmentBinding
@@ -23,7 +26,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.techphone78.gestionnairedechantiers.utils.Flipper
 import com.techphone78.gestionnairedechantiers.utils.State
 import com.techphone78.gestionnairedechantiers.utils.Status
-import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
 import java.io.File
@@ -37,6 +39,21 @@ class GestionMaterielFragment : Fragment() {
 
     private val viewModel: GestionMaterielViewModel by navGraphViewModels(R.id.gestionMaterielNavGraph)
 
+
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val imageFilePath =
+                context?.let {
+                    result.getUriFilePath(context = it, uniqueName = true).toString()
+                }
+            val cachePhotoFile = imageFilePath?.let { File(it) }
+            cachePhotoFile?.let { saveCroppedImage(it) }
+        } else {
+            // an error occurred
+            val exception = result.error
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -131,19 +148,33 @@ class GestionMaterielFragment : Fragment() {
                 requestPermissions(permission, PERMISSION_CODE)
             } else {
                 //permission already granted
-                CropImage.activity()
+/*                CropImage.activity()
                     .setAspectRatio(1, 1)
-                    .start(requireContext(), this);
+                    .start(requireContext(), this);*/
+
+                cropImage.launch(
+                    options {
+                        setGuidelines(CropImageView.Guidelines.ON)
+                        setAspectRatio(1, 1)
+                    }
+                )
             }
         } else {
             //system os is < marshmallow
-            CropImage.activity()
-                .start(requireContext(), this);
+/*            CropImage.activity()
+                .start(requireContext(), this);*/
+
+            cropImage.launch(
+                options {
+                    setGuidelines(CropImageView.Guidelines.ON)
+                    setAspectRatio(1, 1)
+                }
+            )
         }
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+/*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //called when image was captured from camera intent
         when (requestCode) {
 
@@ -159,7 +190,7 @@ class GestionMaterielFragment : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
 
     private fun saveCroppedImage(file: File) {

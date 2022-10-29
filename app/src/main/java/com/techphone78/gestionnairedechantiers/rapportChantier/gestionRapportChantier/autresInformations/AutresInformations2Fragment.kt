@@ -49,7 +49,7 @@ class AutresInformations2Fragment : Fragment() {
         })
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionRapportChantierViewModel.GestionNavigation.VALIDATION_AUTRES_INFORMATIONS -> {
 //                    findNavController().navigate(R.id.action_autresInformations2Fragment_to_gestionRapportChantierFragment)
@@ -60,8 +60,9 @@ class AutresInformations2Fragment : Fragment() {
 
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
 
         // Inflate the layout for this fragment

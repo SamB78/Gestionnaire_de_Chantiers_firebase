@@ -8,7 +8,7 @@ class GestionRapportChantierViewModelFactory(
     private val idChantier: String,
     private val dateRapportChantier: Long
 ) : ViewModelProvider.Factory  {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GestionRapportChantierViewModel::class.java)) {
             return GestionRapportChantierViewModel(
                 idRapportChantier,

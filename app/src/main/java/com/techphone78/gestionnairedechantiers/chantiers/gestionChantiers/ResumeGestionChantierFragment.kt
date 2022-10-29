@@ -65,7 +65,7 @@ class ResumeGestionChantierFragment : Fragment() {
 
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
                 GestionChantierViewModel.GestionNavigation.ENREGISTREMENT_CHANTIER -> {
                     val action =
@@ -91,7 +91,7 @@ class ResumeGestionChantierFragment : Fragment() {
 
             }
 
-        })
+        }
 
         return binding.root
     }

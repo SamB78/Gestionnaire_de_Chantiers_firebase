@@ -33,6 +33,7 @@ class ImagesStorage {
                     if (task.isSuccessful) {
                         val downloadUri = task.result
                         url = downloadUri.toString()
+                        Timber.i("success: url: $url")
                     } else {
                         Timber.i("error ${task.exception}")
                     }
@@ -41,6 +42,8 @@ class ImagesStorage {
         else {
             url = pathFile
         }
+        Timber.i("url: $url")
+
         return url
     }
 

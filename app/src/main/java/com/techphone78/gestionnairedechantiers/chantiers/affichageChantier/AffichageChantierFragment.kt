@@ -155,6 +155,7 @@ class AffichageChantierFragment : Fragment() {
                     findNavController().navigate(action)
                     viewModel.onBoutonClicked()
                 }
+                else -> {}
             }
         }
 

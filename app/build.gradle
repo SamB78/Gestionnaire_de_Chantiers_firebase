@@ -14,12 +14,12 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "com.techphone78.gestionnairedechantiers"
         minSdkVersion 26
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 20
         versionName "1.04"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -77,7 +77,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.androidxArchVersion"
 
 // ViewModel Kotlin support
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
 // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
@@ -98,7 +98,7 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.6.1'
 
     implementation 'com.karumi:dexter:6.1.2'
 
@@ -108,7 +108,7 @@ dependencies {
 
 
     //Image-Cropper
-    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    implementation 'com.github.CanHub:Android-Image-Cropper:4.3.2'
 
     //Number SlidingPicker
     implementation 'com.github.sephiroth74:NumberSlidingPicker:v1.0.3'

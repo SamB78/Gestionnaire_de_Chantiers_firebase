@@ -1,11 +1,10 @@
 package com.techphone78.gestionnairedechantiers.personnel
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.google.android.material.snackbar.Snackbar
 import com.techphone78.gestionnairedechantiers.MainActivity
 import com.techphone78.gestionnairedechantiers.R
 import com.techphone78.gestionnairedechantiers.databinding.GestionPersonnelFragmentBinding
 import com.techphone78.gestionnairedechantiers.utils.*
-import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.error_state.view.*
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -34,6 +34,20 @@ class GestionPersonnelFragment : Fragment() {
     private val viewModel: GestionPersonnelViewModel by navGraphViewModels(R.id.gestionPersonnelNavGraph)
 
 
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val imageFilePath =
+                context?.let {
+                    result.getUriFilePath(context = it, uniqueName = true).toString()
+                }
+            val cachePhotoFile = imageFilePath?.let { File(it) }
+            cachePhotoFile?.let { saveCroppedImage(it) }
+        } else {
+            // an error occurred
+            val exception = result.error
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +58,7 @@ class GestionPersonnelFragment : Fragment() {
         binding.executePendingBindings()
         binding.lifecycleOwner = this
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
                 Status.LOADING -> Flipper.LOADING
 
@@ -59,9 +73,9 @@ class GestionPersonnelFragment : Fragment() {
                     Flipper.CONTENT
                 }
             }
-        })
+        }
 
-        viewModel.navigationPersonnel.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigationPersonnel.observe(viewLifecycleOwner) { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
                 GestionPersonnelViewModel.NavigationMenu.ENREGISTREMENT_PERSONNEL -> {
@@ -80,7 +94,7 @@ class GestionPersonnelFragment : Fragment() {
 
             }
 
-        })
+        }
 
 
         return binding.root
@@ -112,14 +126,21 @@ class GestionPersonnelFragment : Fragment() {
             requestPermissions(permission, PERMISSION_CODE)
         } else {
             //permission already granted
-            CropImage.activity()
+/*            CropImage.activity()
                 .setAspectRatio(1, 1)
                 .start(requireContext(), this);
+        }*/
+
+            cropImage.launch(
+                options {
+                    setGuidelines(CropImageView.Guidelines.ON)
+                    setAspectRatio(1, 1)
+                }
+            )
+
         }
 
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+/*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //called when image was captured from camera intent
         when (requestCode) {
 
@@ -134,7 +155,7 @@ class GestionPersonnelFragment : Fragment() {
                     Timber.e("Crop error: ${result.error}")
                 }
             }
-        }
+        }*/
     }
 
 
@@ -148,8 +169,16 @@ class GestionPersonnelFragment : Fragment() {
             null
         }
 
-        file.copyTo(photoFile!!, true)// This method will be executed once the timer is over
-        viewModel.ajoutPathImage(photoFile.absolutePath.toString())
+        Log.i("photoFile", "photofile: $photoFile")
+        photoFile?.let {
+            file.copyTo(
+                it,
+                true
+            )
+        }// This method will be executed once the timer is over
+        if (photoFile != null) {
+            viewModel.ajoutPathImage(photoFile.absolutePath.toString())
+        }
     }
 
     lateinit var currentPhotoPath: String

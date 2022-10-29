@@ -33,7 +33,7 @@ class AuthActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         initGoogleSignInClient()
 
-        viewModel.navigation.observe(this, { navigation ->
+        viewModel.navigation.observe(this) { navigation ->
             when (navigation) {
                 AuthViewModel.Navigation.AUTHENTIFICATION -> {
                     val signInIntent = googleSignInClient!!.signInIntent
@@ -45,8 +45,9 @@ class AuthActivity : AppCompatActivity() {
                     finish()
                     viewModel.onButtonClicked()
                 }
+                else -> {}
             }
-        })
+        }
 
         errorMessage?.let {
             viewModel.setErrorMessage(it)

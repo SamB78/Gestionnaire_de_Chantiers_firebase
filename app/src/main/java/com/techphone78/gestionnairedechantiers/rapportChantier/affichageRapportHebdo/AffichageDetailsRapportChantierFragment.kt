@@ -60,6 +60,7 @@ class AffichageDetailsRapportChantierFragment : Fragment() {
                     }
 
                 }
+                else -> {}
             }
         }
 

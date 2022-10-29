@@ -48,7 +48,7 @@ class ListeMaterielFragment : Fragment() {
         }
 
 
-        viewModel.navigation.observe(viewLifecycleOwner, { navigation ->
+        viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             hideKeyboard(activity as MainActivity)
             when (navigation) {
                 GestionMaterielViewModel.NavigationMenu.EDIT_MATERIEL -> {
@@ -60,7 +60,7 @@ class ListeMaterielFragment : Fragment() {
                 else -> Timber.e("ERROR NAVIGATION LISTEMATERIELFRAGMENT $navigation")
             }
 
-        })
+        }
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {

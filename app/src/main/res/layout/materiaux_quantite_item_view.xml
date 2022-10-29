@@ -108,6 +108,7 @@
                 app:layout_constraintTop_toTopOf="@+id/textView11"
                 tools:text="15AC63" />
 
+
             <ImageButton
                 android:id="@+id/imageButton2"
                 android:layout_width="wrap_content"
@@ -118,6 +119,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_delete_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                app:layout_goneMarginEnd="5dp"
+                android:onClick="@{() -> viewModel.onClickDeleteMateriaux(item)}"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toStartOf="@id/imageButton2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_edit_24" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
