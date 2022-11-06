@@ -152,7 +152,7 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
                 )
             }
 
-            fillSheetMainInformation(xlWs, chantier, datesList)
+            fillSheetMainInformation(xlWs, chantier, datesList, sheetName)
             chantier.listRapportChantiers?.let { fillSheet(xlWs, it, style) }
 
 
@@ -193,7 +193,8 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
     private fun fillSheetMainInformation(
         xlWs: Sheet,
         chantier: Chantier,
-        datesList: List<Date>
+        datesList: List<Date>,
+        sheetName: String
     ) {
 
         val weekFiled: WeekFields = WeekFields.of(Locale.FRANCE)
@@ -220,7 +221,7 @@ class WeeklyBuildingReportsViewModel(application: Application) : AndroidViewMode
         xlWs.getRow(1).getCell(13)
             .setCellValue(stringNumeroChantier)
         xlWs.getRow(1).getCell(15)
-            .setCellValue(chantier.adresseChantier.adresseToString())
+            .setCellValue(sheetName)
         xlWs.getRow(56).getCell(6).setCellValue("Etabli par ${chantier.chefChantier.nom}")
 
     }

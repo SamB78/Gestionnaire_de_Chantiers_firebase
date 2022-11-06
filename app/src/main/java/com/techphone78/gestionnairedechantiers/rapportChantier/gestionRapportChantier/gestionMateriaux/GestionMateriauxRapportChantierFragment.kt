@@ -74,7 +74,8 @@ class GestionMateriauxRapportChantierFragment : Fragment() {
 
         viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
-                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIAUX -> {
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIAUX,
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_MODIFICATIONS_MATERIAUX -> {
                     val customLayout = DialogAddMateriauxBinding.inflate(inflater)
                     customLayout.viewModel = viewModel
 

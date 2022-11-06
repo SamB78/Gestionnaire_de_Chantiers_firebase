@@ -56,7 +56,7 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -72,11 +72,12 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
                     Flipper.CONTENT
                 }
             }
-        })
+        }
 
         viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
-                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_SOUS_TRAITANCE -> {
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_SOUS_TRAITANCE,
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_MODIFICATIONS_SOUS_TRAITANCE -> {
                     val customLayout = DialogAddSousTraitanceBinding.inflate(inflater)
                     customLayout.viewModel = viewModel
 
@@ -88,11 +89,10 @@ class GestionSousTraitanceRapportChantierFragment : Fragment() {
                         }
                         .setPositiveButton("Valider") { dialog, which ->
                             viewModel.onClickButtonConfirmationAjoutSousTraitance()
-                            viewModel.successDialog.observe(viewLifecycleOwner, {
+                            viewModel.successDialog.observe(viewLifecycleOwner) {
                                 if (it) dialog.dismiss()
-                            })
+                            }
                         }.show()
-
 
                     viewModel.onBoutonClicked()
                 }

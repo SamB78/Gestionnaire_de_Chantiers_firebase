@@ -38,6 +38,7 @@ class GestionRapportChantierViewModel(
 
         PASSAGE_GESTION_MATERIEL_LOCATION,
         PASSAGE_AJOUT_MATERIEL_LOCATION,
+        PASSAGE_MODIFICATIONS_MATERIEL_LOCATION,
         VALIDATION_AJOUT_MATERIEL_LOCATION,
         VALIDATION_GESTION_MATERIEL_LOCATION,
 
@@ -49,6 +50,7 @@ class GestionRapportChantierViewModel(
 
         VALIDATION_GESTION_SOUS_TRAITANCE,
         PASSAGE_AJOUT_SOUS_TRAITANCE,
+        PASSAGE_MODIFICATIONS_SOUS_TRAITANCE,
         VALIDATION_AJOUT_SOUS_TRAITANCE,
         PASSAGE_GESTION_SOUS_TRAITANCE,
 
@@ -273,19 +275,20 @@ class GestionRapportChantierViewModel(
 
     var currentValue: Double = 0.0
     fun onChangeValueQuantityWorked(item: Personnel, text: CharSequence) {
-       try {
-           val value = text.toString().toDouble()
+        try {
+            val value = text.toString().toDouble()
 
-           item.nbHeuresTravaillees = when {
+            item.nbHeuresTravaillees = when {
                 value < 0 -> 0.0.also { _rapportChantier.value = _rapportChantier.value!! }
                 value > 9 -> 9.0.also { _rapportChantier.value = _rapportChantier.value!! }
                 else -> value
             }
-        } catch(e:Exception) { }
+        } catch (e: Exception) {
+        }
     }
 
-    fun validateQuantityWorked(){
-            /*_rapportChantier.value = _rapportChantier.value!!*/
+    fun validateQuantityWorked() {
+        /*_rapportChantier.value = _rapportChantier.value!!*/
     }
 
     fun onPersonnelProgressChanged(progress: Int, item: Personnel) {
@@ -708,6 +711,12 @@ class GestionRapportChantierViewModel(
         }
     }
 
+
+    fun onClickEditMaterielLocation(item: MaterielLocation) {
+        newMaterielLocation.value = item
+        _navigation.value = GestionNavigation.PASSAGE_MODIFICATIONS_MATERIEL_LOCATION
+    }
+
     private fun showErrorDeleteMaterielLocation() {
         TODO("Not yet implemented")
     }
@@ -745,26 +754,39 @@ class GestionRapportChantierViewModel(
         _navigation.value = GestionNavigation.PASSAGE_AJOUT_MATERIEL_LOCATION
     }
 
-
     fun onClickButtonConfirmationAjoutMaterielLocation() {
 
         viewModelScope.launch {
             _state.value = State.loading()
             _successDialog.value = false
             try {
-                val documentId = withContext(Dispatchers.IO) {
-                    materielLocationRepository.insertMaterielLocation(newMaterielLocation.value!!)
+                val documentId = if (newMaterielLocation.value?.documentId == null)
+                    withContext(Dispatchers.IO) {
+                        materielLocationRepository.insertMaterielLocation(newMaterielLocation.value!!)
+                    } else newMaterielLocation.value!!.documentId.also {
+                    withContext(Dispatchers.IO) {
+                        materielLocationRepository.updateMaterielLocation(newMaterielLocation.value!!)
+                    }
                 }
-                Timber.i("reussite")
-                newMaterielLocation.value!!.documentId = documentId
-                val completeList = mutableListOf<MaterielLocation>()
-                completeList.addAll(rapportChantier.value!!.listeMaterielLocation)
-                completeList.add(newMaterielLocation.value!!)
-                _rapportChantier.value = _rapportChantier.value.also {
-                    it!!.listeMaterielLocation = completeList
+
+                if(!documentId.isNullOrEmpty()) {
+                    newMaterielLocation.value!!.documentId = documentId
+
+                    val completeList = mutableListOf<MaterielLocation>()
+                    completeList.addAll(rapportChantier.value!!.listeMaterielLocation)
+                    if (newMaterielLocation.value!!.documentId == null) {
+                        completeList.add(newMaterielLocation.value!!)
+                    } else {
+                        completeList.removeIf { it.documentId == newMaterielLocation.value!!.documentId }
+                        completeList.add(newMaterielLocation.value!!)
+                    }
+                    _rapportChantier.value = _rapportChantier.value.also {
+                        it!!.listeMaterielLocation = completeList
+                    }
+                    _successDialog.value = true
+                    _state.value = State.success()
                 }
-                _successDialog.value = true
-                _state.value = State.success()
+
             } catch (e: Exception) {
                 _state.value = State.error(e.toString())
             }
@@ -785,7 +807,7 @@ class GestionRapportChantierViewModel(
 
     }
 
-    /////////////////////// GESTION DES MATERIAUX ////////////////////////////////////////
+/////////////////////// GESTION DES MATERIAUX ////////////////////////////////////////
 
     var newMateriaux = MutableLiveData(Materiaux())
 
@@ -831,19 +853,9 @@ class GestionRapportChantierViewModel(
         }
     }
 
-    var materiauxToModify: Materiaux? = null
-
     fun onClickEditMateriaux(item: Materiaux) {
-        _navigation.value  = GestionNavigation.PASSAGE_MODIFICATIONS_MATERIAUX
-        materiauxToModify = item
-    }
-
-    fun onClickValidateEditionMateriaux(item: Materiaux) {
-
-    }
-
-    private fun showErrorDeleteMateriaux() {
-        TODO("Not yet implemented")
+        newMateriaux.value = item
+        _navigation.value = GestionNavigation.PASSAGE_MODIFICATIONS_MATERIAUX
     }
 
     fun onClickButtonValidationGestionMateriaux() {
@@ -884,16 +896,25 @@ class GestionRapportChantierViewModel(
             _state.value = State.loading()
             _successDialog.value = false
             try {
-                val documentId =
+                val documentId = if (newMateriaux.value?.documentId == null)
                     withContext(Dispatchers.IO) {
                         materiauxRepository.insertMateriaux(newMateriaux.value!!)
+                    } else newMateriaux.value!!.documentId.also {
+                    withContext(Dispatchers.IO) {
+                        materiauxRepository.updateMateriaux(newMateriaux.value!!)
                     }
-                if (documentId.isNotEmpty()) {
-                    Timber.i("reussite")
+                }
+                if (!documentId.isNullOrEmpty()) {
                     newMateriaux.value!!.documentId = documentId
+
                     val completeList = mutableListOf<Materiaux>()
                     completeList.addAll(rapportChantier.value!!.listeMateriaux)
-                    completeList.add(newMateriaux.value!!)
+                    if (newMateriaux.value!!.documentId == null) {
+                        completeList.add(newMateriaux.value!!)
+                    } else {
+                        completeList.removeIf { it.documentId == newMateriaux.value!!.documentId }
+                        completeList.add(newMateriaux.value!!)
+                    }
                     _rapportChantier.value = _rapportChantier.value.also {
                         it!!.listeMateriaux = completeList
                     }
@@ -923,7 +944,7 @@ class GestionRapportChantierViewModel(
     }
 
 
-    /////////////////////// GESTION SOUS-TRAITANCE /////////////////////////////////////
+/////////////////////// GESTION SOUS-TRAITANCE /////////////////////////////////////
 
     var newSousTraitance = MutableLiveData(SousTraitance())
 
@@ -947,6 +968,11 @@ class GestionRapportChantierViewModel(
 
             }
         }
+    }
+
+    fun onClickEditSousTraitance(item: SousTraitance) {
+        newSousTraitance.value = item
+        _navigation.value = GestionNavigation.PASSAGE_MODIFICATIONS_SOUS_TRAITANCE
     }
 
     private fun showErrorDeleteSousTraitance() {
@@ -990,14 +1016,25 @@ class GestionRapportChantierViewModel(
             _state.value = State.loading()
             _successDialog.value = false
             try {
-                val documentId =
-                    sousTraitanceRepository.insertSousTraitance(newSousTraitance.value!!)
-                if (documentId.isNotEmpty()) {
-                    Timber.i("reussite")
+                val documentId = if (newSousTraitance.value?.documentId == null)
+                    withContext(Dispatchers.IO) {
+                        sousTraitanceRepository.insertSousTraitance(newSousTraitance.value!!)
+                    } else newSousTraitance.value!!.documentId.also {
+                    withContext(Dispatchers.IO) {
+                        sousTraitanceRepository.updateSousTraitance(newSousTraitance.value!!)
+                    }
+                }
+                if (!documentId.isNullOrEmpty()) {
                     newSousTraitance.value!!.documentId = documentId
+
                     val completeList = mutableListOf<SousTraitance>()
                     completeList.addAll(rapportChantier.value!!.listeSousTraitance)
-                    completeList.add(newSousTraitance.value!!)
+                    if (newSousTraitance.value!!.documentId == null) {
+                        completeList.add(newSousTraitance.value!!)
+                    } else {
+                        completeList.removeIf { it.documentId == newSousTraitance.value!!.documentId }
+                        completeList.add(newSousTraitance.value!!)
+                    }
                     _rapportChantier.value = _rapportChantier.value.also {
                         it!!.listeSousTraitance = completeList
                     }
@@ -1026,7 +1063,7 @@ class GestionRapportChantierViewModel(
     }
 
 
-    /////////////////////// SECURITE & ENVIRONNEMENT ////////////////////////////////////////
+/////////////////////// SECURITE & ENVIRONNEMENT ////////////////////////////////////////
 
     fun onClickButtonAutresInformations() {
         _navigation.value = GestionNavigation.PASSAGE_AUTRES_INFORMATIONS
@@ -1128,7 +1165,7 @@ class GestionRapportChantierViewModel(
             }
         }
     }
-    /////////////////////// OBSERVATIONS ////////////////////////////////////////
+/////////////////////// OBSERVATIONS ////////////////////////////////////////
 
     val traitementPhytosanitaireBoolean = MutableLiveData<Boolean>(false)
 

@@ -61,7 +61,7 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
         binding.executePendingBindings()
 
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -77,14 +77,11 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
                     Flipper.CONTENT
                 }
             }
-        })
-
-        val customLayout = DialogAddMaterielLocationBinding.inflate(inflater)
-        customLayout.viewModel = viewModel
+        }
 
 
 
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             binding.vfMain.displayedChild = when (it.status) {
 
                 Status.LOADING -> Flipper.LOADING
@@ -100,13 +97,16 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
                     Flipper.CONTENT
                 }
             }
-        })
+        }
 
 
 
         viewModel.navigation.observe(viewLifecycleOwner) { navigation ->
             when (navigation) {
-                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIEL_LOCATION -> {
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_AJOUT_MATERIEL_LOCATION,
+                GestionRapportChantierViewModel.GestionNavigation.PASSAGE_MODIFICATIONS_MATERIEL_LOCATION -> {
+                    val customLayout = DialogAddMaterielLocationBinding.inflate(inflater)
+                    customLayout.viewModel = viewModel
 
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Ajouter un matériel de location")
@@ -116,9 +116,9 @@ class GestionMaterielLocationRapportChantierFragment : Fragment() {
                         }
                         .setPositiveButton("Valider") { dialog, _ ->
                             viewModel.onClickButtonConfirmationAjoutMaterielLocation()
-                            viewModel.successDialog.observe(viewLifecycleOwner, {
+                            viewModel.successDialog.observe(viewLifecycleOwner) {
                                 if (it) dialog.dismiss()
-                            })
+                            }
                         }.show()
 
                     viewModel.onBoutonClicked()
